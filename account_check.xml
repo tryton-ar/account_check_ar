@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<tryton>
+    <data>
+
+<!-- Account Checks -->
+        <menuitem name="treasury" parent="account.menu_account"
+            id="menu_treasury" sequence="22"/>
+
+<!--        <record model="ir.action.wizard" id="wizard_select_invoices">-->
+<!--            <field name="name">"Select Invoices to Pay"</field>-->
+<!--            <field name="wiz_name">account.voucher.select_invoices</field>-->
+<!--            <field name="model">account.voucher</field>-->
+<!--        </record>-->
+
+
+        <record model="ir.ui.view" id="account_issued_check_form">
+            <field name="model">account.issued.check</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <![CDATA[
+                <form string="Issued Check">
+                    <label name="name"/>
+                    <field name="name"/>
+                    <label name="amount"/>
+                    <field name="amount"/>
+                    <label name="date"/>
+                    <field name="date"/>
+                    <label name="receiving_party_id"/>
+                    <field name="receiving_party_id"/>
+                    <label name="on_order"/>
+                    <field name="on_order"/>
+                    <label name="signatory"/>
+                    <field name="signatory"/>
+                    <label name="clearing"/>
+                    <field name="clearing"/>
+                </form>
+                ]]>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="account_issued_check_tree">
+            <field name="model">account.issued.check</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <![CDATA[
+                <tree string="Issued Checks">
+                    <field name="name"/>
+                    <field name="amount"/>
+                    <field name="receiving_party_id"/>
+                    <field name="date_out"/>
+                    <field name="date"/>
+                    <field name="debit_date"/>
+                    <field name="on_order"/>
+                    <field name="clearing"/>
+                </tree>
+                ]]>
+            </field>
+        </record>
+
+        <record model="ir.action.act_window" id="act_issued_check_tree">
+            <field name="name">Issued Checks</field>
+            <field name="res_model">account.issued.check</field>
+        </record>
+        <menuitem parent="menu_treasury" action="act_issued_check_tree"
+            id="menu_issued_check" sequence="5"/>
+
+        <record model="ir.ui.view" id="account_third_check_form">
+            <field name="model">account.third.check</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <![CDATA[
+                <form string="Third Check">
+                    <label name="name"/>
+                    <field name="name"/>
+                    <label name="amount"/>
+                    <field name="amount"/>
+                    <label name="date_out"/>
+                    <field name="date_out"/>
+                    <label name="date"/>
+                    <field name="date"/>
+                    <label name="on_order"/>
+                    <field name="on_order"/>
+                    <label name="signatory"/>
+                    <field name="signatory"/>
+                    <label name="clearing"/>
+                    <field name="clearing"/>
+                    <label name="state"/>
+                    <field name="state"/>
+                </form>
+                ]]>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="account_third_check_tree">
+            <field name="model">account.third.check</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <![CDATA[
+                <tree string="Third Checks">
+                    <field name="name"/>
+                    <field name="amount"/>
+                    <field name="source_party_id"/>
+                    <field name="destiny_party_id"/>
+                    <field name="debit_date"/>
+                    <field name="date_out"/>
+                    <field name="date"/>
+                    <field name="state"/>
+                    <field name="issued"/>
+                </tree>
+                ]]>
+            </field>
+        </record>
+
+        <record model="ir.action.act_window" id="act_third_check_tree">
+            <field name="name">Third Checks</field>
+            <field name="res_model">account.third.check</field>
+        </record>
+        <menuitem parent="menu_treasury" action="act_third_check_tree"
+            id="menu_third_check" sequence="10"/>
+
+
+    </data>
+</tryton>

@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<tryton>
+    <data>
+
+        <record model="workflow" id="third_checks_workflow">
+            <field name="name">Third Checks</field>
+            <field name="model">account.third.check</field>
+            <field name="on_create" eval="True"/>
+        </record>
+
+<!--Activities-->
+
+        <record model="workflow.activity" id="act_check_draft">
+            <field name="name">Draft</field>
+            <field name="workflow" ref="third_checks_workflow"/>
+            <field name="kind">function</field>
+            <field name="action">write({'state': 'draft'})</field>
+            <field name="flow_start" eval="True"/>
+        </record>
+
+        <record model="workflow.activity" id="act_check_cartera">
+            <field name="name">cartera</field>
+            <field name="workflow" ref="third_checks_workflow"/>
+            <field name="kind">function</field>
+            <field name="action">wkf_cartera()</field>
+        </record>
+
+        <record model="workflow.activity" id="act_check_deposited">
+            <field name="name">deposited</field>
+            <field name="workflow" ref="third_checks_workflow"/>
+            <field name="kind">function</field>
+            <field name="action">wkf_deposited()</field>
+            <field name="flow_stop" eval="True"/>
+        </record>
+
+        <record model="workflow.activity" id="act_check_rejected">
+            <field name="name">rejected</field>
+            <field name="workflow" ref="third_checks_workflow"/>
+            <field name="kind">function</field>
+            <field name="action">wkf_rejected()</field>
+            <field name="flow_stop" eval="True"/>
+        </record>
+
+        <record model="workflow.activity" id="act_check_delivered">
+            <field name="name">delivered</field>
+            <field name="workflow" ref="third_checks_workflow"/>
+            <field name="kind">function</field>
+            <field name="action">wkf_delivered()</field>
+            <field name="flow_stop" eval="True"/>
+        </record>
+
+<!--        Transition-->
+
+        <record model="workflow.transition" id="trans_draft_cartera">
+            <field name="act_from" ref="act_check_draft"/>
+            <field name="act_to" ref="act_check_cartera"/>
+            <field name="signal">draft_cartera</field>
+        </record>
+
+        <record model="workflow.transition" id="trans_cartera_deposited">
+            <field name="act_from" ref="act_check_cartera"/>
+            <field name="act_to" ref="act_check_deposited"/>
+            <field name="signal">cartera_deposited</field>
+        </record>
+
+        <record model="workflow.transition" id="trans_cartera_rejected">
+            <field name="act_from" ref="act_check_cartera"/>
+            <field name="act_to" ref="act_check_rejected"/>
+            <field name="signal">cartera_rejected</field>
+        </record>
+
+        <record model="workflow.transition" id="trans_cartera_delivered">
+            <field name="act_from" ref="act_check_cartera"/>
+            <field name="act_to" ref="act_check_delivered"/>
+            <field name="signal">cartera_delivered</field>
+        </record>
+
+
+    </data>
+</tryton>

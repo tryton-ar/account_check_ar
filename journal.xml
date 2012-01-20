@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<tryton>
+        <data>
+
+
+
+		<record model="ir.ui.view" id="view_journal_check_form">
+			<field name="model">account.journal</field>
+			<field name="inherit" ref="account.journal_view_form" />
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<![CDATA[
+					<data>
+	                    <xpath
+							expr="/form/notebook/page[@id=&quot;general&quot;]"
+							position="after">
+
+                                <page string="Checks" id="journal_checks">
+                                    <label name="third_check_account"/>
+                                    <field name="third_check_account"/>
+                                    <label name="issued_check_account"/>
+                                    <field name="issued_check_account"/>
+                                </page>
+						</xpath>
+					</data>
+
+				]]>
+
+			</field>
+		</record>
+
+	</data>
+</tryton>

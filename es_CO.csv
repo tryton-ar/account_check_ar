@@ -1,0 +1,82 @@
+"type","name","res_id","src","value","fuzzy"
+"field","account.issued.check,clearing",0,"Clearing",,0
+"field","account.issued.check,date",0,"Date","Fecha",0
+"field","account.issued.check,date_out",0,"Date Out","Fecha de Salida",0
+"field","account.issued.check,debit_date",0,"Debit Date","Fecha de Débito",0
+"field","account.issued.check,issued",0,"Entregado",,0
+"field","account.issued.check,name",0,"Number","Numero",0
+"field","account.issued.check,on_order",0,"On Order","A la orden",0
+"field","account.issued.check,origin",0,"Origin","Origen",0
+"field","account.issued.check,rec_name",0,"Name","Nombre",0
+"field","account.issued.check,receiving_party_id",0,"Receiving Party","Entidad Receptora",0
+"field","account.issued.check,signatory",0,"Signatory","Firmante",0
+"field","account.issued.check,voucher_id",0,"Voucher","Voucher",0
+"field","account.journal,issued_check_account",0,"Issued Check Account","Cuenta de Cheques Emitidos",0
+"field","account.journal,third_check_account",0,"Third Check Account","Cuenta de Cheques de Terceros",0
+"field","account.third.check,amount",0,"Amount","Monto",0
+"field","account.third.check,clearing",0,"Clearing",,0
+"field","account.third.check,date",0,"Date","Fecha",0
+"field","account.third.check,date_in",0,"Date","Fecha",0
+"field","account.third.check,date_out",0,"Date Out","Fecha de Salida",0
+"field","account.third.check,debit_date",0,"Debit Date","Fecha de Débito",0
+"field","account.third.check,destiny_party_id",0,"Destiny Party","Entidad Destino",0
+"field","account.third.check,issued",0,"Issued","Entregado",0
+"field","account.third.check,name",0,"Number","Numero",0
+"field","account.third.check,on_order",0,"On Order","A la orden",0
+"field","account.third.check,origin",0,"Origin","Origen",0
+"field","account.third.check,rec_name",0,"Name","Nombre",0
+"field","account.third.check,reject_debit_note",0,"Debit Note","Nota de Débito",0
+"field","account.third.check,signatory",0,"Signatory","Firmante",0
+"field","account.third.check,source_party_id",0,"Source Party","Entidad Origen",0
+"field","account.third.check,state",0,"State","Estado",0
+"field","account.third.check,vat",0,"Vat","CUIT",0
+"field","account.third.check,voucher_id",0,"Voucher","Voucher",0
+"field","account.voucher,issued_check",0,"Issued Checks","Cheques Emitidos",0
+"field","account.voucher,test_categ",0,"Categories","Categorías",0
+"field","account.voucher,third_check",0,"Third Checks","Cheques de Terceros",0
+"field","account.voucher,third_check_id",0,"Third Check ID","Cheques De Terceros",0
+"field","account.voucher,third_pay_check",0,"Third Checks","Cheques de terceros",0
+"field","account.voucher,third_pay_checks",0,"Third Checks","Cheques De Terceros",0
+"field","account.voucher,total_checks",0,"Checks","Cheques",0
+"field","account.voucher-account.third.check,rec_name",0,"Name","Nombre",0
+"field","account.voucher-account.third.check,third_check",0,"Third Check","Cheques de Terceros",0
+"field","account.voucher-account.third.check,voucher",0,"Voucher","Voucher",0
+"model","account.issued.check,name",0,"account.issued.check","Cheques Emitidos",0
+"model","account.third.check,name",0,"account.third.check","Cheques de Terceros",0
+"model","account.voucher-account.third.check,name",0,"account.voucher-account.third.check",,0
+"model","ir.action,name","act_issued_check_tree","Issued Checks","Cheques Emitidos",0
+"model","ir.action,name","act_third_check_tree","Third Checks","Cheques de Terceros",0
+"model","ir.ui.menu,name","menu_issued_check","Issued Checks","Cheques Emitidos",0
+"model","ir.ui.menu,name","menu_third_check","Third Checks","Cheques De Terceros",0
+"model","ir.ui.menu,name","menu_treasury","treasury","Tesorería",0
+"model","workflow,name",,"Third Checks Workflow","Workflow de Cheques",0
+"model","workflow,name","third_checks_workflow","Third Checks","Cheques de Terceros",0
+"model","workflow.activity,name",,"Draft","Borrador",0
+"model","workflow.activity,name",,"cartera","Cartera",0
+"model","workflow.activity,name",,"delivered","Entregado",0
+"model","workflow.activity,name",,"deposited","Depositado",0
+"model","workflow.activity,name",,"rejected","Rechazados",0
+"model","workflow.activity,name","act_check_cartera","cartera","Cartera",0
+"model","workflow.activity,name","act_check_delivered","delivered","Entregado",0
+"model","workflow.activity,name","act_check_deposited","deposited","Depositado",0
+"model","workflow.activity,name","act_check_draft","Draft","Borrador",0
+"model","workflow.activity,name","act_check_rejected","rejected","Rechazados",0
+"selection","account.issued.check,clearing",0,"24 hs",,0
+"selection","account.issued.check,clearing",0,"48 hs",,0
+"selection","account.issued.check,clearing",0,"72 hs",,0
+"selection","account.third.check,clearing",0,"24 hs",,0
+"selection","account.third.check,clearing",0,"48 hs",,0
+"selection","account.third.check,clearing",0,"72 hs",,0
+"selection","account.third.check,state",0,"Cartera",,0
+"selection","account.third.check,state",0,"Delivered","Entregado",0
+"selection","account.third.check,state",0,"Deposited","Depositado",0
+"selection","account.third.check,state",0,"Draft","Borrador",0
+"selection","account.third.check,state",0,"Rejected","Rechazado",0
+"view","account.issued.check",0,"Issued Check","Cheques Emitidos",0
+"view","account.issued.check",0,"Issued Checks","Cheques Emitidos",0
+"view","account.journal",0,"Checks","Cheques",0
+"view","account.third.check",0,"Third Check","Cheques de Terceros",0
+"view","account.third.check",0,"Third Checks","Cheques de Terceros",0
+"view","account.voucher",0,"Checks","Cheques",0
+"view","account.voucher",0,"Issued Checks","Cheques Emitidos",0
+"view","account.voucher",0,"Third Checks","Cheques de terceros",0
