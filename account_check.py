@@ -1,20 +1,5 @@
-# coding=utf-8
-
-#    Copyright (C) 2008-2011  Ignacio E. Parszyk
-
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+#This file is part of Tryton.  The COPYRIGHT file at the top level of
+#this repository contains the full copyright notices and license terms.
 from trytond.model import ModelWorkflow, ModelView, ModelSQL, fields
 from trytond.tools import safe_eval, datetime_strftime
 from trytond.transaction import Transaction
@@ -27,7 +12,9 @@ _STATES = {
 
 
 class AccountIssuedCheck(ModelSQL, ModelView):
+    'Account Issued Check'
     _name = 'account.issued.check'
+    _description = __doc__
 
     name = fields.Char('Number')
     amount = fields.Float('Amount')
@@ -50,7 +37,9 @@ AccountIssuedCheck()
 
 
 class AccountThirdCheck(ModelWorkflow, ModelSQL, ModelView):
+    'Account Third Check'
     _name = 'account.third.check'
+    _description = __doc__
 
     name = fields.Char('Number')
     amount = fields.Float('Amount')
@@ -98,6 +87,7 @@ class AccountVoucherThirdCheck(ModelSQL):
     'Invoice Line - Tax'
     _name = 'account.voucher-account.third.check'
     _table = 'account_voucher_account_third_check'
+    _description = __doc__
 
     voucher = fields.Many2One('account.voucher', 'Voucher',
         ondelete='CASCADE', select=1, required=True)
@@ -336,6 +326,7 @@ VoucherCheck()
 class JournalCheck(ModelSQL, ModelView):
     'Account Check Voucher'
     _name = 'account.journal'
+    _description = __doc__
 
     third_check_account = fields.Many2One('account.account',
         'Third Check Account')
