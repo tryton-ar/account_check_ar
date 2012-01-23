@@ -5,21 +5,20 @@
     'author': 'Ignacio E. Parszyk',
     'email': 'iparszyk@thymbra.com',
     'website': 'http://thymbra.com',
-    'translation': ['es_CO.csv'],
+    'description': '''Account Check''',
     'depends': [
         'account',
         'account_invoice',
         'account_voucher',
     ],
-    'description': '''
-        Account Check
-''',
-
     'xml': [
         'account_check.xml',
         'account_voucher_view.xml',
         'journal.xml',
         'workflow.xml'
+    ],
+    'translation': [
+        'es_CO.csv',
     ],
     'active': False,
 }

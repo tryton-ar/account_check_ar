@@ -21,7 +21,7 @@ from trytond.transaction import Transaction
 from decimal import Decimal
 from trytond.pyson import Eval, Not, In, Equal
 
-_STATES ={
+_STATES = {
     'readonly': In(Eval('state'), ['posted']),
 }
 
@@ -47,6 +47,7 @@ class AccountIssuedCheck(ModelSQL, ModelView):
     issued = fields.Boolean('Issued')
 
 AccountIssuedCheck()
+
 
 class AccountThirdCheck(ModelWorkflow, ModelSQL, ModelView):
     _name = 'account.third.check'
@@ -77,26 +78,21 @@ class AccountThirdCheck(ModelWorkflow, ModelSQL, ModelView):
     origin = fields.Char('Origin')
     voucher_id = fields.Many2One('account.voucher', 'Voucher')
     issued = fields.Boolean('Issued')
-    reject_debit_note = fields.Many2One('account.invoice', 'Debit Note')#TODO
+    reject_debit_note = fields.Many2One('account.invoice', 'Debit Note')  # TODO
 
     def wkf_cartera(self, check_id):
-        self.write(check_id,{
-            'state':'C'
-        })
+        self.write(check_id, {'state': 'C'})
         return True
 
     def wkf_deposited(self, check_id):
         return True
 
     def wkf_delivered(self, check_id):
-        self.write(check_id,{
-            'state':'delivered'
-        })
-
+        self.write(check_id, {'state': 'delivered'})
         return True
 
-
 AccountThirdCheck()
+
 
 class AccountVoucherThirdCheck(ModelSQL):
     'Invoice Line - Tax'
@@ -104,21 +100,21 @@ class AccountVoucherThirdCheck(ModelSQL):
     _table = 'account_voucher_account_third_check'
 
     voucher = fields.Many2One('account.voucher', 'Voucher',
-            ondelete='CASCADE', select=1, required=True)
-    third_check = fields.Many2One('account.third.check', 'Third Check', ondelete='RESTRICT',
-            required=True)
+        ondelete='CASCADE', select=1, required=True)
+    third_check = fields.Many2One('account.third.check', 'Third Check',
+        ondelete='RESTRICT', required=True)
 
 AccountVoucherThirdCheck()
 
 
 class VoucherCheck(ModelSQL, ModelView):
-    "Account Check Voucher"
-    _name = "account.voucher"
+    'Account Check Voucher'
+    _name = 'account.voucher'
     _description = __doc__
 
     def amount_total(self, ids, name):
         check_amount = 0
-        amount = super(VoucherCheck, self).amount_total(ids,name)
+        amount = super(VoucherCheck, self).amount_total(ids, name)
         for voucher in self.browse(ids):
             if voucher.third_check:
                 for t_check in voucher.third_check:
@@ -132,7 +128,7 @@ class VoucherCheck(ModelSQL, ModelView):
             amount[voucher.id] = amount[voucher.id] + check_amount
         return amount
 
-    def on_change_pay_amount_1(self,vals):
+    def on_change_pay_amount_1(self, vals):
         data = super(VoucherCheck, self).on_change_pay_amount_1(vals)
         third_check_amount = 0
         issued_check_amount = 0
@@ -143,10 +139,11 @@ class VoucherCheck(ModelSQL, ModelView):
             issued_check_amount = self.check_amount(vals.get('issued_check'))
         if vals.get('third_pay_checks'):
             third_pay_checks_amount = self.check_amount(vals.get('issued_check'))
-        data['amount']=data['amount'] + third_check_amount + issued_check_amount
+        data['amount'] = data['amount'] + third_check_amount \
+                + issued_check_amount
         return data
 
-    def on_change_pay_amount_2(self,vals):
+    def on_change_pay_amount_2(self, vals):
         data = super(VoucherCheck, self).on_change_pay_amount_2(vals)
         third_check_amount = 0
         issued_check_amount = 0
@@ -157,7 +154,8 @@ class VoucherCheck(ModelSQL, ModelView):
             issued_check_amount = self.check_amount(vals.get('issued_check'))
         if vals.get('third_pay_checks'):
             third_pay_checks_amount = self.check_amount(vals.get('issued_check'))
-        data['amount']=data['amount'] + third_check_amount + issued_check_amount
+        data['amount'] = data['amount'] + third_check_amount \
+                + issued_check_amount
         return data
 
     def amount_checks(self, ids, name):
@@ -170,52 +168,55 @@ class VoucherCheck(ModelSQL, ModelView):
             if voucher.third_check:
                 for t_check in voucher.third_check:
                     amount += t_check.amount
-
             if voucher.third_pay_checks:
                 for check in voucher.third_pay_checks:
                     amount += check.amount
-
             res[voucher.id] = amount
         return res
 
-    def check_amount(self,checks):
+    def check_amount(self, checks):
         check_amount = 0
         for check in checks:
             check_amount += check.get('amount')
         return check_amount
 
-
-    def on_change_third_check(self,vals):
+    def on_change_third_check(self, vals):
         res = {}
         third_pay_check_amount = self.check_amount(vals.get('third_pay_checks'))
         third_check_amount = self.check_amount(vals.get('third_check'))
         issued_check_amount = self.check_amount(vals.get('issued_check'))
-        res['total_checks'] = third_check_amount + issued_check_amount + third_pay_check_amount
-        res['amount'] = vals.get('pay_amount_1') + vals.get('pay_amount_2') + third_check_amount + issued_check_amount + third_pay_check_amount
+        res['total_checks'] = third_check_amount + issued_check_amount \
+                + third_pay_check_amount
+        res['amount'] = vals.get('pay_amount_1') + vals.get('pay_amount_2') \
+                + third_check_amount + issued_check_amount \
+                + third_pay_check_amount
         return res
 
-
-    def on_change_issued_check(self,vals):
+    def on_change_issued_check(self, vals):
         res = {}
         third_pay_check_amount = self.check_amount(vals.get('third_pay_checks'))
         third_check_amount = self.check_amount(vals.get('third_check'))
         issued_check_amount = self.check_amount(vals.get('issued_check'))
-        res['total_checks'] = third_check_amount + issued_check_amount + third_pay_check_amount
-        res['amount'] = vals.get('pay_amount_1') + vals.get('pay_amount_2') + third_check_amount + issued_check_amount + third_pay_check_amount
+        res['total_checks'] = third_check_amount + issued_check_amount \
+                + third_pay_check_amount
+        res['amount'] = vals.get('pay_amount_1') + vals.get('pay_amount_2') \
+                + third_check_amount + issued_check_amount \
+                + third_pay_check_amount
         return res
 
-    def on_change_third_pay_checks(self,vals):
+    def on_change_third_pay_checks(self, vals):
         res = {}
         third_pay_check_amount = self.check_amount(vals.get('third_pay_checks'))
         third_check_amount = self.check_amount(vals.get('third_check'))
         issued_check_amount = self.check_amount(vals.get('issued_check'))
-        res['total_checks'] = third_check_amount + issued_check_amount + third_pay_check_amount
-        res['amount'] = vals.get('pay_amount_1') + vals.get('pay_amount_2') + third_check_amount + issued_check_amount + third_pay_check_amount
-
+        res['total_checks'] = third_check_amount + issued_check_amount \
+                + third_pay_check_amount
+        res['amount'] = vals.get('pay_amount_1') + vals.get('pay_amount_2') \
+                + third_check_amount + issued_check_amount \
+                + third_pay_check_amount
         return res
 
-
-    def prepare_moves(self,voucher_id):
+    def prepare_moves(self, voucher_id):
         pre_move = super(VoucherCheck, self).prepare_moves(voucher_id)
         voucher = self.browse(voucher_id)
         period_obj = self.pool.get('account.period')
@@ -229,7 +230,7 @@ class VoucherCheck(ModelSQL, ModelView):
                 credit = Decimal('0.00')
 
                 pre_move['new_moves'].append({
-                    'name':voucher.number,
+                    'name': voucher.number,
                     'debit': debit,
                     'credit': credit,
                     'account': voucher.journal_id.third_check_account.id,
@@ -247,7 +248,7 @@ class VoucherCheck(ModelSQL, ModelView):
                 debit = Decimal('0.00')
                 credit = Decimal(str(issued_check_amount))
                 pre_move['new_moves'].append({
-                    'name':voucher.number,
+                    'name': voucher.number,
                     'debit': debit,
                     'credit': credit,
                     'account': voucher.journal_id.issued_check_account.id,
@@ -263,7 +264,7 @@ class VoucherCheck(ModelSQL, ModelView):
                 debit = Decimal('0.00')
                 credit = Decimal(str(third_paycheck_amount))
                 pre_move['new_moves'].append({
-                    'name':voucher.number,
+                    'name': voucher.number,
                     'debit': debit,
                     'credit': credit,
                     'account': voucher.journal_id.third_check_account.id,
@@ -273,54 +274,72 @@ class VoucherCheck(ModelSQL, ModelView):
                     'party': voucher.party.id,
                 })
 
-
-
         return pre_move
 
-    def action_paid(self,voucher_id):
+    def action_paid(self, voucher_id):
         super(VoucherCheck, self).action_paid(voucher_id)
         voucher = self.browse(voucher_id)
         if voucher.third_check:
             third_check_obj = self.pool.get('account.third.check')
             for check in voucher.third_check:
-                check.write(check.id, {
-                    'source_party_id': voucher.party.id
-                })
+                check.write(check.id, {'source_party_id': voucher.party.id})
                 third_check_obj.workflow_trigger_validate(check.id, 'draft_cartera')
         if voucher.third_pay_checks:
             third_check_obj = self.pool.get('account.third.check')
             for check in voucher.third_pay_checks:
-                check.write(check.id,{
+                check.write(check.id, {
                     'destiny_party_id': voucher.party.id,
-                    'issued':True
+                    'issued': True,
                 })
                 third_check_obj.workflow_trigger_validate(check.id, 'cartera_delivered')
         return True
-#######################################################################################################3
 
-    issued_check = fields.One2Many('account.issued.check', 'voucher_id','Issued Checks',  on_change=['pay_amount_1', 'pay_amount_2', 'issued_check','third_check', 'third_pay_checks'], states={
-        'invisible': Not(In(Eval('voucher_type'), ['payment']))
-    })
+    issued_check = fields.One2Many('account.issued.check', 'voucher_id',
+        'Issued Checks',
+        on_change=['pay_amount_1', 'pay_amount_2',
+            'issued_check', 'third_check', 'third_pay_checks'],
+        states={
+            'invisible': Not(In(Eval('voucher_type'), ['payment'])),
+        })
 
-    third_pay_checks = fields.Many2Many('account.voucher-account.third.check', 'voucher', 'third_check',
-            'Third Checks', on_change=['pay_amount_1', 'pay_amount_2', 'issued_check','third_check', 'third_pay_checks'], states={
-        'invisible': Not(In(Eval('voucher_type'), ['payment'])) })
+    third_pay_checks = fields.Many2Many('account.voucher-account.third.check',
+        'voucher', 'third_check', 'Third Checks',
+        on_change=['pay_amount_1', 'pay_amount_2', 'issued_check',
+            'third_check', 'third_pay_checks'],
+        states={
+            'invisible': Not(In(Eval('voucher_type'), ['payment'])),
+        })
 
-    third_check = fields.One2Many('account.third.check', 'voucher_id', 'Third Checks', on_change=['pay_amount_1', 'pay_amount_2', 'third_check','issued_check', 'third_pay_checks'], states={
-        'invisible': Not(In(Eval('voucher_type'), ['receipt'])) })
+    third_check = fields.One2Many('account.third.check', 'voucher_id',
+        'Third Checks',
+        on_change=['pay_amount_1', 'pay_amount_2',
+            'third_check', 'issued_check', 'third_pay_checks'],
+        states={
+            'invisible': Not(In(Eval('voucher_type'), ['receipt'])),
+        })
+
     total_checks = fields.Function(fields.Float('Checks'), 'amount_checks')
 
-    pay_amount_1 = fields.Float('Pay Amount 1', on_change=['pay_amount_1', 'pay_amount_2', 'third_check','issued_check','third_pay_checks'], states=_STATES)
+    pay_amount_1 = fields.Float('Pay Amount 1',
+        on_change=['pay_amount_1', 'pay_amount_2', 'third_check',
+            'issued_check', 'third_pay_checks'],
+        states=_STATES)
 
-    pay_amount_2 = fields.Float('Pay Amount 2', on_change=['pay_amount_1', 'pay_amount_2', 'third_check','issued_check','third_pay_checks'], states=_STATES)
+    pay_amount_2 = fields.Float('Pay Amount 2',
+        on_change=['pay_amount_1', 'pay_amount_2', 'third_check',
+            'issued_check', 'third_pay_checks'],
+        states=_STATES)
 
 VoucherCheck()
 
-class JournalCheck(ModelSQL, ModelView):
-    "Account Check Voucher"
-    _name = "account.journal"
 
-    third_check_account = fields.Many2One('account.account', 'Third Check Account')
-    issued_check_account = fields.Many2One('account.account', 'Issued Check Account')
+class JournalCheck(ModelSQL, ModelView):
+    'Account Check Voucher'
+    _name = 'account.journal'
+
+    third_check_account = fields.Many2One('account.account',
+        'Third Check Account')
+    issued_check_account = fields.Many2One('account.account',
+        'Issued Check Account')
 
 JournalCheck()

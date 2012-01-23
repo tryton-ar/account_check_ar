@@ -6,12 +6,13 @@
         <menuitem name="treasury" parent="account.menu_account"
             id="menu_treasury" sequence="22"/>
 
-<!--        <record model="ir.action.wizard" id="wizard_select_invoices">-->
-<!--            <field name="name">"Select Invoices to Pay"</field>-->
-<!--            <field name="wiz_name">account.voucher.select_invoices</field>-->
-<!--            <field name="model">account.voucher</field>-->
-<!--        </record>-->
-
+<!--
+        <record model="ir.action.wizard" id="wizard_select_invoices">
+            <field name="name">"Select Invoices to Pay"</field>
+            <field name="wiz_name">account.voucher.select_invoices</field>
+            <field name="model">account.voucher</field>
+        </record>
+-->
 
         <record model="ir.ui.view" id="account_issued_check_form">
             <field name="model">account.issued.check</field>
@@ -117,7 +118,6 @@
         </record>
         <menuitem parent="menu_treasury" action="act_third_check_tree"
             id="menu_third_check" sequence="10"/>
-
 
     </data>
 </tryton>

@@ -8,7 +8,7 @@
             <field name="on_create" eval="True"/>
         </record>
 
-<!--Activities-->
+<!-- Activities -->
 
         <record model="workflow.activity" id="act_check_draft">
             <field name="name">Draft</field>
@@ -49,7 +49,7 @@
             <field name="flow_stop" eval="True"/>
         </record>
 
-<!--        Transition-->
+<!-- Transition-->
 
         <record model="workflow.transition" id="trans_draft_cartera">
             <field name="act_from" ref="act_check_draft"/>
@@ -74,7 +74,6 @@
             <field name="act_to" ref="act_check_delivered"/>
             <field name="signal">cartera_delivered</field>
         </record>
-
 
     </data>
 </tryton>
