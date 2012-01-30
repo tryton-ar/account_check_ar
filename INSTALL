@@ -1,5 +1,5 @@
-Installing trytond_account_check
-==================================
+Installing trytond_account_check_ar
+===================================
 
 Prerequisites
 -------------
@@ -8,12 +8,12 @@ Prerequisites
  * trytond (http://www.tryton.org/)
  * trytond_account (http://www.tryton.org/)
  * trytond_account_invoice (http://www.tryton.org/)
- * trytond_account_voucher (http://www.tryton.org/)
+ * trytond_account_voucher_ar (http://www.tryton.org/)
 
 Installation
 ------------
 
-Once you've downloaded and unpacked the trytond_account_check source release, enter the
+Once you've downloaded and unpacked the trytond_account_check_ar source release, enter the
 directory where the archive was unpacked, and run:
 
     python setup.py install
@@ -29,4 +29,4 @@ documentation:
   http://docs.python.org/inst/inst.html
 
 To use without installation, extract the archive into ``trytond/modules`` with
-the directory name account_check.
+the directory name account_check_ar.
