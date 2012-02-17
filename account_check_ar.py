@@ -3,6 +3,7 @@
 from trytond.model import ModelWorkflow, ModelView, ModelSQL, fields
 from decimal import Decimal
 from trytond.pyson import Eval, Not, In
+from trytond.pool import Pool
 
 _STATES = {
     'readonly': In(Eval('state'), ['posted']),
@@ -67,16 +68,23 @@ class AccountThirdCheck(ModelWorkflow, ModelSQL, ModelView):
     issued = fields.Boolean('Issued')
     reject_debit_note = fields.Many2One('account.invoice', 'Debit Note')  # TODO
 
+    def wkf_draft(self, check_id):
+        self.write(check_id.id, {'state': 'draft'})
+        return True
+
     def wkf_cartera(self, check_id):
-        self.write(check_id, {'state': 'C'})
+        self.write(check_id.id, {'state': 'C'})
         return True
 
     def wkf_deposited(self, check_id):
         return True
 
     def wkf_delivered(self, check_id):
-        self.write(check_id, {'state': 'delivered'})
+        self.write(check_id.id, {'state': 'delivered'})
         return True
+
+    def default_state(self):
+        return 'draft'
 
 AccountThirdCheck()
 
@@ -206,8 +214,8 @@ class VoucherCheck(ModelSQL, ModelView):
 
     def prepare_moves(self, voucher_id):
         pre_move = super(VoucherCheck, self).prepare_moves(voucher_id)
-        voucher = self.browse(voucher_id)
-        period_obj = self.pool.get('account.period')
+        voucher = self.browse(voucher_id.id)
+        period_obj = Pool().get('account.period')
         if voucher.voucher_type == 'receipt':
             if voucher.third_check:
                 third_check_amount = 0
@@ -266,14 +274,14 @@ class VoucherCheck(ModelSQL, ModelView):
 
     def action_paid(self, voucher_id):
         super(VoucherCheck, self).action_paid(voucher_id)
-        voucher = self.browse(voucher_id)
+        voucher = self.browse(voucher_id.id)
         if voucher.third_check:
-            third_check_obj = self.pool.get('account.third.check')
+            third_check_obj = Pool().get('account.third.check')
             for check in voucher.third_check:
                 check.write(check.id, {'source_party_id': voucher.party.id})
                 third_check_obj.workflow_trigger_validate(check.id, 'draft_cartera')
         if voucher.third_pay_checks:
-            third_check_obj = self.pool.get('account.third.check')
+            third_check_obj = Pool().get('account.third.check')
             for check in voucher.third_pay_checks:
                 check.write(check.id, {
                     'destiny_party_id': voucher.party.id,
