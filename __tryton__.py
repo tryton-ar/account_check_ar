@@ -3,9 +3,9 @@
 {
     'name': 'Account Check Argentina',
     'name_es_ES': 'Cartera de Cheques para Argentina',
-    'version': '2.0.1',
+    'version': '2.2.0',
     'author': 'Thymbra - Torre de Hanoi',
-    'email': 'iparszyk@thymbra.com',
+    'email': 'info@thymbra.com',
     'website': 'http://thymbra.com/',
     'description': '''Account Check for Argentina''',
     'description_es_ES': '''Manejo de Cartera de Cheques para Argentina''',
@@ -21,6 +21,6 @@
         'workflow.xml'
     ],
     'translation': [
-        'es_ES.csv',
+        'es_ES.po',
     ],
 }
