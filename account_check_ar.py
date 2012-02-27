@@ -134,7 +134,7 @@ class VoucherCheck(ModelSQL, ModelView):
         if vals.get('issued_check'):
             issued_check_amount = self.check_amount(vals.get('issued_check'))
         if vals.get('third_pay_checks'):
-            third_pay_checks_amount = self.check_amount(vals.get('issued_check'))
+            third_pay_checks_amount = self.check_amount(vals.get('third_pay_checks'))
         data['amount'] = data['amount'] + third_check_amount \
                 + issued_check_amount
         return data
@@ -149,7 +149,7 @@ class VoucherCheck(ModelSQL, ModelView):
         if vals.get('issued_check'):
             issued_check_amount = self.check_amount(vals.get('issued_check'))
         if vals.get('third_pay_checks'):
-            third_pay_checks_amount = self.check_amount(vals.get('issued_check'))
+            third_pay_checks_amount = self.check_amount(vals.get('third_pay_checks'))
         data['amount'] = data['amount'] + third_check_amount \
                 + issued_check_amount
         return data
