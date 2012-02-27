@@ -290,6 +290,13 @@ class VoucherCheck(ModelSQL, ModelView):
                 third_check_obj.workflow_trigger_validate(check.id, 'cartera_delivered')
         return True
 
+    def __init__(self):
+       super(VoucherCheck, self).__init__()
+       self.pay_amount_1.on_change.extend(['issued_check',
+            'third_check', 'third_pay_checks'])
+       self.pay_amount_2.on_change.extend(['issued_check',
+            'third_check', 'third_pay_checks'])
+
     issued_check = fields.One2Many('account.issued.check', 'voucher_id',
         'Issued Checks',
         on_change=['pay_amount_1', 'pay_amount_2',
@@ -315,16 +322,6 @@ class VoucherCheck(ModelSQL, ModelView):
         })
 
     total_checks = fields.Function(fields.Float('Checks'), 'amount_checks')
-
-    pay_amount_1 = fields.Float('Pay Amount 1',
-        on_change=['pay_amount_1', 'pay_amount_2', 'third_check',
-            'issued_check', 'third_pay_checks'],
-        states=_STATES)
-
-    pay_amount_2 = fields.Float('Pay Amount 2',
-        on_change=['pay_amount_1', 'pay_amount_2', 'third_check',
-            'issued_check', 'third_pay_checks'],
-        states=_STATES)
 
 VoucherCheck()
 
