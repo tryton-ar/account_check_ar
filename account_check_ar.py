@@ -96,7 +96,7 @@ class AccountVoucherThirdCheck(ModelSQL):
     _description = __doc__
 
     voucher = fields.Many2One('account.voucher', 'Voucher',
-        ondelete='CASCADE', select=1, required=True)
+        ondelete='CASCADE', select=True, required=True)
     third_check = fields.Many2One('account.third.check', 'Third Check',
         ondelete='RESTRICT', required=True)
 
