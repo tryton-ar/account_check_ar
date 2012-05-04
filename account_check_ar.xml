@@ -64,6 +64,16 @@ this repository contains the full copyright notices and license terms. -->
             <field name="name">Issued Checks</field>
             <field name="res_model">account.issued.check</field>
         </record>
+        <record model="ir.action.act_window.view" id="act_issued_check_tree_view1">
+            <field name="sequence" eval="10"/>
+            <field name="view" ref="account_issued_check_tree"/>
+            <field name="act_window" ref="act_issued_check_tree"/>
+        </record>
+        <record model="ir.action.act_window.view" id="act_issued_check_tree_view2">
+            <field name="sequence" eval="20"/>
+            <field name="view" ref="account_issued_check_form"/>
+            <field name="act_window" ref="act_issued_check_tree"/>
+        </record>
         <menuitem parent="menu_treasury" action="act_issued_check_tree"
             id="menu_issued_check" sequence="5"/>
 
@@ -117,6 +127,16 @@ this repository contains the full copyright notices and license terms. -->
         <record model="ir.action.act_window" id="act_third_check_tree">
             <field name="name">Third Checks</field>
             <field name="res_model">account.third.check</field>
+        </record>
+        <record model="ir.action.act_window.view" id="act_third_check_tree_view1">
+            <field name="sequence" eval="10"/>
+            <field name="view" ref="account_third_check_tree"/>
+            <field name="act_window" ref="act_third_check_tree"/>
+        </record>
+        <record model="ir.action.act_window.view" id="act_third_check_tree_view2">
+            <field name="sequence" eval="20"/>
+            <field name="view" ref="account_third_check_form"/>
+            <field name="act_window" ref="act_third_check_tree"/>
         </record>
         <menuitem parent="menu_treasury" action="act_third_check_tree"
             id="menu_third_check" sequence="10"/>
