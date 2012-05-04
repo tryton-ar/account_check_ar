@@ -134,7 +134,8 @@ class VoucherCheck(ModelSQL, ModelView):
         if vals.get('issued_check'):
             issued_check_amount = self.check_amount(vals.get('issued_check'))
         if vals.get('third_pay_checks'):
-            third_pay_checks_amount = self.check_amount(vals.get('third_pay_checks'))
+            third_pay_checks_amount = self.check_amount(
+                    vals.get('third_pay_checks'))
         data['amount'] = data['amount'] + third_check_amount \
                 + issued_check_amount
         return data
@@ -149,7 +150,8 @@ class VoucherCheck(ModelSQL, ModelView):
         if vals.get('issued_check'):
             issued_check_amount = self.check_amount(vals.get('issued_check'))
         if vals.get('third_pay_checks'):
-            third_pay_checks_amount = self.check_amount(vals.get('third_pay_checks'))
+            third_pay_checks_amount = self.check_amount(
+                    vals.get('third_pay_checks'))
         data['amount'] = data['amount'] + third_check_amount \
                 + issued_check_amount
         return data
@@ -178,7 +180,8 @@ class VoucherCheck(ModelSQL, ModelView):
 
     def on_change_third_check(self, vals):
         res = {}
-        third_pay_check_amount = self.check_amount(vals.get('third_pay_checks'))
+        third_pay_check_amount = self.check_amount(
+                vals.get('third_pay_checks'))
         third_check_amount = self.check_amount(vals.get('third_check'))
         issued_check_amount = self.check_amount(vals.get('issued_check'))
         res['total_checks'] = third_check_amount + issued_check_amount \
@@ -190,7 +193,8 @@ class VoucherCheck(ModelSQL, ModelView):
 
     def on_change_issued_check(self, vals):
         res = {}
-        third_pay_check_amount = self.check_amount(vals.get('third_pay_checks'))
+        third_pay_check_amount = self.check_amount(
+                vals.get('third_pay_checks'))
         third_check_amount = self.check_amount(vals.get('third_check'))
         issued_check_amount = self.check_amount(vals.get('issued_check'))
         res['total_checks'] = third_check_amount + issued_check_amount \
@@ -202,7 +206,8 @@ class VoucherCheck(ModelSQL, ModelView):
 
     def on_change_third_pay_checks(self, vals):
         res = {}
-        third_pay_check_amount = self.check_amount(vals.get('third_pay_checks'))
+        third_pay_check_amount = self.check_amount(
+                vals.get('third_pay_checks'))
         third_check_amount = self.check_amount(vals.get('third_check'))
         issued_check_amount = self.check_amount(vals.get('issued_check'))
         res['total_checks'] = third_check_amount + issued_check_amount \
@@ -279,7 +284,8 @@ class VoucherCheck(ModelSQL, ModelView):
             third_check_obj = Pool().get('account.third.check')
             for check in voucher.third_check:
                 check.write(check.id, {'source_party_id': voucher.party.id})
-                third_check_obj.workflow_trigger_validate(check.id, 'draft_cartera')
+                third_check_obj.workflow_trigger_validate(check.id,
+                        'draft_cartera')
         if voucher.third_pay_checks:
             third_check_obj = Pool().get('account.third.check')
             for check in voucher.third_pay_checks:
@@ -287,14 +293,15 @@ class VoucherCheck(ModelSQL, ModelView):
                     'destiny_party_id': voucher.party.id,
                     'issued': True,
                 })
-                third_check_obj.workflow_trigger_validate(check.id, 'cartera_delivered')
+                third_check_obj.workflow_trigger_validate(check.id,
+                        'cartera_delivered')
         return True
 
     def __init__(self):
-       super(VoucherCheck, self).__init__()
-       self.pay_amount_1.on_change.extend(['issued_check',
+        super(VoucherCheck, self).__init__()
+        self.pay_amount_1.on_change.extend(['issued_check',
             'third_check', 'third_pay_checks'])
-       self.pay_amount_2.on_change.extend(['issued_check',
+        self.pay_amount_2.on_change.extend(['issued_check',
             'third_check', 'third_pay_checks'])
 
     issued_check = fields.One2Many('account.issued.check', 'voucher_id',
