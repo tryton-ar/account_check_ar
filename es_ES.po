@@ -8,7 +8,7 @@ msgstr "Cantidad"
 
 msgctxt "field:account.issued.check,clearing:0"
 msgid "Clearing"
-msgstr ""
+msgstr "Clearing"
 
 msgctxt "field:account.issued.check,date:0"
 msgid "Date"
@@ -50,10 +50,9 @@ msgctxt "field:account.issued.check,signatory:0"
 msgid "Signatory"
 msgstr "Firma"
 
-#, fuzzy
 msgctxt "field:account.issued.check,voucher_id:0"
 msgid "Voucher"
-msgstr "Voucher"
+msgstr "Comprobante"
 
 msgctxt "field:account.journal,issued_check_account:0"
 msgid "Issued Check Account"
@@ -69,7 +68,7 @@ msgstr "Cantidad"
 
 msgctxt "field:account.third.check,clearing:0"
 msgid "Clearing"
-msgstr ""
+msgstr "Clearing"
 
 msgctxt "field:account.third.check,date:0"
 msgid "Date"
@@ -133,7 +132,7 @@ msgstr "CUIT"
 
 msgctxt "field:account.third.check,voucher_id:0"
 msgid "Voucher"
-msgstr "Voucher"
+msgstr "Comprobante"
 
 msgctxt "field:account.voucher,issued_check:0"
 msgid "Issued Checks"
@@ -161,7 +160,7 @@ msgstr "Cheque de Tercero"
 
 msgctxt "field:account.voucher-account.third.check,voucher:0"
 msgid "Voucher"
-msgstr "Voucher"
+msgstr "Comprobante"
 
 msgctxt "model:account.issued.check,name:0"
 msgid "Account Issued Check"
@@ -211,7 +210,6 @@ msgctxt "model:workflow.activity,name:act_check_deposited"
 msgid "deposited"
 msgstr "depositado"
 
-#, fuzzy
 msgctxt "model:workflow.activity,name:act_check_draft"
 msgid "Draft"
 msgstr "Borrador"
@@ -222,27 +220,27 @@ msgstr "rechazado"
 
 msgctxt "selection:account.issued.check,clearing:0"
 msgid "24 hs"
-msgstr ""
+msgstr "24 hs"
 
 msgctxt "selection:account.issued.check,clearing:0"
 msgid "48 hs"
-msgstr ""
+msgstr "48 hs"
 
 msgctxt "selection:account.issued.check,clearing:0"
 msgid "72 hs"
-msgstr ""
+msgstr "72 hs"
 
 msgctxt "selection:account.third.check,clearing:0"
 msgid "24 hs"
-msgstr ""
+msgstr "24 hs"
 
 msgctxt "selection:account.third.check,clearing:0"
 msgid "48 hs"
-msgstr ""
+msgstr "48 hs"
 
 msgctxt "selection:account.third.check,clearing:0"
 msgid "72 hs"
-msgstr ""
+msgstr "72 hs"
 
 msgctxt "selection:account.third.check,state:0"
 msgid "Cartera"
@@ -256,7 +254,6 @@ msgctxt "selection:account.third.check,state:0"
 msgid "Deposited"
 msgstr "Depositado"
 
-#, fuzzy
 msgctxt "selection:account.third.check,state:0"
 msgid "Draft"
 msgstr "Borrador"
