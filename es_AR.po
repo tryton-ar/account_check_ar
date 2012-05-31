@@ -1,0 +1,399 @@
+# 
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgctxt "field:account.issued.check,amount:"
+msgid "Amount"
+msgstr "Importe"
+
+msgctxt "field:account.issued.check,clearing:"
+msgid "Clearing"
+msgstr "Clearing"
+
+msgctxt "field:account.issued.check,create_date:"
+msgid "Create Date"
+msgstr "Fecha de Creación"
+
+msgctxt "field:account.issued.check,create_uid:"
+msgid "Create User"
+msgstr "Usuario creación"
+
+msgctxt "field:account.issued.check,date:"
+msgid "Date"
+msgstr "Fecha Cheque"
+
+msgctxt "field:account.issued.check,date_out:"
+msgid "Date Out"
+msgstr "Fecha Salida"
+
+msgctxt "field:account.issued.check,debit_date:"
+msgid "Debit Date"
+msgstr "Fecha Débito"
+
+msgctxt "field:account.issued.check,id:"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "field:account.issued.check,issued:"
+msgid "Issued"
+msgstr "Emitido"
+
+msgctxt "field:account.issued.check,name:"
+msgid "Number"
+msgstr "Número"
+
+msgctxt "field:account.issued.check,on_order:"
+msgid "On Order"
+msgstr "A la orden"
+
+msgctxt "field:account.issued.check,origin:"
+msgid "Origin"
+msgstr "Origen"
+
+msgctxt "field:account.issued.check,rec_name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:account.issued.check,receiving_party:"
+msgid "Receiving Party"
+msgstr "Recibe"
+
+msgctxt "field:account.issued.check,receiving_party_id:"
+msgid "Receiving Party"
+msgstr "Recibe"
+
+msgctxt "field:account.issued.check,signatory:"
+msgid "Signatory"
+msgstr "Firma"
+
+msgctxt "field:account.issued.check,state:"
+msgid "State"
+msgstr "Estado"
+
+msgctxt "field:account.issued.check,voucher:"
+msgid "Voucher"
+msgstr "Comprobantes"
+
+msgctxt "field:account.issued.check,voucher_id:"
+msgid "Voucher"
+msgstr "Comprobante"
+
+msgctxt "field:account.issued.check,write_date:"
+msgid "Write Date"
+msgstr "Fecha modificación"
+
+msgctxt "field:account.issued.check,write_uid:"
+msgid "Write User"
+msgstr "Usuario modificación"
+
+msgctxt "field:account.journal,issued_check_account:"
+msgid "Issued Check Account"
+msgstr "Cuenta Cheque Emitido"
+
+msgctxt "field:account.journal,third_check_account:"
+msgid "Third Check Account"
+msgstr "Cuenta Cheque Tercero"
+
+msgctxt "field:account.third.check,amount:"
+msgid "Amount"
+msgstr "Importe"
+
+msgctxt "field:account.third.check,clearing:"
+msgid "Clearing"
+msgstr "Clearing"
+
+msgctxt "field:account.third.check,create_date:"
+msgid "Create Date"
+msgstr "Fecha de Creación"
+
+msgctxt "field:account.third.check,create_uid:"
+msgid "Create User"
+msgstr "Usuario creación"
+
+msgctxt "field:account.third.check,date:"
+msgid "Date"
+msgstr "Fecha Cheque"
+
+msgctxt "field:account.third.check,date_in:"
+msgid "Date In"
+msgstr "Fecha Ingreso"
+
+msgctxt "field:account.third.check,date_out:"
+msgid "Date Out"
+msgstr "Fecha Salida"
+
+msgctxt "field:account.third.check,debit_date:"
+msgid "Debit Date"
+msgstr "Fecha Débito"
+
+msgctxt "field:account.third.check,destiny_party:"
+msgid "Destiny Party"
+msgstr "Destino"
+
+msgctxt "field:account.third.check,destiny_party_id:"
+msgid "Destiny Party"
+msgstr "Destino"
+
+msgctxt "field:account.third.check,id:"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "field:account.third.check,issued:"
+msgid "Issued"
+msgstr "Emitido"
+
+msgctxt "field:account.third.check,name:"
+msgid "Number"
+msgstr "Número"
+
+msgctxt "field:account.third.check,on_order:"
+msgid "On Order"
+msgstr "A la orden"
+
+msgctxt "field:account.third.check,origin:"
+msgid "Origin"
+msgstr "Origen"
+
+msgctxt "field:account.third.check,rec_name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:account.third.check,reject_debit_note:"
+msgid "Debit Note"
+msgstr "Nota de Débito"
+
+msgctxt "field:account.third.check,signatory:"
+msgid "Signatory"
+msgstr "Firma"
+
+msgctxt "field:account.third.check,source_party:"
+msgid "Source Party"
+msgstr "Origen"
+
+msgctxt "field:account.third.check,source_party_id:"
+msgid "Source Party"
+msgstr "Origen"
+
+msgctxt "field:account.third.check,state:"
+msgid "State"
+msgstr "Estado"
+
+msgctxt "field:account.third.check,vat:"
+msgid "Vat"
+msgstr "CUIT"
+
+msgctxt "field:account.third.check,voucher_id:"
+msgid "Voucher"
+msgstr "Comprobante"
+
+msgctxt "field:account.third.check,voucher_in:"
+msgid "Origin Voucher"
+msgstr "Origen"
+
+msgctxt "field:account.third.check,voucher_out:"
+msgid "Target Voucher"
+msgstr "Destino"
+
+msgctxt "field:account.third.check,write_date:"
+msgid "Write Date"
+msgstr "Fecha modificación"
+
+msgctxt "field:account.third.check,write_uid:"
+msgid "Write User"
+msgstr "Usuario modificación"
+
+msgctxt "field:account.voucher,issued_check:"
+msgid "Issued Checks"
+msgstr "Cheques Emitidos"
+
+msgctxt "field:account.voucher,third_check:"
+msgid "Third Checks"
+msgstr "Cheques de Terceros"
+
+msgctxt "field:account.voucher,third_pay_checks:"
+msgid "Third Checks"
+msgstr "Cheques de Terceros"
+
+msgctxt "field:account.voucher,total_checks:"
+msgid "Checks"
+msgstr "Cheques"
+
+msgctxt "field:account.voucher-account.third.check,create_date:"
+msgid "Create Date"
+msgstr "Fecha de Creación"
+
+msgctxt "field:account.voucher-account.third.check,create_uid:"
+msgid "Create User"
+msgstr "Usuario creación"
+
+msgctxt "field:account.voucher-account.third.check,id:"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "field:account.voucher-account.third.check,rec_name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:account.voucher-account.third.check,third_check:"
+msgid "Third Check"
+msgstr "Cheque de Tercero"
+
+msgctxt "field:account.voucher-account.third.check,voucher:"
+msgid "Voucher"
+msgstr "Comprobante"
+
+msgctxt "field:account.voucher-account.third.check,write_date:"
+msgid "Write Date"
+msgstr "Fecha modificación"
+
+msgctxt "field:account.voucher-account.third.check,write_uid:"
+msgid "Write User"
+msgstr "Usuario modificación"
+
+msgctxt "model:account.issued.check,name:"
+msgid "Account Issued Check"
+msgstr "Cuenta de Cheque Emitido"
+
+msgctxt "model:account.third.check,name:"
+msgid "Account Third Check"
+msgstr "Cuenta de Cheque de Tercero"
+
+msgctxt "model:account.voucher-account.third.check,name:"
+msgid "Invoice Line - Tax"
+msgstr "Línea de factura - Impuesto"
+
+msgctxt "model:ir.action,name:act_issued_check_tree"
+msgid "Issued Checks"
+msgstr "Cheques Emitidos"
+
+msgctxt "model:ir.action,name:act_third_check_tree"
+msgid "Third Checks"
+msgstr "Cheques de Terceros"
+
+msgctxt "model:ir.ui.menu,name:menu_issued_check"
+msgid "Issued Checks"
+msgstr "Cheques Emitidos"
+
+msgctxt "model:ir.ui.menu,name:menu_third_check"
+msgid "Third Checks"
+msgstr "Cheques de Terceros"
+
+msgctxt "model:ir.ui.menu,name:menu_treasury"
+msgid "treasury"
+msgstr "Tesorería"
+
+msgctxt "selection:account.issued.check,clearing:"
+msgid "24 hs"
+msgstr "24 hs"
+
+msgctxt "selection:account.issued.check,clearing:"
+msgid "48 hs"
+msgstr "48 hs"
+
+msgctxt "selection:account.issued.check,clearing:"
+msgid "72 hs"
+msgstr "72 hs"
+
+msgctxt "selection:account.issued.check,state:"
+msgid "Debited"
+msgstr "Debitado"
+
+msgctxt "selection:account.issued.check,state:"
+msgid "Draft"
+msgstr "Borrador"
+
+msgctxt "selection:account.issued.check,state:"
+msgid "Issued"
+msgstr "Emitido"
+
+msgctxt "selection:account.third.check,clearing:"
+msgid "24 hs"
+msgstr "24 hs"
+
+msgctxt "selection:account.third.check,clearing:"
+msgid "48 hs"
+msgstr "48 hs"
+
+msgctxt "selection:account.third.check,clearing:"
+msgid "72 hs"
+msgstr "72 hs"
+
+msgctxt "selection:account.third.check,state:"
+msgid "Cartera"
+msgstr ""
+
+msgctxt "selection:account.third.check,state:"
+msgid "Delivered"
+msgstr "Entregado"
+
+msgctxt "selection:account.third.check,state:"
+msgid "Deposited"
+msgstr "Depositado"
+
+msgctxt "selection:account.third.check,state:"
+msgid "Draft"
+msgstr "Borrador"
+
+msgctxt "selection:account.third.check,state:"
+msgid "Held"
+msgstr "Cartera"
+
+msgctxt "selection:account.third.check,state:"
+msgid "Rejected"
+msgstr "Rechazado"
+
+msgctxt "view:account.issued.check:"
+msgid "Extra Info"
+msgstr "Información Extra"
+
+msgctxt "view:account.issued.check:"
+msgid "Issued Check"
+msgstr "Cheque Emitido"
+
+msgctxt "view:account.issued.check:"
+msgid "Issued Checks"
+msgstr "Cheques Emitidos"
+
+msgctxt "view:account.issued.check:"
+msgid "Target"
+msgstr "Destino"
+
+msgctxt "view:account.journal:"
+msgid "Checks"
+msgstr "Cheques"
+
+msgctxt "view:account.third.check:"
+msgid "Extra Info"
+msgstr "Información Extra"
+
+msgctxt "view:account.third.check:"
+msgid "Origin"
+msgstr "Origen"
+
+msgctxt "view:account.third.check:"
+msgid "Target"
+msgstr "Destino"
+
+msgctxt "view:account.third.check:"
+msgid "Third Check"
+msgstr "Cheque de Tercero"
+
+msgctxt "view:account.third.check:"
+msgid "Third Checks"
+msgstr "Cheques de Terceros"
+
+msgctxt "view:account.voucher-account.third.check:"
+msgid "Third Checks"
+msgstr "Cheques de Terceros"
+
+msgctxt "view:account.voucher:"
+msgid "Checks"
+msgstr "Cheques"
+
+msgctxt "view:account.voucher:"
+msgid "Issued Checks"
+msgstr "Cheques Emitidos"
+
+msgctxt "view:account.voucher:"
+msgid "Third Checks"
+msgstr "Cheques de Terceros"
