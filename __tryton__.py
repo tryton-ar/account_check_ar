@@ -13,6 +13,7 @@
         'account',
         'account_invoice',
         'account_voucher_ar',
+        'account_bank_ar',        
     ],
     'xml': [
         'account_check_ar.xml',
