@@ -98,6 +98,10 @@ msgctxt "field:account.third.check,amount:"
 msgid "Amount"
 msgstr "Importe"
 
+msgctxt "field:account.third.check,bank:"
+msgid "Bank"
+msgstr "Banco"
+
 msgctxt "field:account.third.check,clearing:"
 msgid "Clearing"
 msgstr "Clearing"

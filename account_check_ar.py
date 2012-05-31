@@ -15,11 +15,12 @@ class AccountIssuedCheck(Workflow, ModelSQL, ModelView):
     _name = 'account.issued.check'
     _description = __doc__
 
-    name = fields.Char('Number', states=_STATES, depends=_DEPENDS)
+    name = fields.Char('Number', states=_STATES, depends=_DEPENDS, 
+        required=True)
     amount = fields.Numeric('Amount', digits=(16, 2), states=_STATES, 
-        depends=_DEPENDS)
+        depends=_DEPENDS, required=True)
     date_out = fields.Date('Date Out', states=_STATES, depends=_DEPENDS)
-    date = fields.Date('Date', states=_STATES, depends=_DEPENDS)
+    date = fields.Date('Date', states=_STATES, depends=_DEPENDS, required=True)
     debit_date = fields.Date('Debit Date', depends=_DEPENDS,
         states={'invisible': Eval('state') != 'debited'})
     receiving_party = fields.Many2One('party.party', 'Receiving Party', 
@@ -79,11 +80,13 @@ class AccountThirdCheck(Workflow, ModelSQL, ModelView):
     _name = 'account.third.check'
     _description = __doc__
 
-    name = fields.Char('Number', states=_STATES, depends=_DEPENDS)
+    name = fields.Char('Number', states=_STATES, depends=_DEPENDS, 
+        required=True)
     amount = fields.Numeric('Amount', digits=(16, 2), states=_STATES, 
-        depends=_DEPENDS)
-    date_in = fields.Date('Date In', states=_STATES, depends=_DEPENDS)
-    date = fields.Date('Date', states=_STATES, depends=_DEPENDS)
+        depends=_DEPENDS, required=True)
+    date_in = fields.Date('Date In', states=_STATES, depends=_DEPENDS, 
+        required=True)
+    date = fields.Date('Date', states=_STATES, depends=_DEPENDS, required=True)
     date_out = fields.Date('Date Out', depends=_DEPENDS, readonly=True,
         states={'invisible': In(Eval('state'), ['draft', 'held'])})
     debit_date = fields.Date('Debit Date', depends=_DEPENDS, readonly=True,
@@ -116,6 +119,8 @@ class AccountThirdCheck(Workflow, ModelSQL, ModelView):
         readonly=True, states={'invisible': Eval('state') != 'delivered'})
     reject_debit_note = fields.Many2One('account.invoice', 'Debit Note', 
         depends=_DEPENDS, readonly=True)  # TODO
+    bank = fields.Many2One('account.bank', 'Bank', states=_STATES,
+        depends=_DEPENDS, required=True)
 
     def __init__(self):
         super(AccountThirdCheck, self).__init__()

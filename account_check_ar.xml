@@ -93,6 +93,8 @@ this repository contains the full copyright notices and license terms. -->
                     <field name="date_in"/>
                     <label name="date"/>
                     <field name="date"/>
+                    <label name="bank"/>
+                    <field name="bank"/>
                     <separator string="Origin" colspan="4" id="origin"
                         states="{'invisible': Equal(Eval('state'), 'draft')}"/>
                     <label name="source_party"/>
@@ -134,11 +136,10 @@ this repository contains the full copyright notices and license terms. -->
                     <field name="amount"/>
                     <field name="date_in"/>
                     <field name="date"/>
+                    <field name="bank"/>
                     <field name="source_party"/>
-                    <field name="voucher_in"/>
                     <field name="date_out"/>
                     <field name="destiny_party"/>
-                    <field name="voucher_out"/> 
                     <field name="state"/>
                 </tree>
                 ]]>
