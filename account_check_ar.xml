@@ -8,6 +8,17 @@ this repository contains the full copyright notices and license terms. -->
         <menuitem name="treasury" parent="account.menu_account"
             id="menu_treasury" sequence="22"/>
 
+        <record model="ir.action.wizard" id="wizard_third_check_deposit">
+            <field name="name">Check Deposit</field>
+            <field name="wiz_name">account.third.check.deposit</field>
+            <field name="model">account.third.check</field>
+        </record>
+        <record model="ir.action.keyword" id="third_check_deposit_keyword">
+            <field name="keyword">form_action</field>
+            <field name="model">account.third.check,-1</field>
+            <field name="action" ref="wizard_third_check_deposit"/>
+        </record>
+
         <record model="ir.ui.view" id="account_issued_check_form">
             <field name="model">account.issued.check</field>
             <field name="type">form</field>
@@ -41,7 +52,6 @@ this repository contains the full copyright notices and license terms. -->
                 ]]>
             </field>
         </record>
-
         <record model="ir.ui.view" id="account_issued_check_tree">
             <field name="model">account.issued.check</field>
             <field name="type">tree</field>
@@ -61,7 +71,6 @@ this repository contains the full copyright notices and license terms. -->
                 ]]>
             </field>
         </record>
-
         <record model="ir.action.act_window" id="act_issued_check_tree">
             <field name="name">Issued Checks</field>
             <field name="res_model">account.issued.check</field>
@@ -110,6 +119,8 @@ this repository contains the full copyright notices and license terms. -->
                     <field name="destiny_party"/>
                     <label name="voucher_out"/>
                     <field name="voucher_out"/>
+                    <label name="account_bank_out"/>
+                    <field name="account_bank_out"/>
                     <label name="debit_date"/>
                     <field name="debit_date"/>
                     <separator string="Extra Info" colspan="4" id="extra_info"/>
@@ -125,7 +136,6 @@ this repository contains the full copyright notices and license terms. -->
                 ]]>
             </field>
         </record>
-
         <record model="ir.ui.view" id="account_third_check_tree">
             <field name="model">account.third.check</field>
             <field name="type">tree</field>
@@ -140,12 +150,12 @@ this repository contains the full copyright notices and license terms. -->
                     <field name="source_party"/>
                     <field name="date_out"/>
                     <field name="destiny_party"/>
+                    <field name="account_bank_out"/>                    
                     <field name="state"/>
                 </tree>
                 ]]>
             </field>
         </record>
-
         <record model="ir.action.act_window" id="act_third_check_tree">
             <field name="name">Third Checks</field>
             <field name="res_model">account.third.check</field>
@@ -162,6 +172,21 @@ this repository contains the full copyright notices and license terms. -->
         </record>
         <menuitem parent="menu_treasury" action="act_third_check_tree"
             id="menu_third_check" sequence="10"/>
+
+        <record model="ir.ui.view" id="view_third_check_deposit">
+            <field name="model">account.third.check.deposit.start</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <![CDATA[
+                <form string="Check Deposit">
+                    <label name="bank_account"/>
+                    <field name="bank_account"/>
+                    <label name="date"/>
+                    <field name="date"/>
+                </form>
+                ]]>
+            </field>
+        </record>
 
     </data>
 </tryton>
