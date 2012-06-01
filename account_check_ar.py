@@ -1,7 +1,9 @@
 #This file is part of Tryton.  The COPYRIGHT file at the top level of
 #this repository contains the full copyright notices and license terms.
-from trytond.model import Workflow, ModelView, ModelSQL, fields
 from decimal import Decimal
+from trytond.model import Workflow, ModelView, ModelSQL, fields
+from trytond.wizard import Wizard, StateView, StateTransition, Button
+from trytond.transaction import Transaction
 from trytond.pyson import Eval, Not, In
 from trytond.pool import Pool
 
@@ -121,6 +123,9 @@ class AccountThirdCheck(Workflow, ModelSQL, ModelView):
         depends=_DEPENDS, readonly=True)  # TODO
     bank = fields.Many2One('account.bank', 'Bank', states=_STATES,
         depends=_DEPENDS, required=True)
+    account_bank_out = fields.Many2One('account.party.bank', 'Bank Account', 
+        depends=_DEPENDS, states={'invisible': Eval('state') != 'deposited'},
+        readonly=True)
 
     def __init__(self):
         super(AccountThirdCheck, self).__init__()
@@ -324,7 +329,6 @@ class AccountVoucher(ModelSQL, ModelView):
             'invisible': Not(In(Eval('voucher_type'), ['payment'])),
             'readonly': In(Eval('state'), ['posted']),
         })
-
     third_pay_checks = fields.Many2Many('account.voucher-account.third.check',
         'voucher', 'third_check', 'Third Checks',
         domain=[('state', '=', 'held')],
@@ -332,14 +336,12 @@ class AccountVoucher(ModelSQL, ModelView):
             'invisible': Not(In(Eval('voucher_type'), ['payment'])),
             'readonly': In(Eval('state'), ['posted']),
         })
-
     third_check = fields.One2Many('account.third.check', 'voucher_in',
         'Third Checks',
         states={
             'invisible': Not(In(Eval('voucher_type'), ['receipt'])),
             'readonly': In(Eval('state'), ['posted']),
         })
-
     total_checks = fields.Function(fields.Float('Checks'), 'amount_checks')
 
 AccountVoucher()
@@ -356,3 +358,83 @@ class JournalCheck(ModelSQL, ModelView):
         'Issued Check Account')
 
 JournalCheck()
+
+
+class ThirdCheckDepositStart(ModelView):
+    _name = 'account.third.check.deposit.start'
+
+    bank_account = fields.Many2One('account.party.bank', 'Bank Account',
+        required=True)
+    date = fields.Date('Date', required=True)
+
+    def default_date(self):
+        date_obj = Pool().get('ir.date')
+        return date_obj.today()
+    
+ThirdCheckDepositStart()
+
+
+class ThirdCheckDeposit(Wizard):
+    'Third Check Deposit'
+    _name = 'account.third.check.deposit'
+
+    start = StateView('account.third.check.deposit.start',
+        'account_check_ar.view_third_check_deposit', [
+            Button('Cancel', 'end', 'tryton-cancel'),
+            Button('Deposit', 'deposit', 'tryton-ok', default=True),
+            ])
+    deposit = StateTransition()
+    
+    def __init__(self):
+        super( ThirdCheckDeposit, self).__init__()
+        self._error_messages.update({
+            'check_not_held': 'Check "%s" is not in held,',
+            })
+
+    def transition_deposit(self, session):
+        third_check_obj = Pool().get('account.third.check')
+        move_obj = Pool().get('account.move')
+        move_line_obj = Pool().get('account.move.line')
+        period_id = Pool().get('account.period').find(1, 
+            date=session.start.date)
+
+        for check in third_check_obj.browse(Transaction().context.get(
+            'active_ids')):
+            if check.state != 'held':
+                self.raise_user_error('check_not_held', 
+                    error_args=(check.name,))
+            else:
+                move_id = move_obj.create({
+                    'journal': check.voucher_in.journal.id,
+                    'state': 'draft',
+                    'period': period_id,
+                    'date': session.start.date,
+                })
+                move_line_obj.create({
+                    'name': 'Check Deposit ' + check.name,
+                    'account': session.start.bank_account.journal.debit_account.id,
+                    'move': move_id,
+                    'journal': check.voucher_in.journal.id,
+                    'period': period_id,
+                    'debit': check.amount,
+                    'credit': Decimal('0.0'),
+                    'date': session.start.date,
+                })
+                move_line_obj.create({
+                    'name': 'Check Deposit ' + check.name,
+                    'account': check.voucher_in.journal.third_check_account.id,
+                    'move': move_id,
+                    'journal': check.voucher_in.journal.id,
+                    'period': period_id,
+                    'debit': Decimal('0.0'),
+                    'credit': check.amount,
+                    'date': session.start.date,
+                })
+                third_check_obj.write([check.id], {
+                    'account_bank_out': session.start.bank_account.id
+                })
+                third_check_obj.deposited([check.id])
+                move_obj.write([move_id], {'state': 'posted'})
+        return 'end'
+        
+ThirdCheckDeposit()
