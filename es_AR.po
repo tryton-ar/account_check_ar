@@ -6,6 +6,14 @@ msgctxt "error:account.third.check.deposit:"
 msgid "Check \"%s\" is not in held,"
 msgstr "Cheque \"%s\" no está en cartera,"
 
+msgctxt "error:account.third.check.held:"
+msgid "Check \"%s\" is not draft"
+msgstr "Cheque \"%s\" no es borrador"
+
+msgctxt "error:account.third.check.held:"
+msgid "Check \"%s\" is not draft,"
+msgstr ""
+
 msgctxt "field:account.issued.check,amount:"
 msgid "Amount"
 msgstr "Importe"
@@ -226,6 +234,14 @@ msgctxt "field:account.third.check.deposit.start,id:"
 msgid "ID"
 msgstr "ID"
 
+msgctxt "field:account.third.check.held.start,id:"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "field:account.third.check.held.start,journal:"
+msgid "Journal"
+msgstr "Diario"
+
 msgctxt "field:account.voucher,issued_check:"
 msgid "Issued Checks"
 msgstr "Cheques Emitidos"
@@ -286,6 +302,10 @@ msgctxt "model:account.third.check.deposit.start,name:"
 msgid "account.third.check.deposit.start"
 msgstr ""
 
+msgctxt "model:account.third.check.held.start,name:"
+msgid "account.third.check.held.start"
+msgstr ""
+
 msgctxt "model:account.voucher-account.third.check,name:"
 msgid "Invoice Line - Tax"
 msgstr "Línea de factura - Impuesto"
@@ -301,6 +321,10 @@ msgstr "Cheques de Terceros"
 msgctxt "model:ir.action,name:wizard_third_check_deposit"
 msgid "Check Deposit"
 msgstr "Depósito de Cheque"
+
+msgctxt "model:ir.action,name:wizard_third_check_held"
+msgid "Check Held"
+msgstr "Cheque en Cartera"
 
 msgctxt "model:ir.ui.menu,name:menu_issued_check"
 msgid "Issued Checks"
@@ -396,7 +420,11 @@ msgstr "Cheques"
 
 msgctxt "view:account.third.check.deposit.start:"
 msgid "Check Deposit"
-msgstr ""
+msgstr "Depósito de Cheque"
+
+msgctxt "view:account.third.check.held.start:"
+msgid "Check Held"
+msgstr "Cheque en Cartera"
 
 msgctxt "view:account.third.check:"
 msgid "Extra Info"
@@ -417,6 +445,14 @@ msgstr "Cheque de Tercero"
 msgctxt "view:account.third.check:"
 msgid "Third Checks"
 msgstr "Cheques de Terceros"
+
+msgctxt "view:account.third.check:"
+msgid "_Deposit"
+msgstr "_Depositar"
+
+msgctxt "view:account.third.check:"
+msgid "_Held"
+msgstr "_Cartera"
 
 msgctxt "view:account.voucher-account.third.check:"
 msgid "Third Checks"
@@ -441,3 +477,15 @@ msgstr "Depositar"
 msgctxt "wizard_button:account.third.check.deposit,start,end:"
 msgid "Cancel"
 msgstr "Cancelar"
+
+msgctxt "wizard_button:account.third.check.held,start,deposit:"
+msgid "held"
+msgstr "cartera"
+
+msgctxt "wizard_button:account.third.check.held,start,end:"
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgctxt "wizard_button:account.third.check.held,start,held:"
+msgid "Held"
+msgstr "Cartera"
