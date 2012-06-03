@@ -360,6 +360,78 @@ class JournalCheck(ModelSQL, ModelView):
 JournalCheck()
 
 
+class ThirdCheckHeldStart(ModelView):
+    _name = 'account.third.check.held.start'
+
+    journal = fields.Many2One('account.journal', 'Journal', required=True)
+    
+ThirdCheckHeldStart()
+
+
+class ThirdCheckHeld(Wizard):
+    'Third Check Held'
+    _name = 'account.third.check.held'
+
+    start = StateView('account.third.check.held.start',
+        'account_check_ar.view_third_check_held', [
+            Button('Cancel', 'end', 'tryton-cancel'),
+            Button('Held', 'held', 'tryton-ok', default=True),
+            ])
+    held = StateTransition()
+    
+    def __init__(self):
+        super( ThirdCheckHeld, self).__init__()
+        self._error_messages.update({
+            'check_not_draft': 'Check "%s" is not draft',
+            })
+
+    def transition_held(self, session):
+        third_check_obj = Pool().get('account.third.check')
+        move_obj = Pool().get('account.move')
+        move_line_obj = Pool().get('account.move.line')
+        date_obj = Pool().get('ir.date')
+
+        date = date_obj.today()
+        period_id = Pool().get('account.period').find(1, date)
+        for check in third_check_obj.browse(Transaction().context.get(
+            'active_ids')):
+            if check.state != 'draft':
+                self.raise_user_error('check_not_draft', 
+                    error_args=(check.name,))
+            else:
+                move_id = move_obj.create({
+                    'journal': session.start.journal.id,
+                    'state': 'draft',
+                    'period': period_id,
+                    'date': date,
+                })
+                move_line_obj.create({
+                    'name': 'Check Held ' + check.name,
+                    'account': session.start.journal.third_check_account.id,
+                    'move': move_id,
+                    'journal': session.start.journal.id,
+                    'period': period_id,
+                    'debit': check.amount,
+                    'credit': Decimal('0.0'),
+                    'date': date,
+                })
+                move_line_obj.create({
+                    'name': 'Check Held ' + check.name,
+                    'account': session.start.journal.credit_account.id,
+                    'move': move_id,
+                    'journal': session.start.journal.id,
+                    'period': period_id,
+                    'debit': Decimal('0.0'),
+                    'credit': check.amount,
+                    'date': date,
+                })
+                third_check_obj.held([check.id])
+                move_obj.write([move_id], {'state': 'posted'})
+        return 'end'
+        
+ThirdCheckHeld()
+
+
 class ThirdCheckDepositStart(ModelView):
     _name = 'account.third.check.deposit.start'
 
@@ -405,7 +477,7 @@ class ThirdCheckDeposit(Wizard):
                     error_args=(check.name,))
             else:
                 move_id = move_obj.create({
-                    'journal': check.voucher_in.journal.id,
+                    'journal': session.start.bank_account.journal.id,
                     'state': 'draft',
                     'period': period_id,
                     'date': session.start.date,
@@ -414,7 +486,7 @@ class ThirdCheckDeposit(Wizard):
                     'name': 'Check Deposit ' + check.name,
                     'account': session.start.bank_account.journal.debit_account.id,
                     'move': move_id,
-                    'journal': check.voucher_in.journal.id,
+                    'journal': session.start.bank_account.journal.id,
                     'period': period_id,
                     'debit': check.amount,
                     'credit': Decimal('0.0'),
@@ -422,9 +494,9 @@ class ThirdCheckDeposit(Wizard):
                 })
                 move_line_obj.create({
                     'name': 'Check Deposit ' + check.name,
-                    'account': check.voucher_in.journal.third_check_account.id,
+                    'account': session.start.bank_account.journal.third_check_account.id,
                     'move': move_id,
-                    'journal': check.voucher_in.journal.id,
+                    'journal': session.start.bank_account.journal.id,
                     'period': period_id,
                     'debit': Decimal('0.0'),
                     'credit': check.amount,
