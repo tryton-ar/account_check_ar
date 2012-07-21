@@ -1,5 +1,6 @@
-#This file is part of Tryton.  The COPYRIGHT file at the top level of
-#this repository contains the full copyright notices and license terms.
+#This file is part of the account_check_ar module for Tryton.
+#The COPYRIGHT file at the top level of this repository contains
+#the full copyright notices and license terms.
 from decimal import Decimal
 from trytond.model import Workflow, ModelView, ModelSQL, fields
 from trytond.wizard import Wizard, StateView, StateTransition, Button
@@ -17,15 +18,15 @@ class AccountIssuedCheck(Workflow, ModelSQL, ModelView):
     _name = 'account.issued.check'
     _description = __doc__
 
-    name = fields.Char('Number', states=_STATES, depends=_DEPENDS, 
+    name = fields.Char('Number', states=_STATES, depends=_DEPENDS,
         required=True)
-    amount = fields.Numeric('Amount', digits=(16, 2), states=_STATES, 
+    amount = fields.Numeric('Amount', digits=(16, 2), states=_STATES,
         depends=_DEPENDS, required=True)
     date_out = fields.Date('Date Out', states=_STATES, depends=_DEPENDS)
     date = fields.Date('Date', states=_STATES, depends=_DEPENDS, required=True)
     debit_date = fields.Date('Debit Date', depends=_DEPENDS,
         states={'invisible': Eval('state') != 'debited'})
-    receiving_party = fields.Many2One('party.party', 'Receiving Party', 
+    receiving_party = fields.Many2One('party.party', 'Receiving Party',
         depends=_DEPENDS, states={'invisible': Eval('state') == 'draft'})
     on_order = fields.Char('On Order', states=_STATES, depends=_DEPENDS)
     signatory = fields.Char('Signatory', states=_STATES, depends=_DEPENDS)
@@ -48,7 +49,7 @@ class AccountIssuedCheck(Workflow, ModelSQL, ModelView):
         self._transitions |= set((
                 ('draft', 'issued'),
                 ('issued', 'debited'),
-                ))    
+                ))
         self._buttons.update({
                 'issued': {
                     'invisible': Eval('state') != 'draft',
@@ -56,7 +57,7 @@ class AccountIssuedCheck(Workflow, ModelSQL, ModelView):
                 'debited': {
                     'invisible': Eval('state') != 'issued',
                     },
-                })    
+                })
 
     def default_date_out(self):
         date_obj = Pool().get('ir.date')
@@ -68,7 +69,7 @@ class AccountIssuedCheck(Workflow, ModelSQL, ModelView):
     @Workflow.transition('issued')
     def issued(self, ids):
         pass
-        
+
     @ModelView.button
     @Workflow.transition('debited')
     def debited(self, ids):
@@ -82,21 +83,21 @@ class AccountThirdCheck(Workflow, ModelSQL, ModelView):
     _name = 'account.third.check'
     _description = __doc__
 
-    name = fields.Char('Number', states=_STATES, depends=_DEPENDS, 
+    name = fields.Char('Number', states=_STATES, depends=_DEPENDS,
         required=True)
-    amount = fields.Numeric('Amount', digits=(16, 2), states=_STATES, 
+    amount = fields.Numeric('Amount', digits=(16, 2), states=_STATES,
         depends=_DEPENDS, required=True)
-    date_in = fields.Date('Date In', states=_STATES, depends=_DEPENDS, 
+    date_in = fields.Date('Date In', states=_STATES, depends=_DEPENDS,
         required=True)
     date = fields.Date('Date', states=_STATES, depends=_DEPENDS, required=True)
     date_out = fields.Date('Date Out', depends=_DEPENDS, readonly=True,
         states={'invisible': In(Eval('state'), ['draft', 'held'])})
     debit_date = fields.Date('Debit Date', depends=_DEPENDS, readonly=True,
         states={'invisible': In(Eval('state'), ['draft', 'held'])})
-    source_party = fields.Many2One('party.party', 'Source Party', 
+    source_party = fields.Many2One('party.party', 'Source Party',
         depends=_DEPENDS, readonly=True,
         states={'invisible': Eval('state') == 'draft'})
-    destiny_party = fields.Many2One('party.party', 'Destiny Party', 
+    destiny_party = fields.Many2One('party.party', 'Destiny Party',
         depends=_DEPENDS, readonly=True,
         states={'invisible': Eval('state') != 'delivered'})
     on_order = fields.Char('On Order', states=_STATES, depends=_DEPENDS)
@@ -115,15 +116,15 @@ class AccountThirdCheck(Workflow, ModelSQL, ModelView):
         ('72', '72 hs'),
         ], 'Clearing', states=_STATES, depends=_DEPENDS)
     origin = fields.Char('Origin', states=_STATES, depends=_DEPENDS)
-    voucher_in = fields.Many2One('account.voucher', 'Origin Voucher', depends=_DEPENDS, 
+    voucher_in = fields.Many2One('account.voucher', 'Origin Voucher', depends=_DEPENDS,
         readonly=True, states={'invisible': Eval('state') == 'draft'})
-    voucher_out = fields.Many2One('account.voucher', 'Target Voucher', depends=_DEPENDS, 
+    voucher_out = fields.Many2One('account.voucher', 'Target Voucher', depends=_DEPENDS,
         readonly=True, states={'invisible': Eval('state') != 'delivered'})
-    reject_debit_note = fields.Many2One('account.invoice', 'Debit Note', 
+    reject_debit_note = fields.Many2One('account.invoice', 'Debit Note',
         depends=_DEPENDS, readonly=True)  # TODO
     bank = fields.Many2One('account.bank', 'Bank', states=_STATES,
         depends=_DEPENDS, required=True)
-    account_bank_out = fields.Many2One('account.party.bank', 'Bank Account', 
+    account_bank_out = fields.Many2One('account.party.bank', 'Bank Account',
         depends=_DEPENDS, states={'invisible': Eval('state') != 'deposited'},
         readonly=True)
 
@@ -135,7 +136,7 @@ class AccountThirdCheck(Workflow, ModelSQL, ModelView):
                 ('held', 'delivered'),
                 ('deposited', 'rejected'),
                 ('delivered', 'rejected'),
-                ))    
+                ))
         self._buttons.update({
                 'held': {
                     'invisible': Eval('state') != 'draft',
@@ -149,7 +150,7 @@ class AccountThirdCheck(Workflow, ModelSQL, ModelView):
                 'rejected': {
                     'invisible': ~Eval('state').in_(['deposited', 'delivered']),
                     },
-                })    
+                })
 
     def default_date_in(self):
         date_obj = Pool().get('ir.date')
@@ -161,7 +162,7 @@ class AccountThirdCheck(Workflow, ModelSQL, ModelView):
     @Workflow.transition('held')
     def held(self, ids):
         pass
-        
+
     @ModelView.button
     @Workflow.transition('deposited')
     def deposited(self, ids):
@@ -300,7 +301,7 @@ class AccountVoucher(ModelSQL, ModelView):
         third_check_obj = Pool().get('account.third.check')
         issued_check_obj = Pool().get('account.issued.check')
         date_obj = Pool().get('ir.date')
-        
+
         voucher = self.browse(voucher_id[0])
         if voucher.issued_check:
             check_ids = [x.id for x in voucher.issued_check]
@@ -364,7 +365,7 @@ class ThirdCheckHeldStart(ModelView):
     _name = 'account.third.check.held.start'
 
     journal = fields.Many2One('account.journal', 'Journal', required=True)
-    
+
 ThirdCheckHeldStart()
 
 
@@ -378,7 +379,7 @@ class ThirdCheckHeld(Wizard):
             Button('Held', 'held', 'tryton-ok', default=True),
             ])
     held = StateTransition()
-    
+
     def __init__(self):
         super( ThirdCheckHeld, self).__init__()
         self._error_messages.update({
@@ -396,7 +397,7 @@ class ThirdCheckHeld(Wizard):
         for check in third_check_obj.browse(Transaction().context.get(
             'active_ids')):
             if check.state != 'draft':
-                self.raise_user_error('check_not_draft', 
+                self.raise_user_error('check_not_draft',
                     error_args=(check.name,))
             else:
                 move_id = move_obj.create({
@@ -428,7 +429,7 @@ class ThirdCheckHeld(Wizard):
                 third_check_obj.held([check.id])
                 move_obj.write([move_id], {'state': 'posted'})
         return 'end'
-        
+
 ThirdCheckHeld()
 
 
@@ -442,7 +443,7 @@ class ThirdCheckDepositStart(ModelView):
     def default_date(self):
         date_obj = Pool().get('ir.date')
         return date_obj.today()
-    
+
 ThirdCheckDepositStart()
 
 
@@ -456,7 +457,7 @@ class ThirdCheckDeposit(Wizard):
             Button('Deposit', 'deposit', 'tryton-ok', default=True),
             ])
     deposit = StateTransition()
-    
+
     def __init__(self):
         super( ThirdCheckDeposit, self).__init__()
         self._error_messages.update({
@@ -467,13 +468,13 @@ class ThirdCheckDeposit(Wizard):
         third_check_obj = Pool().get('account.third.check')
         move_obj = Pool().get('account.move')
         move_line_obj = Pool().get('account.move.line')
-        period_id = Pool().get('account.period').find(1, 
+        period_id = Pool().get('account.period').find(1,
             date=session.start.date)
 
         for check in third_check_obj.browse(Transaction().context.get(
             'active_ids')):
             if check.state != 'held':
-                self.raise_user_error('check_not_held', 
+                self.raise_user_error('check_not_held',
                     error_args=(check.name,))
             else:
                 move_id = move_obj.create({
@@ -508,5 +509,5 @@ class ThirdCheckDeposit(Wizard):
                 third_check_obj.deposited([check.id])
                 move_obj.write([move_id], {'state': 'posted'})
         return 'end'
-        
+
 ThirdCheckDeposit()
