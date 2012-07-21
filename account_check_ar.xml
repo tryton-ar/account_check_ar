@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
-<!-- This file is part of Tryton.  The COPYRIGHT file at the top level of
-this repository contains the full copyright notices and license terms. -->
+<!-- This file is part of the account_check_ar module for Tryton.
+The COPYRIGHT file at the top level of this repository contains
+the full copyright notices and license terms. -->
 <tryton>
     <data>
 
@@ -122,7 +123,7 @@ this repository contains the full copyright notices and license terms. -->
                     <label name="voucher_in"/>
                     <field name="voucher_in"/>
                     <separator string="Target" colspan="4" id="target"
-                        states="{'invisible': Not(Equal(Eval('state'), 
+                        states="{'invisible': Not(Equal(Eval('state'),
                             'delivered'))}"/>
                     <label name="date_out"/>
                     <field name="date_out"/>
@@ -171,7 +172,7 @@ this repository contains the full copyright notices and license terms. -->
                     <field name="source_party"/>
                     <field name="date_out"/>
                     <field name="destiny_party"/>
-                    <field name="account_bank_out"/>                    
+                    <field name="account_bank_out"/>
                     <field name="state"/>
                 </tree>
                 ]]>
