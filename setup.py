@@ -29,6 +29,7 @@ setup(name='trytond_account_check_ar',
     package_dir={'trytond.modules.account_check_ar': '.'},
     packages=[
         'trytond.modules.account_check_ar',
+        'trytond.modules.account_check_ar.tests',
     ],
     package_data={
         'trytond.modules.account_check_ar': info.get('xml', []) \
@@ -57,4 +58,6 @@ setup(name='trytond_account_check_ar',
     [trytond.modules]
     account_check_ar = trytond.modules.account_check_ar
     """,
+    test_suite='tests',
+    test_loader='trytond.test_loader:Loader',
 )
