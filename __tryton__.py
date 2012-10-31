@@ -22,6 +22,6 @@
         'journal.xml',
     ],
     'translation': [
-        'es_AR.po',
+        'locale/es_AR.po',
     ],
 }
