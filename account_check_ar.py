@@ -13,21 +13,26 @@ _STATES = {
 }
 _DEPENDS = ['state']
 
+
 class AccountIssuedCheck(Workflow, ModelSQL, ModelView):
     'Account Issued Check'
     _name = 'account.issued.check'
     _description = __doc__
 
-    name = fields.Char('Number', states=_STATES, depends=_DEPENDS,
-        required=True)
-    amount = fields.Numeric('Amount', digits=(16, 2), states=_STATES,
-        depends=_DEPENDS, required=True)
+    name = fields.Char('Number', required=True, states=_STATES,
+        depends=_DEPENDS)
+    amount = fields.Numeric('Amount', digits=(16, 2), required=True,
+        states=_STATES, depends=_DEPENDS)
     date_out = fields.Date('Date Out', states=_STATES, depends=_DEPENDS)
-    date = fields.Date('Date', states=_STATES, depends=_DEPENDS, required=True)
-    debit_date = fields.Date('Debit Date', depends=_DEPENDS,
-        states={'invisible': Eval('state') != 'debited'})
+    date = fields.Date('Date', required=True, states=_STATES, depends=_DEPENDS)
+    debit_date = fields.Date('Debit Date',
+        states={
+            'invisible': Eval('state') != 'debited',
+            }, depends=_DEPENDS)
     receiving_party = fields.Many2One('party.party', 'Receiving Party',
-        depends=_DEPENDS, states={'invisible': Eval('state') == 'draft'})
+        states={
+            'invisible': Eval('state') == 'draft',
+            }, depends=_DEPENDS)
     on_order = fields.Char('On Order', states=_STATES, depends=_DEPENDS)
     signatory = fields.Char('Signatory', states=_STATES, depends=_DEPENDS)
     clearing = fields.Selection([
@@ -36,8 +41,10 @@ class AccountIssuedCheck(Workflow, ModelSQL, ModelView):
         ('72', '72 hs'),
         ], 'Clearing', states=_STATES, depends=_DEPENDS)
     origin = fields.Char('Origin', states=_STATES, depends=_DEPENDS)
-    voucher = fields.Many2One('account.voucher', 'Voucher', depends=_DEPENDS,
-        states={'invisible': Eval('state') == 'draft'})
+    voucher = fields.Many2One('account.voucher', 'Voucher',
+        states={
+            'invisible': Eval('state') == 'draft',
+            }, depends=_DEPENDS)
     state = fields.Selection([
         ('draft', 'Draft'),
         ('issued', 'Issued'),
@@ -45,7 +52,7 @@ class AccountIssuedCheck(Workflow, ModelSQL, ModelView):
         ], 'State', readonly=True)
 
     def __init__(self):
-        super( AccountIssuedCheck, self).__init__()
+        super(AccountIssuedCheck, self).__init__()
         self._transitions |= set((
                 ('draft', 'issued'),
                 ('issued', 'debited'),
@@ -83,23 +90,29 @@ class AccountThirdCheck(Workflow, ModelSQL, ModelView):
     _name = 'account.third.check'
     _description = __doc__
 
-    name = fields.Char('Number', states=_STATES, depends=_DEPENDS,
-        required=True)
-    amount = fields.Numeric('Amount', digits=(16, 2), states=_STATES,
-        depends=_DEPENDS, required=True)
-    date_in = fields.Date('Date In', states=_STATES, depends=_DEPENDS,
-        required=True)
-    date = fields.Date('Date', states=_STATES, depends=_DEPENDS, required=True)
-    date_out = fields.Date('Date Out', depends=_DEPENDS, readonly=True,
-        states={'invisible': In(Eval('state'), ['draft', 'held'])})
-    debit_date = fields.Date('Debit Date', depends=_DEPENDS, readonly=True,
-        states={'invisible': In(Eval('state'), ['draft', 'held'])})
+    name = fields.Char('Number', required=True, states=_STATES,
+        depends=_DEPENDS)
+    amount = fields.Numeric('Amount', digits=(16, 2), required=True,
+        states=_STATES, depends=_DEPENDS)
+    date_in = fields.Date('Date In', required=True, states=_STATES,
+        depends=_DEPENDS)
+    date = fields.Date('Date', required=True, states=_STATES, depends=_DEPENDS)
+    date_out = fields.Date('Date Out', readonly=True,
+        states={
+            'invisible': In(Eval('state'), ['draft', 'held']),
+            }, depends=_DEPENDS)
+    debit_date = fields.Date('Debit Date', readonly=True,
+        states={
+            'invisible': In(Eval('state'), ['draft', 'held']),
+            }, depends=_DEPENDS)
     source_party = fields.Many2One('party.party', 'Source Party',
-        depends=_DEPENDS, readonly=True,
-        states={'invisible': Eval('state') == 'draft'})
+        readonly=True, states={
+            'invisible': Eval('state') == 'draft',
+            }, depends=_DEPENDS)
     destiny_party = fields.Many2One('party.party', 'Destiny Party',
-        depends=_DEPENDS, readonly=True,
-        states={'invisible': Eval('state') != 'delivered'})
+        readonly=True, states={
+            'invisible': Eval('state') != 'delivered',
+            }, depends=_DEPENDS)
     on_order = fields.Char('On Order', states=_STATES, depends=_DEPENDS)
     signatory = fields.Char('Signatory', states=_STATES, depends=_DEPENDS)
     state = fields.Selection([
@@ -116,17 +129,22 @@ class AccountThirdCheck(Workflow, ModelSQL, ModelView):
         ('72', '72 hs'),
         ], 'Clearing', states=_STATES, depends=_DEPENDS)
     origin = fields.Char('Origin', states=_STATES, depends=_DEPENDS)
-    voucher_in = fields.Many2One('account.voucher', 'Origin Voucher', depends=_DEPENDS,
-        readonly=True, states={'invisible': Eval('state') == 'draft'})
-    voucher_out = fields.Many2One('account.voucher', 'Target Voucher', depends=_DEPENDS,
-        readonly=True, states={'invisible': Eval('state') != 'delivered'})
+    voucher_in = fields.Many2One('account.voucher', 'Origin Voucher',
+        readonly=True, states={
+            'invisible': Eval('state') == 'draft',
+            }, depends=_DEPENDS)
+    voucher_out = fields.Many2One('account.voucher', 'Target Voucher',
+        readonly=True, states={
+            'invisible': Eval('state') != 'delivered',
+            }, depends=_DEPENDS)
     reject_debit_note = fields.Many2One('account.invoice', 'Debit Note',
-        depends=_DEPENDS, readonly=True)  # TODO
-    bank = fields.Many2One('account.bank', 'Bank', states=_STATES,
-        depends=_DEPENDS, required=True)
+        readonly=True, depends=_DEPENDS)  # TODO
+    bank = fields.Many2One('account.bank', 'Bank', required=True,
+        states=_STATES, depends=_DEPENDS)
     account_bank_out = fields.Many2One('account.party.bank', 'Bank Account',
-        depends=_DEPENDS, states={'invisible': Eval('state') != 'deposited'},
-        readonly=True)
+        readonly=True, states={
+            'invisible': Eval('state') != 'deposited',
+            }, depends=_DEPENDS)
 
     def __init__(self):
         super(AccountThirdCheck, self).__init__()
@@ -148,7 +166,8 @@ class AccountThirdCheck(Workflow, ModelSQL, ModelView):
                     'invisible': Eval('state') != 'held',
                     },
                 'rejected': {
-                    'invisible': ~Eval('state').in_(['deposited', 'delivered']),
+                    'invisible': ~Eval('state').in_([
+                        'deposited', 'delivered']),
                     },
                 })
 
@@ -186,10 +205,10 @@ class AccountVoucherThirdCheck(ModelSQL):
     _table = 'account_voucher_account_third_check'
     _description = __doc__
 
-    voucher = fields.Many2One('account.voucher', 'Voucher',
-        ondelete='CASCADE', select=True, required=True)
+    voucher = fields.Many2One('account.voucher', 'Voucher', required=True,
+        select=True, ondelete='CASCADE')
     third_check = fields.Many2One('account.third.check', 'Third Check',
-        ondelete='RESTRICT', required=True)
+        required=True, ondelete='RESTRICT')
 
 AccountVoucherThirdCheck()
 
@@ -323,21 +342,21 @@ class AccountVoucher(ModelSQL, ModelView):
         return True
 
     issued_check = fields.One2Many('account.issued.check', 'voucher',
-        'Issued Checks',
-        states={
+        'Issued Checks', states={
             'invisible': Not(In(Eval('voucher_type'), ['payment'])),
             'readonly': In(Eval('state'), ['posted']),
         })
     third_pay_checks = fields.Many2Many('account.voucher-account.third.check',
         'voucher', 'third_check', 'Third Checks',
-        domain=[('state', '=', 'held')],
         states={
             'invisible': Not(In(Eval('voucher_type'), ['payment'])),
             'readonly': In(Eval('state'), ['posted']),
-        })
+            },
+        domain=[
+            ('state', '=', 'held'),
+            ])
     third_check = fields.One2Many('account.third.check', 'voucher_in',
-        'Third Checks',
-        states={
+        'Third Checks', states={
             'invisible': Not(In(Eval('voucher_type'), ['receipt'])),
             'readonly': In(Eval('state'), ['posted']),
         })
@@ -379,7 +398,7 @@ class ThirdCheckHeld(Wizard):
     held = StateTransition()
 
     def __init__(self):
-        super( ThirdCheckHeld, self).__init__()
+        super(ThirdCheckHeld, self).__init__()
         self._error_messages.update({
             'check_not_draft': 'Check "%s" is not draft',
             })
@@ -393,7 +412,7 @@ class ThirdCheckHeld(Wizard):
         date = date_obj.today()
         period_id = Pool().get('account.period').find(1, date)
         for check in third_check_obj.browse(Transaction().context.get(
-            'active_ids')):
+                'active_ids')):
             if check.state != 'draft':
                 self.raise_user_error('check_not_draft',
                     error_args=(check.name,))
@@ -459,7 +478,7 @@ class ThirdCheckDeposit(Wizard):
     deposit = StateTransition()
 
     def __init__(self):
-        super( ThirdCheckDeposit, self).__init__()
+        super(ThirdCheckDeposit, self).__init__()
         self._error_messages.update({
             'check_not_held': 'Check "%s" is not in held,',
             })
@@ -472,7 +491,7 @@ class ThirdCheckDeposit(Wizard):
             date=session.start.date)
 
         for check in third_check_obj.browse(Transaction().context.get(
-            'active_ids')):
+                'active_ids')):
             if check.state != 'held':
                 self.raise_user_error('check_not_held',
                     error_args=(check.name,))
@@ -485,7 +504,8 @@ class ThirdCheckDeposit(Wizard):
                 })
                 move_line_obj.create({
                     'name': 'Check Deposit ' + check.name,
-                    'account': session.start.bank_account.journal.debit_account.id,
+                    'account': \
+                        session.start.bank_account.journal.debit_account.id,
                     'move': move_id,
                     'journal': session.start.bank_account.journal.id,
                     'period': period_id,
@@ -495,7 +515,8 @@ class ThirdCheckDeposit(Wizard):
                 })
                 move_line_obj.create({
                     'name': 'Check Deposit ' + check.name,
-                    'account': session.start.bank_account.journal.third_check_account.id,
+                    'account': \
+                        session.start.bank_account.journal.third_check_account.id,
                     'move': move_id,
                     'journal': session.start.bank_account.journal.id,
                     'period': period_id,
