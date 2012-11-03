@@ -181,7 +181,7 @@ AccountThirdCheck()
 
 
 class AccountVoucherThirdCheck(ModelSQL):
-    'Invoice Line - Tax'
+    'Account Voucher - Account Third Check'
     _name = 'account.voucher-account.third.check'
     _table = 'account_voucher_account_third_check'
     _description = __doc__
@@ -195,9 +195,7 @@ AccountVoucherThirdCheck()
 
 
 class AccountVoucher(ModelSQL, ModelView):
-    'Account Check Voucher'
     _name = 'account.voucher'
-    _description = __doc__
 
     def amount_total(self, ids, name):
         amount = super(AccountVoucher, self).amount_total(ids, name)
@@ -348,21 +346,21 @@ class AccountVoucher(ModelSQL, ModelView):
 AccountVoucher()
 
 
-class JournalCheck(ModelSQL, ModelView):
-    'Account Check Voucher'
+class Journal(ModelSQL, ModelView):
     _name = 'account.journal'
-    _description = __doc__
 
     third_check_account = fields.Many2One('account.account',
         'Third Check Account')
     issued_check_account = fields.Many2One('account.account',
         'Issued Check Account')
 
-JournalCheck()
+Journal()
 
 
 class ThirdCheckHeldStart(ModelView):
+    'Third Check Held Start'
     _name = 'account.third.check.held.start'
+    _description = __doc__
 
     journal = fields.Many2One('account.journal', 'Journal', required=True)
 
@@ -434,7 +432,9 @@ ThirdCheckHeld()
 
 
 class ThirdCheckDepositStart(ModelView):
+    'Third Check Deposit Start'
     _name = 'account.third.check.deposit.start'
+    _description = __doc__
 
     bank_account = fields.Many2One('account.party.bank', 'Bank Account',
         required=True)
