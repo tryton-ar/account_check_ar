@@ -24,7 +24,7 @@ msgstr "Clearing"
 
 msgctxt "field:account.issued.check,create_date:"
 msgid "Create Date"
-msgstr "Fecha de Creación"
+msgstr "Fecha creación"
 
 msgctxt "field:account.issued.check,create_uid:"
 msgid "Create User"
@@ -124,7 +124,7 @@ msgstr "Clearing"
 
 msgctxt "field:account.third.check,create_date:"
 msgid "Create Date"
-msgstr "Fecha de Creación"
+msgstr "Fecha creación"
 
 msgctxt "field:account.third.check,create_uid:"
 msgid "Create User"
@@ -260,7 +260,7 @@ msgstr "Cheques"
 
 msgctxt "field:account.voucher-account.third.check,create_date:"
 msgid "Create Date"
-msgstr "Fecha de Creación"
+msgstr "Fecha creación"
 
 msgctxt "field:account.voucher-account.third.check,create_uid:"
 msgid "Create User"
@@ -299,16 +299,16 @@ msgid "Account Third Check"
 msgstr "Cuenta de Cheque de Tercero"
 
 msgctxt "model:account.third.check.deposit.start,name:"
-msgid "account.third.check.deposit.start"
-msgstr ""
+msgid "Third Check Deposit Start"
+msgstr "Iniciar Depósito de Cheque de Tercero"
 
 msgctxt "model:account.third.check.held.start,name:"
-msgid "account.third.check.held.start"
-msgstr ""
+msgid "Third Check Held Start"
+msgstr "Iniciar Cheque de Tercero a Cartera"
 
 msgctxt "model:account.voucher-account.third.check,name:"
-msgid "Invoice Line - Tax"
-msgstr "Línea de factura - Impuesto"
+msgid "Account Voucher - Account Third Check"
+msgstr "Comprobante contable - Cuenta de Cheque de Tercero"
 
 msgctxt "model:ir.action,name:act_issued_check_tree"
 msgid "Issued Checks"
@@ -375,10 +375,6 @@ msgid "72 hs"
 msgstr "72 hs"
 
 msgctxt "selection:account.third.check,state:"
-msgid "Cartera"
-msgstr ""
-
-msgctxt "selection:account.third.check,state:"
 msgid "Delivered"
 msgstr "Entregado"
 
@@ -400,7 +396,7 @@ msgstr "Rechazado"
 
 msgctxt "view:account.issued.check:"
 msgid "Extra Info"
-msgstr "Información Extra"
+msgstr "Información adicional"
 
 msgctxt "view:account.issued.check:"
 msgid "Issued Check"
