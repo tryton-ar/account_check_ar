@@ -55,13 +55,14 @@ class AccountIssuedCheck(Workflow, ModelSQL, ModelView):
         ('debited', 'Debited'),
         ], 'State', readonly=True)
 
-    def __init__(self):
-        super(AccountIssuedCheck, self).__init__()
-        self._transitions |= set((
+    @classmethod
+    def __setup__(cls):
+        super(AccountIssuedCheck, cls).__setup__()
+        cls._transitions |= set((
                 ('draft', 'issued'),
                 ('issued', 'debited'),
                 ))
-        self._buttons.update({
+        cls._buttons.update({
                 'issued': {
                     'invisible': Eval('state') != 'draft',
                     },
@@ -147,16 +148,17 @@ class AccountThirdCheck(Workflow, ModelSQL, ModelView):
             'invisible': Eval('state') != 'deposited',
             }, depends=_DEPENDS)
 
-    def __init__(self):
-        super(AccountThirdCheck, self).__init__()
-        self._transitions |= set((
+    @classmethod
+    def __setup__(cls):
+        super(AccountThirdCheck, cls).__setup__()
+        cls._transitions |= set((
                 ('draft', 'held'),
                 ('held', 'deposited'),
                 ('held', 'delivered'),
                 ('deposited', 'rejected'),
                 ('delivered', 'rejected'),
                 ))
-        self._buttons.update({
+        cls._buttons.update({
                 'held': {
                     'invisible': Eval('state') != 'draft',
                     },
@@ -386,9 +388,10 @@ class ThirdCheckHeld(Wizard):
             ])
     held = StateTransition()
 
-    def __init__(self):
-        super(ThirdCheckHeld, self).__init__()
-        self._error_messages.update({
+    @classmethod
+    def __setup__(cls):
+        super(ThirdCheckHeld, cls).__setup__()
+        cls._error_messages.update({
             'check_not_draft': 'Check "%s" is not draft',
             })
 
@@ -461,9 +464,10 @@ class ThirdCheckDeposit(Wizard):
             ])
     deposit = StateTransition()
 
-    def __init__(self):
-        super(ThirdCheckDeposit, self).__init__()
-        self._error_messages.update({
+    @classmethod
+    def __setup__(cls):
+        super(ThirdCheckDeposit, cls).__setup__()
+        cls._error_messages.update({
             'check_not_held': 'Check "%s" is not in held,',
             })
 
