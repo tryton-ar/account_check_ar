@@ -232,21 +232,18 @@ class AccountVoucher(ModelSQL, ModelView):
                     amount[voucher.id] += check.amount
         return amount
 
-    def amount_checks(self, ids, name):
-        res = {}
+    def amount_checks(self, name):
         amount = 0
-        for voucher in self.browse(ids):
-            if voucher.issued_check:
-                for i_check in voucher.issued_check:
-                    amount += i_check.amount
-            if voucher.third_check:
-                for t_check in voucher.third_check:
-                    amount += t_check.amount
-            if voucher.third_pay_checks:
-                for check in voucher.third_pay_checks:
-                    amount += check.amount
-            res[voucher.id] = amount
-        return res
+        if self.issued_check:
+            for i_check in self.issued_check:
+                amount += i_check.amount
+        if self.third_check:
+            for t_check in self.third_check:
+                amount += t_check.amount
+        if self.third_pay_checks:
+            for check in self.third_pay_checks:
+                amount += check.amount
+        return amount
 
     def check_amount(self, checks):
         check_amount = 0
