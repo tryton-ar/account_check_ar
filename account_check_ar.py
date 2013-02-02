@@ -8,6 +8,11 @@ from trytond.transaction import Transaction
 from trytond.pyson import Eval, Not, In
 from trytond.pool import Pool
 
+__all__ = ['AccountIssuedCheck', 'AccountThirdCheck',
+    'AccountVoucherThirdCheck', 'AccountVoucher', 'Journal',
+    'ThirdCheckHeldStart', 'ThirdCheckHeld', 'ThirdCheckDepositStart',
+    'ThirdCheckDeposit']
+
 _STATES = {
     'readonly': Eval('state') != 'draft',
 }
@@ -81,8 +86,6 @@ class AccountIssuedCheck(Workflow, ModelSQL, ModelView):
     @Workflow.transition('debited')
     def debited(self, ids):
         pass
-
-AccountIssuedCheck()
 
 
 class AccountThirdCheck(Workflow, ModelSQL, ModelView):
@@ -196,8 +199,6 @@ class AccountThirdCheck(Workflow, ModelSQL, ModelView):
     def rejected(self, ids):
         pass
 
-AccountThirdCheck()
-
 
 class AccountVoucherThirdCheck(ModelSQL):
     'Account Voucher - Account Third Check'
@@ -209,8 +210,6 @@ class AccountVoucherThirdCheck(ModelSQL):
         select=True, ondelete='CASCADE')
     third_check = fields.Many2One('account.third.check', 'Third Check',
         required=True, ondelete='RESTRICT')
-
-AccountVoucherThirdCheck()
 
 
 class AccountVoucher(ModelSQL, ModelView):
@@ -362,8 +361,6 @@ class AccountVoucher(ModelSQL, ModelView):
         })
     total_checks = fields.Function(fields.Float('Checks'), 'amount_checks')
 
-AccountVoucher()
-
 
 class Journal(ModelSQL, ModelView):
     _name = 'account.journal'
@@ -373,8 +370,6 @@ class Journal(ModelSQL, ModelView):
     issued_check_account = fields.Many2One('account.account',
         'Issued Check Account')
 
-Journal()
-
 
 class ThirdCheckHeldStart(ModelView):
     'Third Check Held Start'
@@ -382,8 +377,6 @@ class ThirdCheckHeldStart(ModelView):
     _description = __doc__
 
     journal = fields.Many2One('account.journal', 'Journal', required=True)
-
-ThirdCheckHeldStart()
 
 
 class ThirdCheckHeld(Wizard):
@@ -447,8 +440,6 @@ class ThirdCheckHeld(Wizard):
                 move_obj.write([move_id], {'state': 'posted'})
         return 'end'
 
-ThirdCheckHeld()
-
 
 class ThirdCheckDepositStart(ModelView):
     'Third Check Deposit Start'
@@ -462,8 +453,6 @@ class ThirdCheckDepositStart(ModelView):
     def default_date(self):
         date_obj = Pool().get('ir.date')
         return date_obj.today()
-
-ThirdCheckDepositStart()
 
 
 class ThirdCheckDeposit(Wizard):
@@ -530,5 +519,3 @@ class ThirdCheckDeposit(Wizard):
                 third_check_obj.deposited([check.id])
                 move_obj.write([move_id], {'state': 'posted'})
         return 'end'
-
-ThirdCheckDeposit()
