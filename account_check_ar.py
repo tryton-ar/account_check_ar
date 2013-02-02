@@ -21,8 +21,7 @@ _DEPENDS = ['state']
 
 class AccountIssuedCheck(Workflow, ModelSQL, ModelView):
     'Account Issued Check'
-    _name = 'account.issued.check'
-    _description = __doc__
+    __name__ = 'account.issued.check'
 
     name = fields.Char('Number', required=True, states=_STATES,
         depends=_DEPENDS)
@@ -90,8 +89,7 @@ class AccountIssuedCheck(Workflow, ModelSQL, ModelView):
 
 class AccountThirdCheck(Workflow, ModelSQL, ModelView):
     'Account Third Check'
-    _name = 'account.third.check'
-    _description = __doc__
+    __name__ = 'account.third.check'
 
     name = fields.Char('Number', required=True, states=_STATES,
         depends=_DEPENDS)
@@ -202,9 +200,8 @@ class AccountThirdCheck(Workflow, ModelSQL, ModelView):
 
 class AccountVoucherThirdCheck(ModelSQL):
     'Account Voucher - Account Third Check'
-    _name = 'account.voucher-account.third.check'
+    __name__ = 'account.voucher-account.third.check'
     _table = 'account_voucher_account_third_check'
-    _description = __doc__
 
     voucher = fields.Many2One('account.voucher', 'Voucher', required=True,
         select=True, ondelete='CASCADE')
@@ -213,7 +210,7 @@ class AccountVoucherThirdCheck(ModelSQL):
 
 
 class AccountVoucher(ModelSQL, ModelView):
-    _name = 'account.voucher'
+    __name__ = 'account.voucher'
 
     def amount_total(self, ids, name):
         amount = super(AccountVoucher, self).amount_total(ids, name)
@@ -363,7 +360,7 @@ class AccountVoucher(ModelSQL, ModelView):
 
 
 class Journal(ModelSQL, ModelView):
-    _name = 'account.journal'
+    __name__ = 'account.journal'
 
     third_check_account = fields.Many2One('account.account',
         'Third Check Account')
@@ -373,15 +370,14 @@ class Journal(ModelSQL, ModelView):
 
 class ThirdCheckHeldStart(ModelView):
     'Third Check Held Start'
-    _name = 'account.third.check.held.start'
-    _description = __doc__
+    __name__ = 'account.third.check.held.start'
 
     journal = fields.Many2One('account.journal', 'Journal', required=True)
 
 
 class ThirdCheckHeld(Wizard):
     'Third Check Held'
-    _name = 'account.third.check.held'
+    __name__ = 'account.third.check.held'
 
     start = StateView('account.third.check.held.start',
         'account_check_ar.view_third_check_held', [
@@ -443,8 +439,7 @@ class ThirdCheckHeld(Wizard):
 
 class ThirdCheckDepositStart(ModelView):
     'Third Check Deposit Start'
-    _name = 'account.third.check.deposit.start'
-    _description = __doc__
+    __name__ = 'account.third.check.deposit.start'
 
     bank_account = fields.Many2One('account.party.bank', 'Bank Account',
         required=True)
@@ -457,7 +452,7 @@ class ThirdCheckDepositStart(ModelView):
 
 class ThirdCheckDeposit(Wizard):
     'Third Check Deposit'
-    _name = 'account.third.check.deposit'
+    __name__ = 'account.third.check.deposit'
 
     start = StateView('account.third.check.deposit.start',
         'account_check_ar.view_third_check_deposit', [
