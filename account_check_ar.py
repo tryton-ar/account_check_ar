@@ -71,11 +71,13 @@ class AccountIssuedCheck(Workflow, ModelSQL, ModelView):
                     },
                 })
 
-    def default_date_out(self):
+    @staticmethod
+    def default_date_out():
         date_obj = Pool().get('ir.date')
         return date_obj.today()
 
-    def default_state(self):
+    @staticmethod
+    def default_state():
         return 'draft'
 
     @Workflow.transition('issued')
@@ -174,11 +176,13 @@ class AccountThirdCheck(Workflow, ModelSQL, ModelView):
                     },
                 })
 
-    def default_date_in(self):
+    @staticmethod
+    def default_date_in():
         date_obj = Pool().get('ir.date')
         return date_obj.today()
 
-    def default_state(self):
+    @staticmethod
+    def default_state():
         return 'draft'
 
     @Workflow.transition('held')
@@ -448,7 +452,8 @@ class ThirdCheckDepositStart(ModelView):
         required=True)
     date = fields.Date('Date', required=True)
 
-    def default_date(self):
+    @staticmethod
+    def default_date():
         date_obj = Pool().get('ir.date')
         return date_obj.today()
 
