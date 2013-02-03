@@ -73,8 +73,8 @@ class AccountIssuedCheck(Workflow, ModelSQL, ModelView):
 
     @staticmethod
     def default_date_out():
-        date_obj = Pool().get('ir.date')
-        return date_obj.today()
+        Date = Pool().get('ir.date')
+        return Date.today()
 
     @staticmethod
     def default_state():
@@ -178,8 +178,8 @@ class AccountThirdCheck(Workflow, ModelSQL, ModelView):
 
     @staticmethod
     def default_date_in():
-        date_obj = Pool().get('ir.date')
-        return date_obj.today()
+        Date = Pool().get('ir.date')
+        return Date.today()
 
     @staticmethod
     def default_state():
@@ -218,18 +218,17 @@ class AccountVoucherThirdCheck(ModelSQL):
 class AccountVoucher(ModelSQL, ModelView):
     __name__ = 'account.voucher'
 
-    def amount_total(self, ids, name):
-        amount = super(AccountVoucher, self).amount_total(ids, name)
-        for voucher in self.browse(ids):
-            if voucher.third_check:
-                for t_check in voucher.third_check:
-                    amount[voucher.id] += t_check.amount
-            if voucher.issued_check:
-                for i_check in voucher.issued_check:
-                    amount[voucher.id] += i_check.amount
-            if voucher.third_pay_checks:
-                for check in voucher.third_pay_checks:
-                    amount[voucher.id] += check.amount
+    def amount_total(self, name):
+        amount = super(AccountVoucher, self).amount_total(name)
+        if self.third_check:
+            for t_check in self.third_check:
+                amount += t_check.amount
+        if self.issued_check:
+            for i_check in self.issued_check:
+                amount += i_check.amount
+        if self.third_pay_checks:
+            for check in self.third_pay_checks:
+                amount += check.amount
         return amount
 
     def amount_checks(self, name):
@@ -253,8 +252,8 @@ class AccountVoucher(ModelSQL, ModelView):
 
     def prepare_moves(self, voucher_id):
         pre_move = super(AccountVoucher, self).prepare_moves(voucher_id)
-        voucher = self.browse(voucher_id)
-        period_obj = Pool().get('account.period')
+        voucher = self(voucher_id)
+        Period = Pool().get('account.period')
         if voucher.voucher_type == 'receipt':
             if voucher.third_check:
                 third_check_amount = 0
@@ -271,7 +270,7 @@ class AccountVoucher(ModelSQL, ModelView):
                     'account': voucher.journal.third_check_account.id,
                     'move': pre_move.get('move_id'),
                     'journal': voucher.journal.id,
-                    'period': period_obj.find(1, date=voucher.date),
+                    'period': Period.find(1, date=voucher.date),
                     'party': voucher.party.id,
                 })
 
@@ -289,7 +288,7 @@ class AccountVoucher(ModelSQL, ModelView):
                     'account': voucher.journal.issued_check_account.id,
                     'move': pre_move.get('move_id'),
                     'journal': voucher.journal.id,
-                    'period': period_obj.find(1, date=voucher.date),
+                    'period': Period.find(1, date=voucher.date),
                     'party': voucher.party.id,
                 })
             if voucher.third_pay_checks:
@@ -305,7 +304,7 @@ class AccountVoucher(ModelSQL, ModelView):
                     'account': voucher.journal.third_check_account.id,
                     'move': pre_move.get('move_id'),
                     'journal': voucher.journal.id,
-                    'period': period_obj.find(1, date=voucher.date),
+                    'period': Period.find(1, date=voucher.date),
                     'party': voucher.party.id,
                 })
 
@@ -314,30 +313,30 @@ class AccountVoucher(ModelSQL, ModelView):
     @ModelView.button
     def post(self, voucher_id):
         super(AccountVoucher, self).post(voucher_id)
-        third_check_obj = Pool().get('account.third.check')
-        issued_check_obj = Pool().get('account.issued.check')
-        date_obj = Pool().get('ir.date')
+        ThirdCheck = Pool().get('account.third.check')
+        IssuedCheck = Pool().get('account.issued.check')
+        Date = Pool().get('ir.date')
 
-        voucher = self.browse(voucher_id[0])
+        voucher = self(voucher_id[0])
         if voucher.issued_check:
             check_ids = [x.id for x in voucher.issued_check]
-            issued_check_obj.write(check_ids, {
+            IssuedCheck.write(check_ids, {
                 'receiving_party': voucher.party.id,
             })
-            issued_check_obj.issued(check_ids)
+            IssuedCheck.issued(check_ids)
         if voucher.third_check:
             check_ids = [x.id for x in voucher.third_check]
-            third_check_obj.write(check_ids, {
+            ThirdCheck.write(check_ids, {
                 'source_party': voucher.party.id,
             })
-            third_check_obj.held(check_ids)
+            ThirdCheck.held(check_ids)
         if voucher.third_pay_checks:
             check_ids = [x.id for x in voucher.third_pay_checks]
-            third_check_obj.write(check_ids, {
+            ThirdCheck.write(check_ids, {
                 'destiny_party': voucher.party.id,
-                'date_out': date_obj.today(),
+                'date_out': Date.today(),
             })
-            third_check_obj.delivered(check_ids)
+            ThirdCheck.delivered(check_ids)
         return True
 
     issued_check = fields.One2Many('account.issued.check', 'voucher',
@@ -397,26 +396,25 @@ class ThirdCheckHeld(Wizard):
             })
 
     def transition_held(self, session):
-        third_check_obj = Pool().get('account.third.check')
-        move_obj = Pool().get('account.move')
-        move_line_obj = Pool().get('account.move.line')
-        date_obj = Pool().get('ir.date')
+        ThirdCheck = Pool().get('account.third.check')
+        Move = Pool().get('account.move')
+        MoveLine = Pool().get('account.move.line')
+        Date = Pool().get('ir.date')
 
-        date = date_obj.today()
+        date = Date.today()
         period_id = Pool().get('account.period').find(1, date)
-        for check in third_check_obj.browse(Transaction().context.get(
-                'active_ids')):
+        for check in ThirdCheck(Transaction().context.get('active_ids')):
             if check.state != 'draft':
                 self.raise_user_error('check_not_draft',
                     error_args=(check.name,))
             else:
-                move_id = move_obj.create({
+                move_id = Move.create({
                     'journal': session.start.journal.id,
                     'state': 'draft',
                     'period': period_id,
                     'date': date,
                 })
-                move_line_obj.create({
+                MoveLine.create({
                     'name': 'Check Held ' + check.name,
                     'account': session.start.journal.third_check_account.id,
                     'move': move_id,
@@ -426,7 +424,7 @@ class ThirdCheckHeld(Wizard):
                     'credit': Decimal('0.0'),
                     'date': date,
                 })
-                move_line_obj.create({
+                MoveLine.create({
                     'name': 'Check Held ' + check.name,
                     'account': session.start.journal.credit_account.id,
                     'move': move_id,
@@ -436,8 +434,8 @@ class ThirdCheckHeld(Wizard):
                     'credit': check.amount,
                     'date': date,
                 })
-                third_check_obj.held([check.id])
-                move_obj.write([move_id], {'state': 'posted'})
+                ThirdCheck.held([check.id])
+                Move.write([move_id], {'state': 'posted'})
         return 'end'
 
 
@@ -451,8 +449,8 @@ class ThirdCheckDepositStart(ModelView):
 
     @staticmethod
     def default_date():
-        date_obj = Pool().get('ir.date')
-        return date_obj.today()
+        Date = Pool().get('ir.date')
+        return Date.today()
 
 
 class ThirdCheckDeposit(Wizard):
@@ -474,25 +472,24 @@ class ThirdCheckDeposit(Wizard):
             })
 
     def transition_deposit(self, session):
-        third_check_obj = Pool().get('account.third.check')
-        move_obj = Pool().get('account.move')
-        move_line_obj = Pool().get('account.move.line')
-        period_id = Pool().get('account.period').find(1,
+        ThirdCheck = Pool().get('account.third.check')
+        Move = Pool().get('account.move')
+        MoveLine = Pool().get('account.move.line')
+        Period = Pool().get('account.period').find(1,
             date=session.start.date)
 
-        for check in third_check_obj.browse(Transaction().context.get(
-                'active_ids')):
+        for check in ThirdCheck(Transaction().context.get('active_ids')):
             if check.state != 'held':
                 self.raise_user_error('check_not_held',
                     error_args=(check.name,))
             else:
-                move_id = move_obj.create({
+                move_id = Move.create({
                     'journal': session.start.bank_account.journal.id,
                     'state': 'draft',
                     'period': period_id,
                     'date': session.start.date,
                 })
-                move_line_obj.create({
+                MoveLine.create({
                     'name': 'Check Deposit ' + check.name,
                     'account': \
                         session.start.bank_account.journal.debit_account.id,
@@ -503,7 +500,7 @@ class ThirdCheckDeposit(Wizard):
                     'credit': Decimal('0.0'),
                     'date': session.start.date,
                 })
-                move_line_obj.create({
+                MoveLine.create({
                     'name': 'Check Deposit ' + check.name,
                     'account': \
                         session.start.bank_account.journal.third_check_account.id,
@@ -514,9 +511,9 @@ class ThirdCheckDeposit(Wizard):
                     'credit': check.amount,
                     'date': session.start.date,
                 })
-                third_check_obj.write([check.id], {
+                ThirdCheck.write([check.id], {
                     'account_bank_out': session.start.bank_account.id
                 })
-                third_check_obj.deposited([check.id])
-                move_obj.write([move_id], {'state': 'posted'})
+                ThirdCheck.deposited([check.id])
+                Move.write([move_id], {'state': 'posted'})
         return 'end'
