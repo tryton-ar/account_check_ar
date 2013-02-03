@@ -6,7 +6,7 @@ the full copyright notices and license terms. -->
     <data>
 
 <!-- Account Checks -->
-        <menuitem name="treasury" parent="account.menu_account"
+        <menuitem name="Treasury" parent="account.menu_account"
             id="menu_treasury" sequence="22"/>
 
         <record model="ir.action.wizard" id="wizard_third_check_held">
@@ -144,15 +144,11 @@ the full copyright notices and license terms. -->
                     <field name="clearing"/>
                     <label name="state"/>
                     <field name="state"/>
-                    <button name="%(wizard_third_check_held)d" colspan="2"
+                    <button name="held" colspan="2"
                         string="_Held"
-                        states="{'invisible': Not(Equal(Eval('state'), 'draft'))}"
-                        type="action"
                         icon="tryton-go-next"/>
-                    <button name="%(wizard_third_check_deposit)d" colspan="2"
+                    <button name="deposited" colspan="2"
                         string="_Deposit"
-                        states="{'invisible': Not(Equal(Eval('state'), 'held'))}"
-                        type="action"
                         icon="tryton-go-next"/>
                 </form>
                 ]]>
