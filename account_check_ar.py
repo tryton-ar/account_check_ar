@@ -80,13 +80,15 @@ class AccountIssuedCheck(Workflow, ModelSQL, ModelView):
     def default_state():
         return 'draft'
 
+    @classmethod
     @Workflow.transition('issued')
-    def issued(self, ids):
+    def issued(cls, checks):
         pass
 
+    @classmethod
     @ModelView.button
     @Workflow.transition('debited')
-    def debited(self, ids):
+    def debited(self, checks):
         pass
 
 
@@ -185,22 +187,26 @@ class AccountThirdCheck(Workflow, ModelSQL, ModelView):
     def default_state():
         return 'draft'
 
+    @classmethod
     @Workflow.transition('held')
-    def held(self, ids):
+    def held(self, checks):
         pass
 
+    @classmethod
     @ModelView.button
     @Workflow.transition('deposited')
-    def deposited(self, ids):
+    def deposited(self, checks):
         pass
 
+    @classmethod
     @Workflow.transition('delivered')
-    def delivered(self, ids):
+    def delivered(self, checks):
         pass
 
+    @classmethod
     @ModelView.button
     @Workflow.transition('rejected')
-    def rejected(self, ids):
+    def rejected(self, checks):
         pass
 
 
@@ -217,6 +223,27 @@ class AccountVoucherThirdCheck(ModelSQL):
 
 class AccountVoucher(ModelSQL, ModelView):
     __name__ = 'account.voucher'
+
+    issued_check = fields.One2Many('account.issued.check', 'voucher',
+        'Issued Checks', states={
+            'invisible': Not(In(Eval('voucher_type'), ['payment'])),
+            'readonly': In(Eval('state'), ['posted']),
+        })
+    third_pay_checks = fields.Many2Many('account.voucher-account.third.check',
+        'voucher', 'third_check', 'Third Checks',
+        states={
+            'invisible': Not(In(Eval('voucher_type'), ['payment'])),
+            'readonly': In(Eval('state'), ['posted']),
+            },
+        domain=[
+            ('state', '=', 'held'),
+            ])
+    third_check = fields.One2Many('account.third.check', 'voucher_in',
+        'Third Checks', states={
+            'invisible': Not(In(Eval('voucher_type'), ['receipt'])),
+            'readonly': In(Eval('state'), ['posted']),
+        })
+    total_checks = fields.Function(fields.Float('Checks'), 'amount_checks')
 
     def amount_total(self, name):
         amount = super(AccountVoucher, self).amount_total(name)
@@ -244,15 +271,9 @@ class AccountVoucher(ModelSQL, ModelView):
                 amount += check.amount
         return amount
 
-    def check_amount(self, checks):
-        check_amount = 0
-        for check in checks:
-            check_amount += check.get('amount')
-        return check_amount
-
-    def prepare_moves(self, voucher_id):
-        pre_move = super(AccountVoucher, self).prepare_moves(voucher_id)
-        voucher = self(voucher_id)
+    @classmethod
+    def prepare_moves(cls, voucher):
+        pre_move = super(AccountVoucher, cls).prepare_moves(voucher)
         Period = Pool().get('account.period')
         if voucher.voucher_type == 'receipt':
             if voucher.third_check:
@@ -263,12 +284,11 @@ class AccountVoucher(ModelSQL, ModelView):
                 debit = Decimal(str(third_check_amount))
                 credit = Decimal('0.00')
 
-                pre_move['new_moves'].append({
-                    'name': voucher.number,
+                pre_move['move_lines'].append({
                     'debit': debit,
                     'credit': credit,
                     'account': voucher.journal.third_check_account.id,
-                    'move': pre_move.get('move_id'),
+                    'move': pre_move.get('move').id,
                     'journal': voucher.journal.id,
                     'period': Period.find(1, date=voucher.date),
                     'party': voucher.party.id,
@@ -281,12 +301,11 @@ class AccountVoucher(ModelSQL, ModelView):
                     issued_check_amount += i_check.amount
                 debit = Decimal('0.00')
                 credit = Decimal(str(issued_check_amount))
-                pre_move['new_moves'].append({
-                    'name': voucher.number,
+                pre_move['move_lines'].append({
                     'debit': debit,
                     'credit': credit,
                     'account': voucher.journal.issued_check_account.id,
-                    'move': pre_move.get('move_id'),
+                    'move': pre_move.get('move').id,
                     'journal': voucher.journal.id,
                     'period': Period.find(1, date=voucher.date),
                     'party': voucher.party.id,
@@ -297,12 +316,11 @@ class AccountVoucher(ModelSQL, ModelView):
                     third_paycheck_amount += tp_check.amount
                 debit = Decimal('0.00')
                 credit = Decimal(str(third_paycheck_amount))
-                pre_move['new_moves'].append({
-                    'name': voucher.number,
+                pre_move['move_lines'].append({
                     'debit': debit,
                     'credit': credit,
                     'account': voucher.journal.third_check_account.id,
-                    'move': pre_move.get('move_id'),
+                    'move': pre_move.get('move').id,
                     'journal': voucher.journal.id,
                     'period': Period.find(1, date=voucher.date),
                     'party': voucher.party.id,
@@ -310,55 +328,31 @@ class AccountVoucher(ModelSQL, ModelView):
 
         return pre_move
 
+    @classmethod
     @ModelView.button
-    def post(self, voucher_id):
-        super(AccountVoucher, self).post(voucher_id)
+    def post(cls, vouchers):
+        super(AccountVoucher, cls).post(vouchers)
         ThirdCheck = Pool().get('account.third.check')
         IssuedCheck = Pool().get('account.issued.check')
         Date = Pool().get('ir.date')
 
-        voucher = self(voucher_id[0])
+        voucher = vouchers[0]
         if voucher.issued_check:
-            check_ids = [x.id for x in voucher.issued_check]
-            IssuedCheck.write(check_ids, {
+            IssuedCheck.write(voucher.issued_check, {
                 'receiving_party': voucher.party.id,
             })
-            IssuedCheck.issued(check_ids)
+            IssuedCheck.issued(voucher.issued_check)
         if voucher.third_check:
-            check_ids = [x.id for x in voucher.third_check]
-            ThirdCheck.write(check_ids, {
+            ThirdCheck.write(voucher.third_check, {
                 'source_party': voucher.party.id,
             })
-            ThirdCheck.held(check_ids)
+            ThirdCheck.held(voucher.third_check)
         if voucher.third_pay_checks:
-            check_ids = [x.id for x in voucher.third_pay_checks]
-            ThirdCheck.write(check_ids, {
+            ThirdCheck.write(voucher.third_pay_checks, {
                 'destiny_party': voucher.party.id,
                 'date_out': Date.today(),
             })
-            ThirdCheck.delivered(check_ids)
-        return True
-
-    issued_check = fields.One2Many('account.issued.check', 'voucher',
-        'Issued Checks', states={
-            'invisible': Not(In(Eval('voucher_type'), ['payment'])),
-            'readonly': In(Eval('state'), ['posted']),
-        })
-    third_pay_checks = fields.Many2Many('account.voucher-account.third.check',
-        'voucher', 'third_check', 'Third Checks',
-        states={
-            'invisible': Not(In(Eval('voucher_type'), ['payment'])),
-            'readonly': In(Eval('state'), ['posted']),
-            },
-        domain=[
-            ('state', '=', 'held'),
-            ])
-    third_check = fields.One2Many('account.third.check', 'voucher_in',
-        'Third Checks', states={
-            'invisible': Not(In(Eval('voucher_type'), ['receipt'])),
-            'readonly': In(Eval('state'), ['posted']),
-        })
-    total_checks = fields.Function(fields.Float('Checks'), 'amount_checks')
+            ThirdCheck.delivered(voucher.third_pay_checks)
 
 
 class Journal(ModelSQL, ModelView):
@@ -475,7 +469,7 @@ class ThirdCheckDeposit(Wizard):
         ThirdCheck = Pool().get('account.third.check')
         Move = Pool().get('account.move')
         MoveLine = Pool().get('account.move.line')
-        Period = Pool().get('account.period').find(1,
+        period_id = Pool().get('account.period').find(1,
             date=session.start.date)
 
         for check in ThirdCheck(Transaction().context.get('active_ids')):
