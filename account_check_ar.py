@@ -188,24 +188,21 @@ class AccountThirdCheck(Workflow, ModelSQL, ModelView):
         return 'draft'
 
     @classmethod
-    @Workflow.transition('held')
+    @ModelView.button_action('account_check_ar.wizard_third_check_held')
     def held(self, checks):
         pass
 
     @classmethod
-    @ModelView.button
-    @Workflow.transition('deposited')
+    @ModelView.button_action('account_check_ar.wizard_third_check_deposit')
     def deposited(self, checks):
         pass
 
     @classmethod
-    @Workflow.transition('delivered')
     def delivered(self, checks):
         pass
 
     @classmethod
     @ModelView.button
-    @Workflow.transition('rejected')
     def rejected(self, checks):
         pass
 
@@ -340,19 +337,20 @@ class AccountVoucher(ModelSQL, ModelView):
         if voucher.issued_check:
             IssuedCheck.write(voucher.issued_check, {
                 'receiving_party': voucher.party.id,
+                'state': 'issued',
             })
             IssuedCheck.issued(voucher.issued_check)
         if voucher.third_check:
             ThirdCheck.write(voucher.third_check, {
                 'source_party': voucher.party.id,
+                'state': 'held',
             })
-            ThirdCheck.held(voucher.third_check)
         if voucher.third_pay_checks:
             ThirdCheck.write(voucher.third_pay_checks, {
                 'destiny_party': voucher.party.id,
                 'date_out': Date.today(),
+                'state': 'delivered',
             })
-            ThirdCheck.delivered(voucher.third_pay_checks)
 
 
 class Journal(ModelSQL, ModelView):
@@ -389,7 +387,7 @@ class ThirdCheckHeld(Wizard):
             'check_not_draft': 'Check "%s" is not draft',
             })
 
-    def transition_held(self, session):
+    def transition_held(self):
         ThirdCheck = Pool().get('account.third.check')
         Move = Pool().get('account.move')
         MoveLine = Pool().get('account.move.line')
@@ -397,39 +395,38 @@ class ThirdCheckHeld(Wizard):
 
         date = Date.today()
         period_id = Pool().get('account.period').find(1, date)
-        for check in ThirdCheck(Transaction().context.get('active_ids')):
+        for check in ThirdCheck.browse(
+            Transaction().context.get('active_ids')):
             if check.state != 'draft':
                 self.raise_user_error('check_not_draft',
                     error_args=(check.name,))
             else:
-                move_id = Move.create({
-                    'journal': session.start.journal.id,
+                move = Move.create({
+                    'journal': self.start.journal.id,
                     'state': 'draft',
                     'period': period_id,
                     'date': date,
                 })
                 MoveLine.create({
-                    'name': 'Check Held ' + check.name,
-                    'account': session.start.journal.third_check_account.id,
-                    'move': move_id,
-                    'journal': session.start.journal.id,
+                    'account': self.start.journal.third_check_account.id,
+                    'move': move.id,
+                    'journal': self.start.journal.id,
                     'period': period_id,
                     'debit': check.amount,
                     'credit': Decimal('0.0'),
                     'date': date,
                 })
                 MoveLine.create({
-                    'name': 'Check Held ' + check.name,
-                    'account': session.start.journal.credit_account.id,
-                    'move': move_id,
-                    'journal': session.start.journal.id,
+                    'account': self.start.journal.credit_account.id,
+                    'move': move.id,
+                    'journal': self.start.journal.id,
                     'period': period_id,
                     'debit': Decimal('0.0'),
                     'credit': check.amount,
                     'date': date,
                 })
-                ThirdCheck.held([check.id])
-                Move.write([move_id], {'state': 'posted'})
+                ThirdCheck.write([check], {'state': 'held'})
+                Move.write([move], {'state': 'posted'})
         return 'end'
 
 
@@ -465,49 +462,48 @@ class ThirdCheckDeposit(Wizard):
             'check_not_held': 'Check "%s" is not in held,',
             })
 
-    def transition_deposit(self, session):
+    def transition_deposit(self):
         ThirdCheck = Pool().get('account.third.check')
         Move = Pool().get('account.move')
         MoveLine = Pool().get('account.move.line')
         period_id = Pool().get('account.period').find(1,
-            date=session.start.date)
+            date=self.start.date)
 
-        for check in ThirdCheck(Transaction().context.get('active_ids')):
+        for check in ThirdCheck.browse(
+            Transaction().context.get('active_ids')):
             if check.state != 'held':
                 self.raise_user_error('check_not_held',
                     error_args=(check.name,))
             else:
-                move_id = Move.create({
-                    'journal': session.start.bank_account.journal.id,
+                move = Move.create({
+                    'journal': self.start.bank_account.journal.id,
                     'state': 'draft',
                     'period': period_id,
-                    'date': session.start.date,
+                    'date': self.start.date,
                 })
                 MoveLine.create({
-                    'name': 'Check Deposit ' + check.name,
-                    'account': \
-                        session.start.bank_account.journal.debit_account.id,
-                    'move': move_id,
-                    'journal': session.start.bank_account.journal.id,
+                    'account':
+                        self.start.bank_account.journal.debit_account.id,
+                    'move': move.id,
+                    'journal': self.start.bank_account.journal.id,
                     'period': period_id,
                     'debit': check.amount,
                     'credit': Decimal('0.0'),
-                    'date': session.start.date,
+                    'date': self.start.date,
                 })
                 MoveLine.create({
-                    'name': 'Check Deposit ' + check.name,
-                    'account': \
-                        session.start.bank_account.journal.third_check_account.id,
-                    'move': move_id,
-                    'journal': session.start.bank_account.journal.id,
+                    'account':
+                        self.start.bank_account.journal.third_check_account.id,
+                    'move': move.id,
+                    'journal': self.start.bank_account.journal.id,
                     'period': period_id,
                     'debit': Decimal('0.0'),
                     'credit': check.amount,
-                    'date': session.start.date,
+                    'date': self.start.date,
                 })
-                ThirdCheck.write([check.id], {
-                    'account_bank_out': session.start.bank_account.id
+                ThirdCheck.write([check], {
+                    'account_bank_out': self.start.bank_account.id
                 })
-                ThirdCheck.deposited([check.id])
-                Move.write([move_id], {'state': 'posted'})
+                ThirdCheck.write([check], {'state': 'deposited'})
+                Move.write([move], {'state': 'posted'})
         return 'end'
