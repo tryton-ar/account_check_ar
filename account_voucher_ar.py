@@ -1,0 +1,138 @@
+#This file is part of the account_check_ar module for Tryton.
+#The COPYRIGHT file at the top level of this repository contains
+#the full copyright notices and license terms.
+from decimal import Decimal
+from trytond.model import ModelView, fields
+from trytond.pyson import Eval, Not, In
+from trytond.pool import Pool, PoolMeta
+
+__all__ = ['AccountVoucher']
+__metaclass__ = PoolMeta
+
+
+class AccountVoucher:
+    __name__ = 'account.voucher'
+
+    issued_check = fields.One2Many('account.issued.check', 'voucher',
+        'Issued Checks', states={
+            'invisible': Not(In(Eval('voucher_type'), ['payment'])),
+            'readonly': In(Eval('state'), ['posted']),
+        })
+    third_pay_checks = fields.Many2Many('account.voucher-account.third.check',
+        'voucher', 'third_check', 'Third Checks',
+        states={
+            'invisible': Not(In(Eval('voucher_type'), ['payment'])),
+            'readonly': In(Eval('state'), ['posted']),
+            },
+        domain=[
+            ('state', '=', 'held'),
+            ])
+    third_check = fields.One2Many('account.third.check', 'voucher_in',
+        'Third Checks', states={
+            'invisible': Not(In(Eval('voucher_type'), ['receipt'])),
+            'readonly': In(Eval('state'), ['posted']),
+        })
+
+    @classmethod
+    def __setup__(cls):
+        super(AccountVoucher, cls).__setup__()
+        cls.amount.on_change_with.extend(['issued_check', 'third_check',
+            'third_pay_checks'])
+        cls.amount.on_change_with.extend(['issued_check', 'third_check',
+            'third_pay_checks'])
+
+    def on_change_with_amount(self, name=None):
+        amount = super(AccountVoucher, self).on_change_with_amount(name)
+        if self.third_check:
+            for t_check in self.third_check:
+                amount += t_check.amount
+        if self.issued_check:
+            for i_check in self.issued_check:
+                amount += i_check.amount
+        if self.third_pay_checks:
+            for check in self.third_pay_checks:
+                amount += check.amount
+        return amount
+
+    def prepare_move_lines(self):
+        move_lines = super(AccountVoucher, self).prepare_move_lines()
+        Period = Pool().get('account.period')
+        if self.voucher_type == 'receipt':
+            if self.third_check:
+                third_check_amount = 0
+                for t_check in self.third_check:
+                    third_check_amount += t_check.amount
+
+                debit = Decimal(str(third_check_amount))
+                credit = Decimal('0.00')
+
+                move_lines.append({
+                    'debit': debit,
+                    'credit': credit,
+                    'account': self.journal.third_check_account.id,
+                    'move': self.move.id,
+                    'journal': self.journal.id,
+                    'period': Period.find(1, date=self.date),
+                    'party': self.party.id,
+                })
+
+        if self.voucher_type == 'payment':
+            if self.issued_check:
+                issued_check_amount = 0
+                for i_check in self.issued_check:
+                    issued_check_amount += i_check.amount
+                debit = Decimal('0.00')
+                credit = Decimal(str(issued_check_amount))
+                move_lines.append({
+                    'debit': debit,
+                    'credit': credit,
+                    'account': self.journal.issued_check_account.id,
+                    'move': self.move.id,
+                    'journal': self.journal.id,
+                    'period': Period.find(1, date=self.date),
+                    'party': self.party.id,
+                })
+            if self.third_pay_checks:
+                third_paycheck_amount = 0
+                for tp_check in self.third_pay_checks:
+                    third_paycheck_amount += tp_check.amount
+                debit = Decimal('0.00')
+                credit = Decimal(str(third_paycheck_amount))
+                move_lines.append({
+                    'debit': debit,
+                    'credit': credit,
+                    'account': self.journal.third_check_account.id,
+                    'move': self.move.id,
+                    'journal': self.journal.id,
+                    'period': Period.find(1, date=self.date),
+                    'party': self.party.id,
+                })
+
+        return move_lines
+
+    @classmethod
+    @ModelView.button
+    def post(cls, vouchers):
+        super(AccountVoucher, cls).post(vouchers)
+        ThirdCheck = Pool().get('account.third.check')
+        IssuedCheck = Pool().get('account.issued.check')
+        Date = Pool().get('ir.date')
+
+        for voucher in vouchers:
+            if voucher.issued_check:
+                IssuedCheck.write(voucher.issued_check, {
+                    'receiving_party': voucher.party.id,
+                    'state': 'issued',
+                })
+                IssuedCheck.issued(voucher.issued_check)
+            if voucher.third_check:
+                ThirdCheck.write(voucher.third_check, {
+                    'source_party': voucher.party.id,
+                    'state': 'held',
+                })
+            if voucher.third_pay_checks:
+                ThirdCheck.write(voucher.third_pay_checks, {
+                    'destiny_party': voucher.party.id,
+                    'date_out': Date.today(),
+                    'state': 'delivered',
+                })

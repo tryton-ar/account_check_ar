@@ -5,6 +5,7 @@
 
 from trytond.pool import Pool
 from .account_check_ar import *
+from .account_voucher_ar import *
 
 
 def register():
@@ -12,10 +13,10 @@ def register():
         AccountIssuedCheck,
         AccountThirdCheck,
         AccountVoucherThirdCheck,
-        AccountVoucher,
         Journal,
         ThirdCheckHeldStart,
         ThirdCheckDepositStart,
+        AccountVoucher,
         module='account_check_ar', type_='model')
     Pool.register(
         ThirdCheckHeld,

@@ -5,13 +5,12 @@ from decimal import Decimal
 from trytond.model import Workflow, ModelView, ModelSQL, fields
 from trytond.wizard import Wizard, StateView, StateTransition, Button
 from trytond.transaction import Transaction
-from trytond.pyson import Eval, Not, In
+from trytond.pyson import Eval, In
 from trytond.pool import Pool
 
 __all__ = ['AccountIssuedCheck', 'AccountThirdCheck',
-    'AccountVoucherThirdCheck', 'AccountVoucher', 'Journal',
-    'ThirdCheckHeldStart', 'ThirdCheckHeld', 'ThirdCheckDepositStart',
-    'ThirdCheckDeposit']
+    'AccountVoucherThirdCheck', 'Journal', 'ThirdCheckHeldStart',
+    'ThirdCheckHeld', 'ThirdCheckDepositStart', 'ThirdCheckDeposit']
 
 _STATES = {
     'readonly': Eval('state') != 'draft',
@@ -40,6 +39,7 @@ class AccountIssuedCheck(Workflow, ModelSQL, ModelView):
     on_order = fields.Char('On Order', states=_STATES, depends=_DEPENDS)
     signatory = fields.Char('Signatory', states=_STATES, depends=_DEPENDS)
     clearing = fields.Selection([
+        (None, ''),
         ('24', '24 hs'),
         ('48', '48 hs'),
         ('72', '72 hs'),
@@ -130,6 +130,7 @@ class AccountThirdCheck(Workflow, ModelSQL, ModelView):
         ], 'State', readonly=True)
     vat = fields.Char('Vat', states=_STATES, depends=_DEPENDS)
     clearing = fields.Selection([
+        (None, ''),
         ('24', '24 hs'),
         ('48', '48 hs'),
         ('72', '72 hs'),
@@ -187,6 +188,10 @@ class AccountThirdCheck(Workflow, ModelSQL, ModelView):
     def default_state():
         return 'draft'
 
+    @staticmethod
+    def default_amount():
+        return Decimal('0.00')
+
     @classmethod
     @ModelView.button_action('account_check_ar.wizard_third_check_held')
     def held(self, checks):
@@ -216,141 +221,6 @@ class AccountVoucherThirdCheck(ModelSQL):
         select=True, ondelete='CASCADE')
     third_check = fields.Many2One('account.third.check', 'Third Check',
         required=True, ondelete='RESTRICT')
-
-
-class AccountVoucher(ModelSQL, ModelView):
-    __name__ = 'account.voucher'
-
-    issued_check = fields.One2Many('account.issued.check', 'voucher',
-        'Issued Checks', states={
-            'invisible': Not(In(Eval('voucher_type'), ['payment'])),
-            'readonly': In(Eval('state'), ['posted']),
-        })
-    third_pay_checks = fields.Many2Many('account.voucher-account.third.check',
-        'voucher', 'third_check', 'Third Checks',
-        states={
-            'invisible': Not(In(Eval('voucher_type'), ['payment'])),
-            'readonly': In(Eval('state'), ['posted']),
-            },
-        domain=[
-            ('state', '=', 'held'),
-            ])
-    third_check = fields.One2Many('account.third.check', 'voucher_in',
-        'Third Checks', states={
-            'invisible': Not(In(Eval('voucher_type'), ['receipt'])),
-            'readonly': In(Eval('state'), ['posted']),
-        })
-    total_checks = fields.Function(fields.Float('Checks'), 'amount_checks')
-
-    def amount_total(self, name):
-        amount = super(AccountVoucher, self).amount_total(name)
-        if self.third_check:
-            for t_check in self.third_check:
-                amount += t_check.amount
-        if self.issued_check:
-            for i_check in self.issued_check:
-                amount += i_check.amount
-        if self.third_pay_checks:
-            for check in self.third_pay_checks:
-                amount += check.amount
-        return amount
-
-    def amount_checks(self, name):
-        amount = 0
-        if self.issued_check:
-            for i_check in self.issued_check:
-                amount += i_check.amount
-        if self.third_check:
-            for t_check in self.third_check:
-                amount += t_check.amount
-        if self.third_pay_checks:
-            for check in self.third_pay_checks:
-                amount += check.amount
-        return amount
-
-    @classmethod
-    def prepare_moves(cls, voucher):
-        pre_move = super(AccountVoucher, cls).prepare_moves(voucher)
-        Period = Pool().get('account.period')
-        if voucher.voucher_type == 'receipt':
-            if voucher.third_check:
-                third_check_amount = 0
-                for t_check in voucher.third_check:
-                    third_check_amount += t_check.amount
-
-                debit = Decimal(str(third_check_amount))
-                credit = Decimal('0.00')
-
-                pre_move['move_lines'].append({
-                    'debit': debit,
-                    'credit': credit,
-                    'account': voucher.journal.third_check_account.id,
-                    'move': pre_move.get('move').id,
-                    'journal': voucher.journal.id,
-                    'period': Period.find(1, date=voucher.date),
-                    'party': voucher.party.id,
-                })
-
-        if voucher.voucher_type == 'payment':
-            if voucher.issued_check:
-                issued_check_amount = 0
-                for i_check in voucher.issued_check:
-                    issued_check_amount += i_check.amount
-                debit = Decimal('0.00')
-                credit = Decimal(str(issued_check_amount))
-                pre_move['move_lines'].append({
-                    'debit': debit,
-                    'credit': credit,
-                    'account': voucher.journal.issued_check_account.id,
-                    'move': pre_move.get('move').id,
-                    'journal': voucher.journal.id,
-                    'period': Period.find(1, date=voucher.date),
-                    'party': voucher.party.id,
-                })
-            if voucher.third_pay_checks:
-                third_paycheck_amount = 0
-                for tp_check in voucher.third_pay_checks:
-                    third_paycheck_amount += tp_check.amount
-                debit = Decimal('0.00')
-                credit = Decimal(str(third_paycheck_amount))
-                pre_move['move_lines'].append({
-                    'debit': debit,
-                    'credit': credit,
-                    'account': voucher.journal.third_check_account.id,
-                    'move': pre_move.get('move').id,
-                    'journal': voucher.journal.id,
-                    'period': Period.find(1, date=voucher.date),
-                    'party': voucher.party.id,
-                })
-
-        return pre_move
-
-    @classmethod
-    @ModelView.button
-    def post(cls, vouchers):
-        super(AccountVoucher, cls).post(vouchers)
-        ThirdCheck = Pool().get('account.third.check')
-        IssuedCheck = Pool().get('account.issued.check')
-        Date = Pool().get('ir.date')
-
-        voucher = vouchers[0]
-        if voucher.issued_check:
-            IssuedCheck.write(voucher.issued_check, {
-                'receiving_party': voucher.party.id,
-                'state': 'issued',
-            })
-            IssuedCheck.issued(voucher.issued_check)
-        if voucher.third_check:
-            ThirdCheck.write(voucher.third_check, {
-                'source_party': voucher.party.id,
-                'state': 'held',
-            })
-        if voucher.third_pay_checks:
-            ThirdCheck.write(voucher.third_pay_checks, {
-                'destiny_party': voucher.party.id,
-                'date_out': Date.today(),
-                'state': 'delivered',
-            })
 
 
 class Journal(ModelSQL, ModelView):
@@ -401,13 +271,14 @@ class ThirdCheckHeld(Wizard):
                 self.raise_user_error('check_not_draft',
                     error_args=(check.name,))
             else:
-                move = Move.create({
+                move, = Move.create([{
                     'journal': self.start.journal.id,
                     'state': 'draft',
                     'period': period_id,
                     'date': date,
-                })
-                MoveLine.create({
+                }])
+                lines = []
+                lines.append({
                     'account': self.start.journal.third_check_account.id,
                     'move': move.id,
                     'journal': self.start.journal.id,
@@ -416,7 +287,7 @@ class ThirdCheckHeld(Wizard):
                     'credit': Decimal('0.0'),
                     'date': date,
                 })
-                MoveLine.create({
+                lines.append({
                     'account': self.start.journal.credit_account.id,
                     'move': move.id,
                     'journal': self.start.journal.id,
@@ -425,6 +296,7 @@ class ThirdCheckHeld(Wizard):
                     'credit': check.amount,
                     'date': date,
                 })
+                MoveLine.create(lines)
                 ThirdCheck.write([check], {'state': 'held'})
                 Move.write([move], {'state': 'posted'})
         return 'end'
@@ -475,13 +347,14 @@ class ThirdCheckDeposit(Wizard):
                 self.raise_user_error('check_not_held',
                     error_args=(check.name,))
             else:
-                move = Move.create({
+                move, = Move.create([{
                     'journal': self.start.bank_account.journal.id,
                     'state': 'draft',
                     'period': period_id,
                     'date': self.start.date,
-                })
-                MoveLine.create({
+                }])
+                lines = []
+                lines.append({
                     'account':
                         self.start.bank_account.journal.debit_account.id,
                     'move': move.id,
@@ -491,7 +364,7 @@ class ThirdCheckDeposit(Wizard):
                     'credit': Decimal('0.0'),
                     'date': self.start.date,
                 })
-                MoveLine.create({
+                lines.append({
                     'account':
                         self.start.bank_account.journal.third_check_account.id,
                     'move': move.id,
@@ -501,6 +374,7 @@ class ThirdCheckDeposit(Wizard):
                     'credit': check.amount,
                     'date': self.start.date,
                 })
+                MoveLine.create(lines)
                 ThirdCheck.write([check], {
                     'account_bank_out': self.start.bank_account.id
                 })
