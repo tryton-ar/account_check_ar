@@ -273,7 +273,6 @@ class ThirdCheckHeld(Wizard):
             else:
                 move, = Move.create([{
                     'journal': self.start.journal.id,
-                    'state': 'draft',
                     'period': period_id,
                     'date': date,
                 }])
@@ -332,6 +331,8 @@ class ThirdCheckDeposit(Wizard):
         super(ThirdCheckDeposit, cls).__setup__()
         cls._error_messages.update({
             'check_not_held': 'Check "%s" is not in held,',
+            'no_journal_check_account': 'You need to define a check account '
+                'in the journal "%s",',
             })
 
     def transition_deposit(self):
@@ -346,38 +347,39 @@ class ThirdCheckDeposit(Wizard):
             if check.state != 'held':
                 self.raise_user_error('check_not_held',
                     error_args=(check.name,))
-            else:
-                move, = Move.create([{
-                    'journal': self.start.bank_account.journal.id,
-                    'state': 'draft',
-                    'period': period_id,
-                    'date': self.start.date,
-                }])
-                lines = []
-                lines.append({
-                    'account':
-                        self.start.bank_account.journal.debit_account.id,
-                    'move': move.id,
-                    'journal': self.start.bank_account.journal.id,
-                    'period': period_id,
-                    'debit': check.amount,
-                    'credit': Decimal('0.0'),
-                    'date': self.start.date,
-                })
-                lines.append({
-                    'account':
-                        self.start.bank_account.journal.third_check_account.id,
-                    'move': move.id,
-                    'journal': self.start.bank_account.journal.id,
-                    'period': period_id,
-                    'debit': Decimal('0.0'),
-                    'credit': check.amount,
-                    'date': self.start.date,
-                })
-                MoveLine.create(lines)
-                ThirdCheck.write([check], {
-                    'account_bank_out': self.start.bank_account.id
-                })
-                ThirdCheck.write([check], {'state': 'deposited'})
-                Move.write([move], {'state': 'posted'})
+            if not self.start.bank_account.journal.third_check_account:
+                self.raise_user_error('no_journal_check_account',
+                    error_args=(self.start.bank_account.journal.name,))
+            move, = Move.create([{
+                'journal': self.start.bank_account.journal.id,
+                'period': period_id,
+                'date': self.start.date,
+            }])
+            lines = []
+            lines.append({
+                'account':
+                    self.start.bank_account.journal.debit_account.id,
+                'move': move.id,
+                'journal': self.start.bank_account.journal.id,
+                'period': period_id,
+                'debit': check.amount,
+                'credit': Decimal('0.0'),
+                'date': self.start.date,
+            })
+            lines.append({
+                'account':
+                    self.start.bank_account.journal.third_check_account.id,
+                'move': move.id,
+                'journal': self.start.bank_account.journal.id,
+                'period': period_id,
+                'debit': Decimal('0.0'),
+                'credit': check.amount,
+                'date': self.start.date,
+            })
+            MoveLine.create(lines)
+            ThirdCheck.write([check], {
+                'account_bank_out': self.start.bank_account.id,
+                'state': 'deposited',
+            })
+            Move.post([move])
         return 'end'
