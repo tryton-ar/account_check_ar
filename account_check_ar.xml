@@ -219,5 +219,31 @@ the full copyright notices and license terms. -->
             </field>
         </record>
 
+        <record model="ir.ui.view" id="view_issued_check_debit">
+            <field name="model">account.issued.check.debit.start</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <![CDATA[
+                    <form string="Check Debit">
+                        <label name="bank_account"/>
+                        <field name="bank_account" widget="selection"/>
+                        <label name="date"/>
+                        <field name="date"/>
+                    </form>
+                    ]]>
+            </field>
+        </record>
+
+        <record model="ir.action.wizard" id="wizard_issued_check_debit">
+            <field name="name">Check Debit</field>
+            <field name="wiz_name">account.issued.check.debit</field>
+            <field name="model">account.issued.check</field>
+        </record>
+        <record model="ir.action.keyword" id="issued_check_debit_keyword">
+            <field name="keyword">form_action</field>
+            <field name="model">account.issued.check,-1</field>
+            <field name="action" ref="wizard_issued_check_debit"/>
+        </record>
+
     </data>
 </tryton>
