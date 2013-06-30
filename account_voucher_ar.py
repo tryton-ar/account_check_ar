@@ -36,6 +36,10 @@ class AccountVoucher:
     @classmethod
     def __setup__(cls):
         super(AccountVoucher, cls).__setup__()
+        cls._error_messages.update({
+            'no_journal_check_account': 'You need to define a check account '
+                'in the journal "%s",',
+            })
         cls.amount.on_change_with.extend(['issued_check', 'third_check',
             'third_pay_checks'])
         cls.amount.on_change_with.extend(['issued_check', 'third_check',
@@ -59,54 +63,49 @@ class AccountVoucher:
         Period = Pool().get('account.period')
         if self.voucher_type == 'receipt':
             if self.third_check:
-                third_check_amount = 0
-                for t_check in self.third_check:
-                    third_check_amount += t_check.amount
-
-                debit = Decimal(str(third_check_amount))
-                credit = Decimal('0.00')
-
-                move_lines.append({
-                    'debit': debit,
-                    'credit': credit,
-                    'account': self.journal.third_check_account.id,
-                    'move': self.move.id,
-                    'journal': self.journal.id,
-                    'period': Period.find(1, date=self.date),
-                    'party': self.party.id,
-                })
+                if not self.journal.third_check_account:
+                    self.raise_user_error('no_journal_check_account',
+                        error_args=(self.journal.name,))
+                for check in self.third_check:
+                    move_lines.append({
+                        'debit': check.amount,
+                        'credit': Decimal('0.00'),
+                        'account': self.journal.third_check_account.id,
+                        'move': self.move.id,
+                        'journal': self.journal.id,
+                        'period': Period.find(1, date=self.date),
+                        'party': self.party.id,
+                        'maturity_date': check.date,
+                    })
 
         if self.voucher_type == 'payment':
             if self.issued_check:
-                issued_check_amount = 0
-                for i_check in self.issued_check:
-                    issued_check_amount += i_check.amount
-                debit = Decimal('0.00')
-                credit = Decimal(str(issued_check_amount))
-                move_lines.append({
-                    'debit': debit,
-                    'credit': credit,
-                    'account': self.journal.issued_check_account.id,
-                    'move': self.move.id,
-                    'journal': self.journal.id,
-                    'period': Period.find(1, date=self.date),
-                    'party': self.party.id,
+                if not self.journal.issued_check_account:
+                    self.raise_user_error('no_journal_check_account',
+                        error_args=(self.journal.name,))
+                for check in self.issued_check:
+                    move_lines.append({
+                        'debit': Decimal('0.00'),
+                        'credit': check.amount,
+                        'account': self.journal.issued_check_account.id,
+                        'move': self.move.id,
+                        'journal': self.journal.id,
+                        'period': Period.find(1, date=self.date),
+                        'party': self.party.id,
+                        'maturity_date': check.date,
                 })
             if self.third_pay_checks:
-                third_paycheck_amount = 0
-                for tp_check in self.third_pay_checks:
-                    third_paycheck_amount += tp_check.amount
-                debit = Decimal('0.00')
-                credit = Decimal(str(third_paycheck_amount))
-                move_lines.append({
-                    'debit': debit,
-                    'credit': credit,
-                    'account': self.journal.third_check_account.id,
-                    'move': self.move.id,
-                    'journal': self.journal.id,
-                    'period': Period.find(1, date=self.date),
-                    'party': self.party.id,
-                })
+                for check in self.third_pay_checks:
+                    move_lines.append({
+                        'debit': Decimal('0.00'),
+                        'credit': check.amount,
+                        'account': self.journal.third_check_account.id,
+                        'move': self.move.id,
+                        'journal': self.journal.id,
+                        'period': Period.find(1, date=self.date),
+                        'party': self.party.id,
+                        'maturity_date': check.date,
+                    })
 
         return move_lines
 
