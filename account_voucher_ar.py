@@ -42,8 +42,6 @@ class AccountVoucher:
             })
         cls.amount.on_change_with.extend(['issued_check', 'third_check',
             'third_pay_checks'])
-        cls.amount.on_change_with.extend(['issued_check', 'third_check',
-            'third_pay_checks'])
 
     def on_change_with_amount(self, name=None):
         amount = super(AccountVoucher, self).on_change_with_amount(name)
