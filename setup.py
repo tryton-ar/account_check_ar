@@ -50,6 +50,7 @@ setup(name='trytond_account_check_ar',
     classifiers=[
         'Development Status :: 1 - Alpha',
         'Environment :: Plugins',
+        'Framework :: Tryton',
         'Intended Audience :: Developers',
         'Intended Audience :: Financial and Insurance Industry',
         'Intended Audience :: Legal Industry',
