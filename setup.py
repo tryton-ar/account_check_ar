@@ -48,7 +48,7 @@ setup(name='trytond_account_check_ar',
                 + info.get('translation', []),
     },
     classifiers=[
-        'Development Status :: 1 - Alpha',
+        'Development Status :: 3 - Alpha',
         'Environment :: Plugins',
         'Framework :: Tryton',
         'Intended Audience :: Developers',
