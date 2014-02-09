@@ -18,7 +18,6 @@ info = dict(config.items('tryton'))
 for key in ('depends', 'extras_depend', 'xml'):
     if key in info:
         info[key] = info[key].strip().splitlines()
-
 major_version, minor_version, _ = info.get('version', '0.0.1').split('.', 2)
 major_version = int(major_version)
 minor_version = int(minor_version)
@@ -34,19 +33,20 @@ requires.append('trytond >= %s.%s, < %s.%s' %
 
 setup(name='trytond_account_check_ar',
     version=info.get('version', '0.0.1'),
-    description=info.get('description', ''),
-    author=info.get('author', ''),
-    author_email=info.get('email', ''),
-    url=info.get('website', ''),
+    description='Tryton module for accounting check of Argentina',
+    long_description=read('README'),
+    author='Thymbra',
+    author_email='info@thymbra.com',
+    url='http://www.thymbra.com/',
     package_dir={'trytond.modules.account_check_ar': '.'},
     packages=[
         'trytond.modules.account_check_ar',
         'trytond.modules.account_check_ar.tests',
-    ],
+        ],
     package_data={
-        'trytond.modules.account_check_ar': info.get('xml', []) \
-                + info.get('translation', []),
-    },
+        'trytond.modules.account_check_ar': (info.get('xml', [])
+            + ['tryton.cfg', 'locale/*.po']),
+        },
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: Plugins',
@@ -62,7 +62,7 @@ setup(name='trytond_account_check_ar',
         'Programming Language :: Python :: 2.7',
         'Topic :: Office/Business',
         'Topic :: Office/Business :: Financial :: Accounting',
-    ],
+        ],
     license='GPL-3',
     install_requires=requires,
     zip_safe=False,
@@ -72,4 +72,4 @@ setup(name='trytond_account_check_ar',
     """,
     test_suite='tests',
     test_loader='trytond.test_loader:Loader',
-)
+    )
