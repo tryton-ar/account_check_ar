@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!-- This file is part of the account_check_ar module for Tryton.
+The COPYRIGHT file at the top level of this repository contains
+the full copyright notices and license terms. -->
+<form string="Issued Check">
+    <label name="name"/>
+    <field name="name"/>
+    <label name="amount"/>
+    <field name="amount"/>
+    <label name="date_out"/>
+    <field name="date_out"/>
+    <label name="date"/>
+    <field name="date"/>
+    <separator string="Target" colspan="4" id="target"
+        states="{'invisible': Equal(Eval('state'), 'draft')}"/>
+    <label name="receiving_party"/>
+    <field name="receiving_party"/>
+    <label name="debit_date"/>
+    <field name="debit_date"/>
+    <separator string="Extra Info" colspan="4" id="extra_info"/>
+    <label name="on_order"/>
+    <field name="on_order"/>
+    <label name="signatory"/>
+    <field name="signatory"/>
+    <label name="clearing"/>
+    <field name="clearing"/>
+    <label name="state"/>
+    <field name="state"/>
+</form>

@@ -34,54 +34,12 @@ the full copyright notices and license terms. -->
         <record model="ir.ui.view" id="account_issued_check_form">
             <field name="model">account.issued.check</field>
             <field name="type">form</field>
-            <field name="arch" type="xml">
-                <![CDATA[
-                <form string="Issued Check">
-                    <label name="name"/>
-                    <field name="name"/>
-                    <label name="amount"/>
-                    <field name="amount"/>
-                    <label name="date_out"/>
-                    <field name="date_out"/>
-                    <label name="date"/>
-                    <field name="date"/>
-                    <separator string="Target" colspan="4" id="target"
-                        states="{'invisible': Equal(Eval('state'), 'draft')}"/>
-                    <label name="receiving_party"/>
-                    <field name="receiving_party"/>
-                    <label name="debit_date"/>
-                    <field name="debit_date"/>
-                    <separator string="Extra Info" colspan="4" id="extra_info"/>
-                    <label name="on_order"/>
-                    <field name="on_order"/>
-                    <label name="signatory"/>
-                    <field name="signatory"/>
-                    <label name="clearing"/>
-                    <field name="clearing"/>
-                    <label name="state"/>
-                    <field name="state"/>
-                </form>
-                ]]>
-            </field>
+            <field name="name">account_issued_check_form</field>
         </record>
         <record model="ir.ui.view" id="account_issued_check_tree">
             <field name="model">account.issued.check</field>
             <field name="type">tree</field>
-            <field name="arch" type="xml">
-                <![CDATA[
-                <tree string="Issued Checks">
-                    <field name="name"/>
-                    <field name="amount"/>
-                    <field name="date_out"/>
-                    <field name="date"/>
-                    <field name="receiving_party"/>
-                    <field name="debit_date"/>
-                    <field name="on_order"/>
-                    <field name="clearing"/>
-                    <field name="state"/>
-                </tree>
-                ]]>
-            </field>
+            <field name="name">account_issued_check_tree</field>
         </record>
         <record model="ir.action.act_window" id="act_issued_check_tree">
             <field name="name">Issued Checks</field>
@@ -103,76 +61,12 @@ the full copyright notices and license terms. -->
         <record model="ir.ui.view" id="account_third_check_form">
             <field name="model">account.third.check</field>
             <field name="type">form</field>
-            <field name="arch" type="xml">
-                <![CDATA[
-                <form string="Third Check">
-                    <label name="name"/>
-                    <field name="name"/>
-                    <label name="amount"/>
-                    <field name="amount"/>
-                    <label name="date_in"/>
-                    <field name="date_in"/>
-                    <label name="date"/>
-                    <field name="date"/>
-                    <label name="bank"/>
-                    <field name="bank"/>
-                    <separator string="Origin" colspan="4" id="origin"
-                        states="{'invisible': Equal(Eval('state'), 'draft')}"/>
-                    <label name="source_party"/>
-                    <field name="source_party"/>
-                    <label name="voucher_in"/>
-                    <field name="voucher_in"/>
-                    <separator string="Target" colspan="4" id="target"
-                        states="{'invisible': Not(Equal(Eval('state'),
-                            'delivered'))}"/>
-                    <label name="date_out"/>
-                    <field name="date_out"/>
-                    <label name="destiny_party"/>
-                    <field name="destiny_party"/>
-                    <label name="voucher_out"/>
-                    <field name="voucher_out"/>
-                    <label name="account_bank_out"/>
-                    <field name="account_bank_out"/>
-                    <label name="debit_date"/>
-                    <field name="debit_date"/>
-                    <separator string="Extra Info" colspan="4" id="extra_info"/>
-                    <label name="on_order"/>
-                    <field name="on_order"/>
-                    <label name="signatory"/>
-                    <field name="signatory"/>
-                    <label name="clearing"/>
-                    <field name="clearing"/>
-                    <label name="state"/>
-                    <field name="state"/>
-                    <button name="held" colspan="2"
-                        string="_Held"
-                        icon="tryton-go-next"/>
-                    <button name="deposited" colspan="2"
-                        string="_Deposit"
-                        icon="tryton-go-next"/>
-                </form>
-                ]]>
-            </field>
+            <field name="name">account_third_check_form</field>
         </record>
         <record model="ir.ui.view" id="account_third_check_tree">
             <field name="model">account.third.check</field>
             <field name="type">tree</field>
-            <field name="arch" type="xml">
-                <![CDATA[
-                <tree string="Third Checks">
-                    <field name="name"/>
-                    <field name="amount"/>
-                    <field name="date_in"/>
-                    <field name="date"/>
-                    <field name="bank"/>
-                    <field name="source_party"/>
-                    <field name="date_out"/>
-                    <field name="destiny_party"/>
-                    <field name="account_bank_out"/>
-                    <field name="state"/>
-                </tree>
-                ]]>
-            </field>
+            <field name="name">account_third_check_tree</field>
         </record>
         <record model="ir.action.act_window" id="act_third_check_tree">
             <field name="name">Third Checks</field>
@@ -194,44 +88,19 @@ the full copyright notices and license terms. -->
         <record model="ir.ui.view" id="view_third_check_held">
             <field name="model">account.third.check.held.start</field>
             <field name="type">form</field>
-            <field name="arch" type="xml">
-                <![CDATA[
-                <form string="Check Held">
-                    <label name="journal"/>
-                    <field name="journal" widget="selection"/>
-                </form>
-                ]]>
-            </field>
+            <field name="name">third_check_held</field>
         </record>
 
         <record model="ir.ui.view" id="view_third_check_deposit">
             <field name="model">account.third.check.deposit.start</field>
             <field name="type">form</field>
-            <field name="arch" type="xml">
-                <![CDATA[
-                <form string="Check Deposit">
-                    <label name="bank_account"/>
-                    <field name="bank_account" widget="selection"/>
-                    <label name="date"/>
-                    <field name="date"/>
-                </form>
-                ]]>
-            </field>
+            <field name="name">third_check_deposit</field>
         </record>
 
         <record model="ir.ui.view" id="view_issued_check_debit">
             <field name="model">account.issued.check.debit.start</field>
             <field name="type">form</field>
-            <field name="arch" type="xml">
-                <![CDATA[
-                    <form string="Check Debit">
-                        <label name="bank_account"/>
-                        <field name="bank_account" widget="selection"/>
-                        <label name="date"/>
-                        <field name="date"/>
-                    </form>
-                    ]]>
-            </field>
+            <field name="name">issued_check_debit</field>
         </record>
 
         <record model="ir.action.wizard" id="wizard_issued_check_debit">

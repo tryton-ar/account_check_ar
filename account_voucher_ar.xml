@@ -9,69 +9,25 @@ the full copyright notices and license terms. -->
             <field name="model">account.voucher</field>
             <field name="inherit" ref="account_voucher_ar.account_voucher_form"/>
             <field name="type">form</field>
-            <field name="arch" type="xml">
-                <![CDATA[
-                <data>
-
-                    <xpath
-                        expr="/form/notebook/page[@id=&quot;pay_lines&quot;]"
-                        position="after">
-                        <page string="Checks" id="checks" col="6">
-                            <field name="issued_check" mode="tree" colspan="6"
-                                view_ids="account_check_ar.issued_check_view_tree"/>
-                            <field name="third_pay_checks" mode="tree" colspan="6"
-                                view_ids="account_check_ar.third_pay_checks_view_tree"/>
-                            <field name="third_check" mode="tree" colspan="3"
-                                view_ids="account_check_ar.third_check_view_tree"/>
-                        </page>
-                    </xpath>
-
-                </data>
-                ]]>
-            </field>
+            <field name="name">voucher_check_form</field>
         </record>
 
         <record model="ir.ui.view" id="issued_check_view_tree">
             <field name="model">account.issued.check</field>
             <field name="type">tree</field>
-            <field name="arch" type="xml">
-                <![CDATA[
-                <tree string="Issued Checks">
-                    <field name="name"/>
-                    <field name="amount"/>
-                </tree>
-                ]]>
-            </field>
+            <field name="name">issued_check_tree</field>
         </record>
 
         <record model="ir.ui.view" id="third_pay_checks_view_tree">
             <field name="model">account.third.check</field>
             <field name="type">tree</field>
-            <field name="arch" type="xml">
-                <![CDATA[
-                <tree string="Third Checks">
-                    <field name="name"/>
-                    <field name="date"/>
-                    <field name="source_party"/>
-                    <field name="amount"/>
-                </tree>
-                ]]>
-            </field>
+            <field name="name">third_pay_checks_tree</field>
         </record>
 
         <record model="ir.ui.view" id="third_check_view_tree">
             <field name="model">account.third.check</field>
             <field name="type">tree</field>
-            <field name="arch" type="xml">
-                <![CDATA[
-                <tree string="Third Checks">
-                    <field name="name"/>
-                    <field name="bank"/>
-                    <field name="date"/>
-                    <field name="amount"/>
-                </tree>
-                ]]>
-            </field>
+            <field name="name">third_check_tree</field>
         </record>
 
     </data>
