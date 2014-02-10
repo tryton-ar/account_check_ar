@@ -9,22 +9,7 @@ the full copyright notices and license terms. -->
             <field name="model">account.journal</field>
             <field name="inherit" ref="account.journal_view_form"/>
             <field name="type">form</field>
-            <field name="arch" type="xml">
-                <![CDATA[
-                <data>
-                    <xpath
-                        expr="/form/notebook/page[@id=&quot;general&quot;]"
-                        position="after">
-                        <page string="Checks" id="journal_checks">
-                            <label name="third_check_account"/>
-                            <field name="third_check_account"/>
-                            <label name="issued_check_account"/>
-                            <field name="issued_check_account"/>
-                        </page>
-                    </xpath>
-                </data>
-                ]]>
-            </field>
+            <field name="name">journal_check_form</field>
         </record>
 
     </data>

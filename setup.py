@@ -45,7 +45,7 @@ setup(name='trytond_account_check_ar',
         ],
     package_data={
         'trytond.modules.account_check_ar': (info.get('xml', [])
-            + ['tryton.cfg', 'locale/*.po']),
+            + ['tryton.cfg', 'view/*.xml', 'locale/*.po']),
         },
     classifiers=[
         'Development Status :: 3 - Alpha',
