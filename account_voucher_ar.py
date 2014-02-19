@@ -71,7 +71,7 @@ class AccountVoucher:
                         'account': self.journal.third_check_account.id,
                         'move': self.move.id,
                         'journal': self.journal.id,
-                        'period': Period.find(1, date=self.date),
+                        'period': Period.find(self.company.id, date=self.date),
                         'party': self.party.id,
                         'maturity_date': check.date,
                     })
@@ -88,7 +88,7 @@ class AccountVoucher:
                         'account': self.journal.issued_check_account.id,
                         'move': self.move.id,
                         'journal': self.journal.id,
-                        'period': Period.find(1, date=self.date),
+                        'period': Period.find(self.company.id, date=self.date),
                         'party': self.party.id,
                         'maturity_date': check.date,
                 })
@@ -100,7 +100,7 @@ class AccountVoucher:
                         'account': self.journal.third_check_account.id,
                         'move': self.move.id,
                         'journal': self.journal.id,
-                        'period': Period.find(1, date=self.date),
+                        'period': Period.find(self.company.id, date=self.date),
                         'party': self.party.id,
                         'maturity_date': check.date,
                     })
