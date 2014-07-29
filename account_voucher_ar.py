@@ -117,18 +117,18 @@ class AccountVoucher:
 
         for voucher in vouchers:
             if voucher.issued_check:
-                IssuedCheck.write(voucher.issued_check, {
+                IssuedCheck.write(list(voucher.issued_check), {
                     'receiving_party': voucher.party.id,
                     'state': 'issued',
                 })
                 IssuedCheck.issued(voucher.issued_check)
             if voucher.third_check:
-                ThirdCheck.write(voucher.third_check, {
+                ThirdCheck.write(list(voucher.third_check), {
                     'source_party': voucher.party.id,
                     'state': 'held',
                 })
             if voucher.third_pay_checks:
-                ThirdCheck.write(voucher.third_pay_checks, {
+                ThirdCheck.write(list(voucher.third_pay_checks), {
                     'destiny_party': voucher.party.id,
                     'date_out': Date.today(),
                     'state': 'delivered',
