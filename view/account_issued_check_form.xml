@@ -3,6 +3,8 @@
 The COPYRIGHT file at the top level of this repository contains
 the full copyright notices and license terms. -->
 <form string="Issued Check">
+    <label name="bank_account"/>
+    <field name="bank_account"/>
     <label name="name"/>
     <field name="name"/>
     <label name="amount"/>
@@ -11,8 +13,7 @@ the full copyright notices and license terms. -->
     <field name="date_out"/>
     <label name="date"/>
     <field name="date"/>
-    <separator string="Target" colspan="4" id="target"
-        states="{'invisible': Equal(Eval('state'), 'draft')}"/>
+    <separator string="Target" colspan="4" id="target"/>
     <label name="receiving_party"/>
     <field name="receiving_party"/>
     <label name="debit_date"/>

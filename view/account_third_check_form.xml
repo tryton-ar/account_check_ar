@@ -13,14 +13,12 @@ the full copyright notices and license terms. -->
     <field name="date"/>
     <label name="bank"/>
     <field name="bank"/>
-    <separator string="Origin" colspan="4" id="origin"
-        states="{'invisible': Equal(Eval('state'), 'draft')}"/>
+    <separator string="Origin" colspan="4" id="origin"/>
     <label name="source_party"/>
     <field name="source_party"/>
     <label name="voucher_in"/>
     <field name="voucher_in"/>
-    <separator string="Target" colspan="4" id="target"
-        states="{'invisible': Not(Equal(Eval('state'), 'delivered'))}"/>
+    <separator string="Target" colspan="4" id="target"/>
     <label name="date_out"/>
     <field name="date_out"/>
     <label name="destiny_party"/>
