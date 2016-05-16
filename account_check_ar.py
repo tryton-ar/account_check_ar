@@ -56,10 +56,16 @@ class AccountIssuedCheck(ModelSQL, ModelView):
         ('issued', 'Issued'),
         ('debited', 'Debited'),
         ], 'State', readonly=True)
+    bank_account = fields.Many2One('bank.account', 'Bank Account', 
+        required=True, domain=[('owners', 'in', [1])],
+        states=_STATES, depends=_DEPENDS)
 
     @classmethod
     def __setup__(cls):
         super(AccountIssuedCheck, cls).__setup__()
+        cls._error_messages.update({
+            'delete_check': 'You can not delete a check that is used!',
+        })
         cls._buttons.update({
                 'issued': {
                     'invisible': Eval('state') != 'draft',
@@ -90,6 +96,15 @@ class AccountIssuedCheck(ModelSQL, ModelView):
     @ModelView.button
     def debited(cls, checks):
         pass
+
+    @classmethod
+    def delete(cls, checks):
+        if not checks:
+            return True
+        for check in checks:
+            if check.state != 'draft':
+                cls.raise_user_error('delete_check')
+        return super(AccountIssuedCheck, cls).delete(checks)
 
 
 class AccountThirdCheck(ModelSQL, ModelView):
@@ -146,9 +161,9 @@ class AccountThirdCheck(ModelSQL, ModelView):
             }, depends=_DEPENDS)
     reject_debit_note = fields.Many2One('account.invoice', 'Debit Note',
         readonly=True, depends=_DEPENDS)  # TODO
-    bank = fields.Many2One('account.bank', 'Bank', required=True,
+    bank = fields.Many2One('bank', 'Bank', required=True,
         states=_STATES, depends=_DEPENDS)
-    account_bank_out = fields.Many2One('account.party.bank', 'Bank Account',
+    account_bank_out = fields.Many2One('bank.account', 'Bank Account',
         readonly=True, states={
             'invisible': Eval('state') != 'deposited',
             }, depends=_DEPENDS)
@@ -156,6 +171,9 @@ class AccountThirdCheck(ModelSQL, ModelView):
     @classmethod
     def __setup__(cls):
         super(AccountThirdCheck, cls).__setup__()
+        cls._error_messages.update({
+            'delete_check': 'You can not delete a check that is used!',
+        })
         cls._buttons.update({
                 'held': {
                     'invisible': Eval('state') != 'draft',
@@ -203,6 +221,15 @@ class AccountThirdCheck(ModelSQL, ModelView):
     @ModelView.button
     def rejected(self, checks):
         pass
+
+    @classmethod
+    def delete(cls, checks):
+        if not checks:
+            return True
+        for check in checks:
+            if check.state != 'draft':
+                cls.raise_user_error('delete_check')
+        return super(AccountThirdCheck, cls).delete(checks)
 
 
 class AccountVoucherThirdCheck(ModelSQL):
@@ -299,7 +326,7 @@ class ThirdCheckDepositStart(ModelView):
     'Third Check Deposit Start'
     __name__ = 'account.third.check.deposit.start'
 
-    bank_account = fields.Many2One('account.party.bank', 'Bank Account',
+    bank_account = fields.Many2One('bank.account', 'Bank Account',
         required=True)
     date = fields.Date('Date', required=True)
 
@@ -383,7 +410,7 @@ class IssuedCheckDebitStart(ModelView):
     'Issued Check Debit Start'
     __name__ = 'account.issued.check.debit.start'
 
-    bank_account = fields.Many2One('account.party.bank', 'Bank Account',
+    bank_account = fields.Many2One('bank.account', 'Bank Account',
         required=True)
     date = fields.Date('Date', required=True)
 
@@ -443,7 +470,6 @@ class IssuedCheckDebit(Wizard):
                 'move': move.id,
                 'journal': self.start.bank_account.journal.id,
                 'period': period_id,
-                'party': check.receiving_party.id,
                 })
 
             lines.append({
@@ -454,7 +480,6 @@ class IssuedCheckDebit(Wizard):
                 'journal': self.start.bank_account.journal.id,
                 'period': period_id,
                 'date': self.start.date,
-                'party': check.receiving_party.id
                 })
             MoveLine.create(lines)
 

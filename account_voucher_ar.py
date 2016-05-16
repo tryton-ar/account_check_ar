@@ -3,7 +3,7 @@
 #the full copyright notices and license terms.
 from decimal import Decimal
 from trytond.model import ModelView, fields
-from trytond.pyson import Eval, Not, In
+from trytond.pyson import Eval, Not, In, Or
 from trytond.pool import Pool, PoolMeta
 
 __all__ = ['AccountVoucher']
@@ -14,24 +14,38 @@ class AccountVoucher:
     __name__ = 'account.voucher'
 
     issued_check = fields.One2Many('account.issued.check', 'voucher',
-        'Issued Checks', states={
+        'Issued Checks', 
+        add_remove=[
+                ('state', '=', 'draft'),
+                ],
+        states={
             'invisible': Not(In(Eval('voucher_type'), ['payment'])),
-            'readonly': In(Eval('state'), ['posted']),
-        })
+            'readonly': Or(
+                            In(Eval('state'), ['posted']), 
+                            Not(In(Eval('currency_code'), ['ARS']))),
+            })
     third_pay_checks = fields.Many2Many('account.voucher-account.third.check',
         'voucher', 'third_check', 'Third Checks',
         states={
             'invisible': Not(In(Eval('voucher_type'), ['payment'])),
-            'readonly': In(Eval('state'), ['posted']),
+            'readonly': Or(
+                            In(Eval('state'), ['posted']), 
+                            Not(In(Eval('currency_code'), ['ARS']))),
             },
         domain=[
             ('state', '=', 'held'),
             ])
     third_check = fields.One2Many('account.third.check', 'voucher_in',
-        'Third Checks', states={
+        'Third Checks', 
+        add_remove=[
+                ('state', '=', 'draft'),
+                ],
+        states={
             'invisible': Not(In(Eval('voucher_type'), ['receipt'])),
-            'readonly': In(Eval('state'), ['posted']),
-        })
+            'readonly': Or(
+                            In(Eval('state'), ['posted']), 
+                            Not(In(Eval('currency_code'), ['ARS']))),
+            })
 
     @classmethod
     def __setup__(cls):
@@ -72,7 +86,6 @@ class AccountVoucher:
                         'move': self.move.id,
                         'journal': self.journal.id,
                         'period': Period.find(self.company.id, date=self.date),
-                        'party': self.party.id,
                         'maturity_date': check.date,
                     })
 
@@ -89,7 +102,6 @@ class AccountVoucher:
                         'move': self.move.id,
                         'journal': self.journal.id,
                         'period': Period.find(self.company.id, date=self.date),
-                        'party': self.party.id,
                         'maturity_date': check.date,
                 })
             if self.third_pay_checks:
@@ -101,7 +113,6 @@ class AccountVoucher:
                         'move': self.move.id,
                         'journal': self.journal.id,
                         'period': Period.find(self.company.id, date=self.date),
-                        'party': self.party.id,
                         'maturity_date': check.date,
                     })
 
@@ -132,4 +143,30 @@ class AccountVoucher:
                     'destiny_party': voucher.party.id,
                     'date_out': Date.today(),
                     'state': 'delivered',
+                })
+
+
+    @classmethod
+    @ModelView.button
+    def cancel(cls, vouchers):
+        super(AccountVoucher, cls).cancel(vouchers)
+        ThirdCheck = Pool().get('account.third.check')
+        IssuedCheck = Pool().get('account.issued.check')
+
+        for voucher in vouchers:
+            if voucher.issued_check:
+                IssuedCheck.write(list(voucher.issued_check), {
+                    'receiving_party': None,
+                    'state': 'draft',
+                })
+            if voucher.third_check:
+                ThirdCheck.write(list(voucher.third_check), {
+                    'source_party': None,
+                    'state': 'draft',
+                })
+            if voucher.third_pay_checks:
+                ThirdCheck.write(list(voucher.third_pay_checks), {
+                    'destiny_party': None,
+                    'date_out': None,
+                    'state': 'draft',
                 })
