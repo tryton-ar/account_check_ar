@@ -9,10 +9,12 @@ the full copyright notices and license terms. -->
     <field name="name"/>
     <label name="amount"/>
     <field name="amount"/>
-    <label name="date_out"/>
-    <field name="date_out"/>
     <label name="date"/>
     <field name="date"/>
+    <label name="date_out"/>
+    <field name="date_out"/>
+    <label name="voucher"/>
+    <field name="voucher"/>
     <separator string="Target" colspan="4" id="target"/>
     <label name="receiving_party"/>
     <field name="receiving_party"/>

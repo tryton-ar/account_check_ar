@@ -24,5 +24,3 @@ def register():
         ThirdCheckDeposit,
         IssuedCheckDebit,
         module='account_check_ar', type_='wizard')
-
-

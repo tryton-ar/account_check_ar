@@ -56,7 +56,7 @@ class AccountIssuedCheck(ModelSQL, ModelView):
         ('issued', 'Issued'),
         ('debited', 'Debited'),
         ], 'State', readonly=True)
-    bank_account = fields.Many2One('bank.account', 'Bank Account', 
+    bank_account = fields.Many2One('bank.account', 'Bank Account',
         required=True, domain=[('owners', 'in', [1])],
         states=_STATES, depends=_DEPENDS)
 
@@ -134,6 +134,8 @@ class AccountThirdCheck(ModelSQL, ModelView):
         readonly=True, states={
             'invisible': Eval('state') != 'delivered',
             }, depends=_DEPENDS)
+    not_to_order = fields.Boolean('Not to order', states=_STATES,
+        depends=_DEPENDS)
     on_order = fields.Char('On Order', states=_STATES, depends=_DEPENDS)
     signatory = fields.Char('Signatory', states=_STATES, depends=_DEPENDS)
     state = fields.Selection([
@@ -202,6 +204,10 @@ class AccountThirdCheck(ModelSQL, ModelView):
     @staticmethod
     def default_amount():
         return Decimal('0.00')
+
+    @staticmethod
+    def default_not_to_order():
+        return False
 
     @classmethod
     @ModelView.button_action('account_check_ar.wizard_third_check_held')
@@ -285,8 +291,8 @@ class ThirdCheckHeld(Wizard):
 
         date = Date.today()
         period_id = Pool().get('account.period').find(1, date)
-        for check in ThirdCheck.browse(
-            Transaction().context.get('active_ids')):
+        for check in ThirdCheck.browse(Transaction().context.get(
+                'active_ids')):
             if check.state != 'draft':
                 self.raise_user_error('check_not_draft',
                     error_args=(check.name,))
@@ -363,8 +369,8 @@ class ThirdCheckDeposit(Wizard):
         period_id = Pool().get('account.period').find(1,
             date=self.start.date)
 
-        for check in ThirdCheck.browse(
-            Transaction().context.get('active_ids')):
+        for check in ThirdCheck.browse(Transaction().context.get(
+                'active_ids')):
             if check.state != 'held':
                 self.raise_user_error('check_not_held',
                     error_args=(check.name,))
@@ -426,9 +432,9 @@ class IssuedCheckDebit(Wizard):
 
     start = StateView('account.issued.check.debit.start',
         'account_check_ar.view_issued_check_debit', [
-        Button('Cancel', 'end', 'tryton-cancel'),
-        Button('Debit', 'debit', 'tryton-ok', default=True),
-        ])
+            Button('Cancel', 'end', 'tryton-cancel'),
+            Button('Debit', 'debit', 'tryton-ok', default=True),
+            ])
     debit = StateTransition()
 
     @classmethod
@@ -448,7 +454,7 @@ class IssuedCheckDebit(Wizard):
             date=self.start.date)
 
         for check in IssuedCheck.browse(Transaction().context.get(
-            'active_ids')):
+                'active_ids')):
             if check.state != 'issued':
                 self.raise_user_error('check_not_issued',
                     error_args=(check.name,))

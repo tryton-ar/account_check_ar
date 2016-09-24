@@ -1,4 +1,4 @@
-# 
+#
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
@@ -9,6 +9,10 @@ msgstr "Cheque \"%s\" no está emitido"
 msgctxt "error:account.issued.check.debit:"
 msgid "You need to define a check account in the journal \"%s\","
 msgstr "Debe definir la cuenta del cheque en el diario \"%s\","
+
+msgctxt "error:account.issued.check:"
+msgid "You can not delete a check that is used!"
+msgstr "No puede eliminar un cheque usado"
 
 msgctxt "error:account.third.check.deposit:"
 msgid "Check \"%s\" is not in held,"
@@ -22,6 +26,10 @@ msgctxt "error:account.third.check.held:"
 msgid "Check \"%s\" is not draft"
 msgstr "Cheque \"%s\" no es borrador"
 
+msgctxt "error:account.third.check:"
+msgid "You can not delete a check that is used!"
+msgstr "No puede eliminar un cheque usado"
+
 msgctxt "error:account.voucher:"
 msgid "You need to define a check account in the journal \"%s\","
 msgstr "Debe definir la cuenta del cheque en el diario \"%s\","
@@ -29,6 +37,10 @@ msgstr "Debe definir la cuenta del cheque en el diario \"%s\","
 msgctxt "field:account.issued.check,amount:"
 msgid "Amount"
 msgstr "Importe"
+
+msgctxt "field:account.issued.check,bank_account:"
+msgid "Bank Account"
+msgstr "Cuenta Bancaria"
 
 msgctxt "field:account.issued.check,clearing:"
 msgid "Clearing"
@@ -88,7 +100,7 @@ msgstr "Estado"
 
 msgctxt "field:account.issued.check,voucher:"
 msgid "Voucher"
-msgstr "Comprobantes"
+msgstr "Comprobante"
 
 msgctxt "field:account.issued.check,write_date:"
 msgid "Write Date"
@@ -170,6 +182,10 @@ msgctxt "field:account.third.check,name:"
 msgid "Number"
 msgstr "Número"
 
+msgctxt "field:account.third.check,not_to_order:"
+msgid "Not to order"
+msgstr "No a la orden"
+
 msgctxt "field:account.third.check,on_order:"
 msgid "On Order"
 msgstr "A la orden"
@@ -204,11 +220,11 @@ msgstr "CUIT"
 
 msgctxt "field:account.third.check,voucher_in:"
 msgid "Origin Voucher"
-msgstr "Origen"
+msgstr "Comprobante origen"
 
 msgctxt "field:account.third.check,voucher_out:"
 msgid "Target Voucher"
-msgstr "Destino"
+msgstr "Comprobante destino"
 
 msgctxt "field:account.third.check,write_date:"
 msgid "Write Date"
@@ -338,9 +354,10 @@ msgctxt "model:ir.ui.menu,name:menu_treasury"
 msgid "Treasury"
 msgstr "Tesorería"
 
+#, fuzzy
 msgctxt "selection:account.issued.check,clearing:"
 msgid ""
-msgstr ""
+msgstr "Observaciones de la partida"
 
 msgctxt "selection:account.issued.check,clearing:"
 msgid "24 hs"
@@ -366,9 +383,10 @@ msgctxt "selection:account.issued.check,state:"
 msgid "Issued"
 msgstr "Emitido"
 
+#, fuzzy
 msgctxt "selection:account.third.check,clearing:"
 msgid ""
-msgstr ""
+msgstr "Observaciones de la partida"
 
 msgctxt "selection:account.third.check,clearing:"
 msgid "24 hs"

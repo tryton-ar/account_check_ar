@@ -13,22 +13,24 @@ the full copyright notices and license terms. -->
     <field name="date"/>
     <label name="bank"/>
     <field name="bank"/>
+    <label name="not_to_order"/>
+    <field name="not_to_order"/>
     <separator string="Origin" colspan="4" id="origin"/>
     <label name="source_party"/>
     <field name="source_party"/>
     <label name="voucher_in"/>
     <field name="voucher_in"/>
     <separator string="Target" colspan="4" id="target"/>
-    <label name="date_out"/>
-    <field name="date_out"/>
     <label name="destiny_party"/>
     <field name="destiny_party"/>
     <label name="voucher_out"/>
     <field name="voucher_out"/>
-    <label name="account_bank_out"/>
-    <field name="account_bank_out"/>
+    <label name="date_out"/>
+    <field name="date_out"/>
     <label name="debit_date"/>
     <field name="debit_date"/>
+    <label name="account_bank_out"/>
+    <field name="account_bank_out"/>
     <separator string="Extra Info" colspan="4" id="extra_info"/>
     <label name="on_order"/>
     <field name="on_order"/>

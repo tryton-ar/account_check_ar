@@ -14,14 +14,14 @@ class AccountVoucher:
     __name__ = 'account.voucher'
 
     issued_check = fields.One2Many('account.issued.check', 'voucher',
-        'Issued Checks', 
+        'Issued Checks',
         add_remove=[
                 ('state', '=', 'draft'),
                 ],
         states={
             'invisible': Not(In(Eval('voucher_type'), ['payment'])),
             'readonly': Or(
-                            In(Eval('state'), ['posted']), 
+                            In(Eval('state'), ['posted']),
                             Not(In(Eval('currency_code'), ['ARS']))),
             })
     third_pay_checks = fields.Many2Many('account.voucher-account.third.check',
@@ -29,21 +29,22 @@ class AccountVoucher:
         states={
             'invisible': Not(In(Eval('voucher_type'), ['payment'])),
             'readonly': Or(
-                            In(Eval('state'), ['posted']), 
+                            In(Eval('state'), ['posted']),
                             Not(In(Eval('currency_code'), ['ARS']))),
             },
         domain=[
             ('state', '=', 'held'),
+            ('not_to_order', '=', False),
             ])
     third_check = fields.One2Many('account.third.check', 'voucher_in',
-        'Third Checks', 
+        'Third Checks',
         add_remove=[
                 ('state', '=', 'draft'),
                 ],
         states={
             'invisible': Not(In(Eval('voucher_type'), ['receipt'])),
             'readonly': Or(
-                            In(Eval('state'), ['posted']), 
+                            In(Eval('state'), ['posted']),
                             Not(In(Eval('currency_code'), ['ARS']))),
             })
 
@@ -103,7 +104,7 @@ class AccountVoucher:
                         'journal': self.journal.id,
                         'period': Period.find(self.company.id, date=self.date),
                         'maturity_date': check.date,
-                })
+                        })
             if self.third_pay_checks:
                 for check in self.third_pay_checks:
                     move_lines.append({
@@ -114,59 +115,63 @@ class AccountVoucher:
                         'journal': self.journal.id,
                         'period': Period.find(self.company.id, date=self.date),
                         'maturity_date': check.date,
-                    })
+                        })
 
         return move_lines
 
     @classmethod
     @ModelView.button
     def post(cls, vouchers):
-        super(AccountVoucher, cls).post(vouchers)
-        ThirdCheck = Pool().get('account.third.check')
-        IssuedCheck = Pool().get('account.issued.check')
-        Date = Pool().get('ir.date')
+        pool = Pool()
+        ThirdCheck = pool.get('account.third.check')
+        IssuedCheck = pool.get('account.issued.check')
+        Date = pool.get('ir.date')
 
+        super(AccountVoucher, cls).post(vouchers)
+
+        today = Date.today()
         for voucher in vouchers:
             if voucher.issued_check:
                 IssuedCheck.write(list(voucher.issued_check), {
                     'receiving_party': voucher.party.id,
                     'state': 'issued',
-                })
+                    })
                 IssuedCheck.issued(voucher.issued_check)
             if voucher.third_check:
                 ThirdCheck.write(list(voucher.third_check), {
                     'source_party': voucher.party.id,
                     'state': 'held',
-                })
+                    })
             if voucher.third_pay_checks:
                 ThirdCheck.write(list(voucher.third_pay_checks), {
                     'destiny_party': voucher.party.id,
-                    'date_out': Date.today(),
+                    'date_out': today,
                     'state': 'delivered',
-                })
-
+                    })
 
     @classmethod
     @ModelView.button
     def cancel(cls, vouchers):
+        pool = Pool()
+        ThirdCheck = pool.get('account.third.check')
+        IssuedCheck = pool.get('account.issued.check')
+
         super(AccountVoucher, cls).cancel(vouchers)
-        ThirdCheck = Pool().get('account.third.check')
-        IssuedCheck = Pool().get('account.issued.check')
 
         for voucher in vouchers:
             if voucher.issued_check:
                 IssuedCheck.write(list(voucher.issued_check), {
                     'receiving_party': None,
                     'state': 'draft',
-                })
+                    })
             if voucher.third_check:
                 ThirdCheck.write(list(voucher.third_check), {
                     'source_party': None,
                     'state': 'draft',
-                })
+                    })
             if voucher.third_pay_checks:
                 ThirdCheck.write(list(voucher.third_pay_checks), {
                     'destiny_party': None,
                     'date_out': None,
                     'state': 'draft',
-                })
+                    })
