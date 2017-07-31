@@ -1,17 +1,18 @@
-#This file is part of the account_check_ar module for Tryton.
-#The COPYRIGHT file at the top level of this repository contains
-#the full copyright notices and license terms.
+# This file is part of the account_check_ar module for Tryton.
+# The COPYRIGHT file at the top level of this repository contains
+# the full copyright notices and license terms.
 from decimal import Decimal
+
 from trytond.model import ModelView, fields
 from trytond.pyson import Eval, Not, In, Or
 from trytond.pool import Pool, PoolMeta
 
 __all__ = ['AccountVoucher']
-__metaclass__ = PoolMeta
 
 
 class AccountVoucher:
     __name__ = 'account.voucher'
+    __metaclass__ = PoolMeta
 
     issued_check = fields.One2Many('account.issued.check', 'voucher',
         'Issued Checks',
