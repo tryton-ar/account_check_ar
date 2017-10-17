@@ -9,6 +9,8 @@ from trytond.pool import Pool, PoolMeta
 
 __all__ = ['AccountVoucher']
 
+_ZERO = Decimal('0.0')
+
 
 class AccountVoucher:
     __name__ = 'account.voucher'
@@ -83,7 +85,7 @@ class AccountVoucher:
                 for check in self.third_check:
                     move_lines.append({
                         'debit': check.amount,
-                        'credit': Decimal('0.00'),
+                        'credit': _ZERO,
                         'account': self.journal.third_check_account.id,
                         'move': self.move.id,
                         'journal': self.journal.id,
@@ -98,7 +100,7 @@ class AccountVoucher:
                         error_args=(self.journal.name,))
                 for check in self.issued_check:
                     move_lines.append({
-                        'debit': Decimal('0.00'),
+                        'debit': _ZERO,
                         'credit': check.amount,
                         'account': self.journal.issued_check_account.id,
                         'move': self.move.id,
@@ -109,7 +111,7 @@ class AccountVoucher:
             if self.third_pay_checks:
                 for check in self.third_pay_checks:
                     move_lines.append({
-                        'debit': Decimal('0.00'),
+                        'debit': _ZERO,
                         'credit': check.amount,
                         'account': self.journal.third_check_account.id,
                         'move': self.move.id,
