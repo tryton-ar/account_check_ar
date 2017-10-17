@@ -287,13 +287,15 @@ class ThirdCheckHeld(Wizard):
             })
 
     def transition_held(self):
-        ThirdCheck = Pool().get('account.third.check')
-        Move = Pool().get('account.move')
-        MoveLine = Pool().get('account.move.line')
-        Date = Pool().get('ir.date')
+        pool = Pool()
+        ThirdCheck = pool.get('account.third.check')
+        Move = pool.get('account.move')
+        MoveLine = pool.get('account.move.line')
+        Date = pool.get('ir.date')
+        Period = pool.get('account.period')
 
         date = Date.today()
-        period_id = Pool().get('account.period').find(1, date)
+        period_id = Period.find(1, date)
         for check in ThirdCheck.browse(Transaction().context.get(
                 'active_ids')):
             if check.state != 'draft':
@@ -366,12 +368,13 @@ class ThirdCheckDeposit(Wizard):
             })
 
     def transition_deposit(self):
-        ThirdCheck = Pool().get('account.third.check')
-        Move = Pool().get('account.move')
-        MoveLine = Pool().get('account.move.line')
-        period_id = Pool().get('account.period').find(1,
-            date=self.start.date)
+        pool = Pool()
+        ThirdCheck = pool.get('account.third.check')
+        Move = pool.get('account.move')
+        MoveLine = pool.get('account.move.line')
+        Period = pool.get('account.period')
 
+        period_id = Period.find(1, date=self.start.date)
         for check in ThirdCheck.browse(Transaction().context.get(
                 'active_ids')):
             if check.state != 'held':
@@ -450,12 +453,13 @@ class IssuedCheckDebit(Wizard):
             })
 
     def transition_debit(self):
-        IssuedCheck = Pool().get('account.issued.check')
-        Move = Pool().get('account.move')
-        MoveLine = Pool().get('account.move.line')
-        period_id = Pool().get('account.period').find(1,
-            date=self.start.date)
+        pool = Pool()
+        IssuedCheck = pool.get('account.issued.check')
+        Move = pool.get('account.move')
+        MoveLine = pool.get('account.move.line')
+        Period = pool.get('account.period')
 
+        period_id = Period.find(1, date=self.start.date)
         for check in IssuedCheck.browse(Transaction().context.get(
                 'active_ids')):
             if check.state != 'issued':
