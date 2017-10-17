@@ -90,6 +90,9 @@ class AccountVoucher:
                         'move': self.move.id,
                         'journal': self.journal.id,
                         'period': Period.find(self.company.id, date=self.date),
+                        'party': (
+                            self.journal.third_check_account.party_required
+                            and self.party.id or None),
                         'maturity_date': check.date,
                     })
 
@@ -106,6 +109,9 @@ class AccountVoucher:
                         'move': self.move.id,
                         'journal': self.journal.id,
                         'period': Period.find(self.company.id, date=self.date),
+                        'party': (
+                            self.journal.issued_check_account.party_required
+                            and self.party.id or None),
                         'maturity_date': check.date,
                         })
             if self.third_pay_checks:
@@ -117,6 +123,9 @@ class AccountVoucher:
                         'move': self.move.id,
                         'journal': self.journal.id,
                         'period': Period.find(self.company.id, date=self.date),
+                        'party': (
+                            self.journal.third_check_account.party_required
+                            and self.party.id or None),
                         'maturity_date': check.date,
                         })
 
