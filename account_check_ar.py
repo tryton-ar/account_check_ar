@@ -19,6 +19,8 @@ _STATES = {
     }
 _DEPENDS = ['state']
 
+_ZERO = Decimal('0.0')
+
 
 class AccountIssuedCheck(ModelSQL, ModelView):
     'Account Issued Check'
@@ -87,7 +89,7 @@ class AccountIssuedCheck(ModelSQL, ModelView):
 
     @staticmethod
     def default_amount():
-        return Decimal('0.00')
+        return _ZERO
 
     @classmethod
     def issued(cls, checks):
@@ -204,7 +206,7 @@ class AccountThirdCheck(ModelSQL, ModelView):
 
     @staticmethod
     def default_amount():
-        return Decimal('0.00')
+        return _ZERO
 
     @staticmethod
     def default_not_to_order():
@@ -310,7 +312,7 @@ class ThirdCheckHeld(Wizard):
                     'journal': self.start.journal.id,
                     'period': period_id,
                     'debit': check.amount,
-                    'credit': Decimal('0.0'),
+                    'credit': _ZERO,
                     'date': date,
                     'maturity_date': check.date,
                 })
@@ -319,7 +321,7 @@ class ThirdCheckHeld(Wizard):
                     'move': move.id,
                     'journal': self.start.journal.id,
                     'period': period_id,
-                    'debit': Decimal('0.0'),
+                    'debit': _ZERO,
                     'credit': check.amount,
                     'date': date,
                 })
@@ -391,7 +393,7 @@ class ThirdCheckDeposit(Wizard):
                 'journal': self.start.bank_account.journal.id,
                 'period': period_id,
                 'debit': check.amount,
-                'credit': Decimal('0.0'),
+                'credit': _ZERO,
                 'date': self.start.date,
             })
             lines.append({
@@ -400,7 +402,7 @@ class ThirdCheckDeposit(Wizard):
                 'move': move.id,
                 'journal': self.start.bank_account.journal.id,
                 'period': period_id,
-                'debit': Decimal('0.0'),
+                'debit': _ZERO,
                 'credit': check.amount,
                 'date': self.start.date,
             })
@@ -470,22 +472,23 @@ class IssuedCheckDebit(Wizard):
 
             lines = []
             lines.append({
-                'debit': check.amount,
-                'credit': Decimal('0.00'),
                 'account':
                     self.start.bank_account.journal.issued_check_account.id,
                 'move': move.id,
                 'journal': self.start.bank_account.journal.id,
                 'period': period_id,
+                'debit': check.amount,
+                'credit': _ZERO,
+                'date': self.start.date,
                 })
 
             lines.append({
                 'account': self.start.bank_account.journal.debit_account.id,
-                'debit': Decimal('0.00'),
-                'credit': check.amount,
                 'move': move.id,
                 'journal': self.start.bank_account.journal.id,
                 'period': period_id,
+                'debit': _ZERO,
+                'credit': check.amount,
                 'date': self.start.date,
                 })
             MoveLine.create(lines)
