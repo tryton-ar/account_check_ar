@@ -34,6 +34,10 @@ msgctxt "error:account.third.check.held:"
 msgid "Check \"%s\" is not draft"
 msgstr "Cheque \"%s\" no está en borrador"
 
+msgctxt "error:account.third.check.held:"
+msgid "You need to define a check account in the journal \"%s\""
+msgstr "Debe definir la cuenta del cheque en el diario \"%s\""
+
 msgctxt "error:account.third.check.revert_deposit:"
 msgid "Check \"%s\" is not deposited"
 msgstr "Cheque \"%s\" no está depositado"
