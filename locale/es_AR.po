@@ -31,6 +31,22 @@ msgid "You can not delete a check that is used!"
 msgstr "No puede eliminar un cheque usado"
 
 msgctxt "error:account.voucher:"
+msgid "Check \"%s\" is not in draft state"
+msgstr "Cheque \"%s\" no está en estado borrador"
+
+msgctxt "error:account.voucher:"
+msgid "Issued check \"%s\" is not in Issued state"
+msgstr "El cheque emitido número \"%s\" no figura como \"Emitido\""
+
+msgctxt "error:account.voucher:"
+msgid "Third check \"%s\" is not in Delivered state"
+msgstr "El cheque de tercero número \"%s\" no figura como \"Entregado\""
+
+msgctxt "error:account.voucher:"
+msgid "Third check \"%s\" is not in Held state"
+msgstr "El cheque de tercero número \"%s\" no figura como \"En cartera\""
+
+msgctxt "error:account.voucher:"
 msgid "You need to define a check account in the journal \"%s\","
 msgstr "Debe definir la cuenta del cheque en el diario \"%s\","
 
