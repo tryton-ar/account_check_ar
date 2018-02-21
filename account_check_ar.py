@@ -12,7 +12,9 @@ from trytond.pool import Pool
 __all__ = ['AccountIssuedCheck', 'AccountThirdCheck',
     'AccountVoucherThirdCheck', 'Journal', 'ThirdCheckHeldStart',
     'ThirdCheckHeld', 'ThirdCheckDepositStart', 'ThirdCheckDeposit',
-    'IssuedCheckDebitStart', 'IssuedCheckDebit']
+    'ThirdCheckRevertDepositStart', 'ThirdCheckRevertDeposit',
+    'IssuedCheckDebitStart', 'IssuedCheckDebit',
+    'IssuedCheckRevertDebitStart', 'IssuedCheckRevertDebit']
 
 _STATES = {
     'readonly': Eval('state') != 'draft',
@@ -301,35 +303,36 @@ class ThirdCheckHeld(Wizard):
             if check.state != 'draft':
                 self.raise_user_error('check_not_draft',
                     error_args=(check.name,))
-            else:
-                move, = Move.create([{
-                    'journal': self.start.journal.id,
-                    'period': period_id,
-                    'date': date,
+
+            move, = Move.create([{
+                'journal': self.start.journal.id,
+                'period': period_id,
+                'date': date,
+                'description': 'Cheque: ' + check.name,
                 }])
-                lines = []
-                lines.append({
-                    'account': self.start.journal.third_check_account.id,
-                    'move': move.id,
-                    'journal': self.start.journal.id,
-                    'period': period_id,
-                    'debit': check.amount,
-                    'credit': _ZERO,
-                    'date': date,
-                    'maturity_date': check.date,
+            lines = []
+            lines.append({
+                'account': self.start.journal.third_check_account.id,
+                'move': move.id,
+                'journal': self.start.journal.id,
+                'period': period_id,
+                'debit': check.amount,
+                'credit': _ZERO,
+                'date': date,
+                'maturity_date': check.date,
                 })
-                lines.append({
-                    'account': self.start.journal.credit_account.id,
-                    'move': move.id,
-                    'journal': self.start.journal.id,
-                    'period': period_id,
-                    'debit': _ZERO,
-                    'credit': check.amount,
-                    'date': date,
+            lines.append({
+                'account': self.start.journal.credit_account.id,
+                'move': move.id,
+                'journal': self.start.journal.id,
+                'period': period_id,
+                'debit': _ZERO,
+                'credit': check.amount,
+                'date': date,
                 })
-                MoveLine.create(lines)
-                ThirdCheck.write([check], {'state': 'held'})
-                Move.post([move])
+            MoveLine.create(lines)
+            ThirdCheck.write([check], {'state': 'held'})
+            Move.post([move])
         return 'end'
 
 
@@ -383,11 +386,13 @@ class ThirdCheckDeposit(Wizard):
             if not self.start.bank_account.journal.third_check_account:
                 self.raise_user_error('no_journal_check_account',
                     error_args=(self.start.bank_account.journal.name,))
+
             move, = Move.create([{
                 'journal': self.start.bank_account.journal.id,
                 'period': period_id,
                 'date': self.start.date,
-            }])
+                'description': 'Cheque: ' + check.name,
+                }])
             lines = []
             lines.append({
                 'account':
@@ -398,7 +403,7 @@ class ThirdCheckDeposit(Wizard):
                 'debit': check.amount,
                 'credit': _ZERO,
                 'date': self.start.date,
-            })
+                })
             lines.append({
                 'account':
                     self.start.bank_account.journal.third_check_account.id,
@@ -408,12 +413,97 @@ class ThirdCheckDeposit(Wizard):
                 'debit': _ZERO,
                 'credit': check.amount,
                 'date': self.start.date,
-            })
+                })
             MoveLine.create(lines)
             ThirdCheck.write([check], {
                 'account_bank_out': self.start.bank_account.id,
                 'state': 'deposited',
+                })
+            Move.post([move])
+        return 'end'
+
+
+class ThirdCheckRevertDepositStart(ModelView):
+    'Revert Third Check Deposit'
+    __name__ = 'account.third.check.revert_deposit.start'
+
+    date = fields.Date('Date', required=True)
+
+    @staticmethod
+    def default_date():
+        Date = Pool().get('ir.date')
+        return Date.today()
+
+
+class ThirdCheckRevertDeposit(Wizard):
+    'Revert Third Check Deposit'
+    __name__ = 'account.third.check.revert_deposit'
+
+    start = StateView('account.third.check.revert_deposit.start',
+        'account_check_ar.view_third_check_revert_deposit', [
+            Button('Cancel', 'end', 'tryton-cancel'),
+            Button('Revert Deposit', 'revert', 'tryton-ok', default=True),
+            ])
+    revert = StateTransition()
+
+    @classmethod
+    def __setup__(cls):
+        super(ThirdCheckRevertDeposit, cls).__setup__()
+        cls._error_messages.update({
+            'check_not_deposited': 'Check "%s" is not deposited',
+            'no_journal_check_account': 'You need to define a check account '
+                'in the journal "%s"',
             })
+
+    def transition_revert(self):
+        pool = Pool()
+        ThirdCheck = pool.get('account.third.check')
+        Move = pool.get('account.move')
+        MoveLine = pool.get('account.move.line')
+        Period = pool.get('account.period')
+
+        period_id = Period.find(1, date=self.start.date)
+        for check in ThirdCheck.browse(Transaction().context.get(
+                'active_ids')):
+            if check.state != 'deposited':
+                self.raise_user_error('check_not_deposited',
+                    error_args=(check.name,))
+            if not check.account_bank_out.journal.third_check_account:
+                self.raise_user_error('no_journal_check_account',
+                    error_args=(check.account_bank_out.journal.name,))
+
+            move, = Move.create([{
+                'journal': check.account_bank_out.journal.id,
+                'period': period_id,
+                'date': self.start.date,
+                'description': 'Cheque: ' + check.name,
+                }])
+            lines = []
+            lines.append({
+                'account':
+                    check.account_bank_out.journal.debit_account.id,
+                'move': move.id,
+                'journal': check.account_bank_out.journal.id,
+                'period': period_id,
+                'debit': _ZERO,
+                'credit': check.amount,
+                'date': self.start.date,
+                })
+            lines.append({
+                'account':
+                    check.account_bank_out.journal.third_check_account.id,
+                'move': move.id,
+                'journal': check.account_bank_out.journal.id,
+                'period': period_id,
+                'debit': check.amount,
+                'credit': _ZERO,
+                'date': self.start.date,
+                })
+            MoveLine.create(lines)
+            ThirdCheck.write([check], {
+                'account_bank_out': None,
+                'state': 'held',
+                })
             Move.post([move])
         return 'end'
 
@@ -468,12 +558,13 @@ class IssuedCheckDebit(Wizard):
             if not self.start.bank_account.journal.issued_check_account:
                 self.raise_user_error('no_journal_check_account',
                     error_args=(self.start.bank_account.journal.name,))
+
             move, = Move.create([{
                 'journal': self.start.bank_account.journal.id,
                 'period': period_id,
                 'date': self.start.date,
+                'description': 'Cheque: ' + check.name,
                 }])
-
             lines = []
             lines.append({
                 'account':
@@ -485,7 +576,6 @@ class IssuedCheckDebit(Wizard):
                 'credit': _ZERO,
                 'date': self.start.date,
                 })
-
             lines.append({
                 'account': self.start.bank_account.journal.debit_account.id,
                 'move': move.id,
@@ -496,8 +586,87 @@ class IssuedCheckDebit(Wizard):
                 'date': self.start.date,
                 })
             MoveLine.create(lines)
-
             IssuedCheck.write([check], {'state': 'debited'})
             Move.post([move])
+        return 'end'
 
+
+class IssuedCheckRevertDebitStart(ModelView):
+    'Revert Issued Check Debit'
+    __name__ = 'account.issued.check.revert_debit.start'
+
+    date = fields.Date('Date', required=True)
+
+    @staticmethod
+    def default_date():
+        date_obj = Pool().get('ir.date')
+        return date_obj.today()
+
+
+class IssuedCheckRevertDebit(Wizard):
+    'Revert Issued Check Debit'
+    __name__ = 'account.issued.check.revert_debit'
+
+    start = StateView('account.issued.check.revert_debit.start',
+        'account_check_ar.view_issued_check_revert_debit', [
+            Button('Cancel', 'end', 'tryton-cancel'),
+            Button('Revert Debit', 'revert', 'tryton-ok', default=True),
+            ])
+    revert = StateTransition()
+
+    @classmethod
+    def __setup__(cls):
+        super(IssuedCheckRevertDebit, cls).__setup__()
+        cls._error_messages.update({
+            'check_not_debited': 'Check "%s" is not debited',
+            'no_journal_check_account': 'You need to define a check account '
+                'in the journal "%s"',
+            })
+
+    def transition_revert(self):
+        pool = Pool()
+        IssuedCheck = pool.get('account.issued.check')
+        Move = pool.get('account.move')
+        MoveLine = pool.get('account.move.line')
+        Period = pool.get('account.period')
+
+        period_id = Period.find(1, date=self.start.date)
+        for check in IssuedCheck.browse(Transaction().context.get(
+                'active_ids')):
+            if check.state != 'debited':
+                self.raise_user_error('check_not_debited',
+                    error_args=(check.name,))
+            if not check.bank_account.journal.issued_check_account:
+                self.raise_user_error('no_journal_check_account',
+                    error_args=(check.bank_account.journal.name,))
+
+            move, = Move.create([{
+                'journal': check.bank_account.journal.id,
+                'period': period_id,
+                'date': self.start.date,
+                'description': 'Cheque: ' + check.name,
+                }])
+            lines = []
+            lines.append({
+                'account':
+                    check.bank_account.journal.issued_check_account.id,
+                'move': move.id,
+                'journal': check.bank_account.journal.id,
+                'period': period_id,
+                'debit': _ZERO,
+                'credit': check.amount,
+                'date': self.start.date,
+                })
+            lines.append({
+                'account': check.bank_account.journal.debit_account.id,
+                'move': move.id,
+                'journal': check.bank_account.journal.id,
+                'period': period_id,
+                'debit': check.amount,
+                'credit': _ZERO,
+                'date': self.start.date,
+                })
+            MoveLine.create(lines)
+            IssuedCheck.write([check], {'state': 'issued'})
+            Move.post([move])
         return 'end'
