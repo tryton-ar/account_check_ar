@@ -286,6 +286,8 @@ class ThirdCheckHeld(Wizard):
         super(ThirdCheckHeld, cls).__setup__()
         cls._error_messages.update({
             'check_not_draft': 'Check "%s" is not draft',
+            'no_journal_check_account': 'You need to define a check account '
+                'in the journal "%s"',
             })
 
     def transition_held(self):
@@ -303,6 +305,9 @@ class ThirdCheckHeld(Wizard):
             if check.state != 'draft':
                 self.raise_user_error('check_not_draft',
                     error_args=(check.name,))
+            if not self.start.journal.third_check_account:
+                self.raise_user_error('no_journal_check_account',
+                    error_args=(self.start.journal.name,))
 
             move, = Move.create([{
                 'journal': self.start.journal.id,
