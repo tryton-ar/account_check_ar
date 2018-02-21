@@ -3,24 +3,24 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
 msgctxt "error:account.issued.check.debit:"
-msgid "Check \"%s\" is not issued,"
+msgid "Check \"%s\" is not issued"
 msgstr "Cheque \"%s\" no está emitido"
 
 msgctxt "error:account.issued.check.debit:"
-msgid "You need to define a check account in the journal \"%s\","
-msgstr "Debe definir la cuenta del cheque en el diario \"%s\","
+msgid "You need to define a check account in the journal \"%s\""
+msgstr "Debe definir la cuenta del cheque en el diario \"%s\""
 
 msgctxt "error:account.issued.check:"
 msgid "You can not delete a check that is used!"
 msgstr "No puede eliminar un cheque usado"
 
 msgctxt "error:account.third.check.deposit:"
-msgid "Check \"%s\" is not in held,"
-msgstr "Cheque \"%s\" no está en cartera,"
+msgid "Check \"%s\" is not in held"
+msgstr "Cheque \"%s\" no está en cartera"
 
 msgctxt "error:account.third.check.deposit:"
-msgid "You need to define a check account in the journal \"%s\","
-msgstr "Debe definir la cuenta del cheque en el diario \"%s\","
+msgid "You need to define a check account in the journal \"%s\""
+msgstr "Debe definir la cuenta del cheque en el diario \"%s\""
 
 msgctxt "error:account.third.check.held:"
 msgid "Check \"%s\" is not draft"
@@ -303,20 +303,20 @@ msgid "Account Issued Check"
 msgstr "Cuenta de Cheque Emitido"
 
 msgctxt "model:account.issued.check.debit.start,name:"
-msgid "Issued Check Debit Start"
-msgstr ""
+msgid "Issued Check Debit"
+msgstr "Debitar Cheque"
 
 msgctxt "model:account.third.check,name:"
 msgid "Account Third Check"
 msgstr "Cuenta de Cheque de Tercero"
 
 msgctxt "model:account.third.check.deposit.start,name:"
-msgid "Third Check Deposit Start"
-msgstr "Iniciar Depósito de Cheque de Tercero"
+msgid "Third Check Deposit"
+msgstr "Depositar Cheque de Tercero"
 
 msgctxt "model:account.third.check.held.start,name:"
-msgid "Third Check Held Start"
-msgstr "Iniciar Cheque de Tercero a Cartera"
+msgid "Third Check Held"
+msgstr "Cheque de Tercero a Cartera"
 
 msgctxt "model:account.voucher-account.third.check,name:"
 msgid "Account Voucher - Account Third Check"
@@ -336,11 +336,11 @@ msgstr "Debitar Cheque"
 
 msgctxt "model:ir.action,name:wizard_third_check_deposit"
 msgid "Check Deposit"
-msgstr "Depósito de Cheque"
+msgstr "Depositar Cheque de Tercero"
 
 msgctxt "model:ir.action,name:wizard_third_check_held"
 msgid "Check Held"
-msgstr "Cheque en Cartera"
+msgstr "Cheque de Tercero a Cartera"
 
 msgctxt "model:ir.ui.menu,name:menu_issued_check"
 msgid "Issued Checks"
@@ -429,14 +429,6 @@ msgid "Extra Info"
 msgstr "Información adicional"
 
 msgctxt "view:account.issued.check:"
-msgid "Issued Check"
-msgstr "Cheque Emitido"
-
-msgctxt "view:account.issued.check:"
-msgid "Issued Checks"
-msgstr "Cheques Emitidos"
-
-msgctxt "view:account.issued.check:"
 msgid "Target"
 msgstr "Destino"
 
@@ -465,14 +457,6 @@ msgid "Target"
 msgstr "Destino"
 
 msgctxt "view:account.third.check:"
-msgid "Third Check"
-msgstr "Cheque de Tercero"
-
-msgctxt "view:account.third.check:"
-msgid "Third Checks"
-msgstr "Cheques de Terceros"
-
-msgctxt "view:account.third.check:"
 msgid "_Deposit"
 msgstr "_Depositar"
 
@@ -490,7 +474,7 @@ msgstr "Cheques"
 
 msgctxt "wizard_button:account.issued.check.debit,start,debit:"
 msgid "Debit"
-msgstr "Débito"
+msgstr "Debitar"
 
 msgctxt "wizard_button:account.issued.check.debit,start,end:"
 msgid "Cancel"
@@ -510,4 +494,4 @@ msgstr "Cancelar"
 
 msgctxt "wizard_button:account.third.check.held,start,held:"
 msgid "Held"
-msgstr "Cartera"
+msgstr "A Cartera"

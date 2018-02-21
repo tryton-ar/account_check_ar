@@ -262,7 +262,7 @@ class Journal(ModelSQL, ModelView):
 
 
 class ThirdCheckHeldStart(ModelView):
-    'Third Check Held Start'
+    'Third Check Held'
     __name__ = 'account.third.check.held.start'
 
     journal = fields.Many2One('account.journal', 'Journal', required=True)
@@ -334,7 +334,7 @@ class ThirdCheckHeld(Wizard):
 
 
 class ThirdCheckDepositStart(ModelView):
-    'Third Check Deposit Start'
+    'Third Check Deposit'
     __name__ = 'account.third.check.deposit.start'
 
     bank_account = fields.Many2One('bank.account', 'Bank Account',
@@ -362,9 +362,9 @@ class ThirdCheckDeposit(Wizard):
     def __setup__(cls):
         super(ThirdCheckDeposit, cls).__setup__()
         cls._error_messages.update({
-            'check_not_held': 'Check "%s" is not in held,',
+            'check_not_held': 'Check "%s" is not in held',
             'no_journal_check_account': 'You need to define a check account '
-                'in the journal "%s",',
+                'in the journal "%s"',
             })
 
     def transition_deposit(self):
@@ -419,7 +419,7 @@ class ThirdCheckDeposit(Wizard):
 
 
 class IssuedCheckDebitStart(ModelView):
-    'Issued Check Debit Start'
+    'Issued Check Debit'
     __name__ = 'account.issued.check.debit.start'
 
     bank_account = fields.Many2One('bank.account', 'Bank Account',
@@ -447,9 +447,9 @@ class IssuedCheckDebit(Wizard):
     def __setup__(cls):
         super(IssuedCheckDebit, cls).__setup__()
         cls._error_messages.update({
-            'check_not_issued': 'Check "%s" is not issued,',
+            'check_not_issued': 'Check "%s" is not issued',
             'no_journal_check_account': 'You need to define a check account '
-                'in the journal "%s",',
+                'in the journal "%s"',
             })
 
     def transition_debit(self):
