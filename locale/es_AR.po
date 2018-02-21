@@ -10,6 +10,14 @@ msgctxt "error:account.issued.check.debit:"
 msgid "You need to define a check account in the journal \"%s\""
 msgstr "Debe definir la cuenta del cheque en el diario \"%s\""
 
+msgctxt "error:account.issued.check.revert_debit:"
+msgid "Check \"%s\" is not debited"
+msgstr "Cheque \"%s\" no está debitado"
+
+msgctxt "error:account.issued.check.revert_debit:"
+msgid "You need to define a check account in the journal \"%s\""
+msgstr "Debe definir la cuenta del cheque en el diario \"%s\""
+
 msgctxt "error:account.issued.check:"
 msgid "You can not delete a check that is used!"
 msgstr "No puede eliminar un cheque usado"
@@ -24,7 +32,15 @@ msgstr "Debe definir la cuenta del cheque en el diario \"%s\""
 
 msgctxt "error:account.third.check.held:"
 msgid "Check \"%s\" is not draft"
-msgstr "Cheque \"%s\" no es borrador"
+msgstr "Cheque \"%s\" no está en borrador"
+
+msgctxt "error:account.third.check.revert_deposit:"
+msgid "Check \"%s\" is not deposited"
+msgstr "Cheque \"%s\" no está depositado"
+
+msgctxt "error:account.third.check.revert_deposit:"
+msgid "You need to define a check account in the journal \"%s\""
+msgstr "Debe definir la cuenta del cheque en el diario \"%s\""
 
 msgctxt "error:account.third.check:"
 msgid "You can not delete a check that is used!"
@@ -135,6 +151,14 @@ msgid "Date"
 msgstr "Fecha"
 
 msgctxt "field:account.issued.check.debit.start,id:"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "field:account.issued.check.revert_debit.start,date:"
+msgid "Date"
+msgstr "Fecha"
+
+msgctxt "field:account.issued.check.revert_debit.start,id:"
 msgid "ID"
 msgstr "ID"
 
@@ -270,6 +294,14 @@ msgctxt "field:account.third.check.held.start,journal:"
 msgid "Journal"
 msgstr "Diario"
 
+msgctxt "field:account.third.check.revert_deposit.start,date:"
+msgid "Date"
+msgstr "Fecha"
+
+msgctxt "field:account.third.check.revert_deposit.start,id:"
+msgid "ID"
+msgstr "ID"
+
 msgctxt "field:account.voucher,issued_check:"
 msgid "Issued Checks"
 msgstr "Cheques Emitidos"
@@ -322,6 +354,10 @@ msgctxt "model:account.issued.check.debit.start,name:"
 msgid "Issued Check Debit"
 msgstr "Debitar Cheque"
 
+msgctxt "model:account.issued.check.revert_debit.start,name:"
+msgid "Revert Issued Check Debit"
+msgstr "Revertir Débito de Cheque"
+
 msgctxt "model:account.third.check,name:"
 msgid "Account Third Check"
 msgstr "Cuenta de Cheque de Tercero"
@@ -333,6 +369,10 @@ msgstr "Depositar Cheque de Tercero"
 msgctxt "model:account.third.check.held.start,name:"
 msgid "Third Check Held"
 msgstr "Cheque de Tercero a Cartera"
+
+msgctxt "model:account.third.check.revert_deposit.start,name:"
+msgid "Revert Third Check Deposit"
+msgstr "Revertir Depósito de Cheque"
 
 msgctxt "model:account.voucher-account.third.check,name:"
 msgid "Account Voucher - Account Third Check"
@@ -350,6 +390,10 @@ msgctxt "model:ir.action,name:wizard_issued_check_debit"
 msgid "Check Debit"
 msgstr "Debitar Cheque"
 
+msgctxt "model:ir.action,name:wizard_issued_check_revert_debit"
+msgid "Revert Check Debit"
+msgstr "Revertir Débito de Cheque"
+
 msgctxt "model:ir.action,name:wizard_third_check_deposit"
 msgid "Check Deposit"
 msgstr "Depositar Cheque de Tercero"
@@ -357,6 +401,10 @@ msgstr "Depositar Cheque de Tercero"
 msgctxt "model:ir.action,name:wizard_third_check_held"
 msgid "Check Held"
 msgstr "Cheque de Tercero a Cartera"
+
+msgctxt "model:ir.action,name:wizard_third_check_revert_deposit"
+msgid "Revert Check Deposit"
+msgstr "Revertir Depósito de Cheque"
 
 msgctxt "model:ir.ui.menu,name:menu_issued_check"
 msgid "Issued Checks"
@@ -512,6 +560,14 @@ msgctxt "wizard_button:account.issued.check.debit,start,end:"
 msgid "Cancel"
 msgstr "Cancelar"
 
+msgctxt "wizard_button:account.issued.check.revert_debit,start,end:"
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgctxt "wizard_button:account.issued.check.revert_debit,start,revert:"
+msgid "Revert Debit"
+msgstr "Revertir Débito"
+
 msgctxt "wizard_button:account.third.check.deposit,start,deposit:"
 msgid "Deposit"
 msgstr "Depositar"
@@ -527,3 +583,11 @@ msgstr "Cancelar"
 msgctxt "wizard_button:account.third.check.held,start,held:"
 msgid "Held"
 msgstr "A Cartera"
+
+msgctxt "wizard_button:account.third.check.revert_deposit,start,end:"
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgctxt "wizard_button:account.third.check.revert_deposit,start,revert:"
+msgid "Revert Deposit"
+msgstr "Revertir Depósito"

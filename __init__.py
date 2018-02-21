@@ -15,11 +15,15 @@ def register():
         Journal,
         ThirdCheckHeldStart,
         ThirdCheckDepositStart,
+        ThirdCheckRevertDepositStart,
         IssuedCheckDebitStart,
+        IssuedCheckRevertDebitStart,
         AccountVoucher,
         module='account_check_ar', type_='model')
     Pool.register(
         ThirdCheckHeld,
         ThirdCheckDeposit,
+        ThirdCheckRevertDeposit,
         IssuedCheckDebit,
+        IssuedCheckRevertDebit,
         module='account_check_ar', type_='wizard')
