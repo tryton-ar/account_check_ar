@@ -57,6 +57,12 @@ class AccountVoucher:
         cls._error_messages.update({
             'no_journal_check_account': 'You need to define a check account '
                 'in the journal "%s",',
+            'check_not_in_draft': 'Check "%s" is not in draft state',
+            'issued_check_not_issued': ('Issued check "%s" is not in '
+                'Issued state'),
+            'third_check_not_held': 'Third check "%s" is not in Held state',
+            'third_pay_check_not_delivered': ('Third check "%s" is not in '
+                'Delivered state'),
             })
 
     @fields.depends('party', 'pay_lines', 'lines_credits', 'lines_debits',
@@ -83,6 +89,9 @@ class AccountVoucher:
                     self.raise_user_error('no_journal_check_account',
                         error_args=(self.journal.name,))
                 for check in self.third_check:
+                    if check.state != 'draft':
+                        self.raise_user_error('check_not_in_draft',
+                            error_args=(check.name,))
                     move_lines.append({
                         'debit': check.amount,
                         'credit': _ZERO,
@@ -172,18 +181,30 @@ class AccountVoucher:
 
         for voucher in vouchers:
             if voucher.issued_check:
+                for check in voucher.issued_check:
+                    if check.state != 'issued':
+                        cls.raise_user_error('issued_check_not_issued',
+                            (check.name,))
                 IssuedCheck.write(list(voucher.issued_check), {
                     'receiving_party': None,
                     'state': 'draft',
                     })
             if voucher.third_check:
+                for check in voucher.third_check:
+                    if check.state != 'held':
+                        cls.raise_user_error('third_check_not_held',
+                            (check.name,))
                 ThirdCheck.write(list(voucher.third_check), {
                     'source_party': None,
                     'state': 'draft',
                     })
             if voucher.third_pay_checks:
+                for check in voucher.third_pay_checks:
+                    if check.state != 'delivered':
+                        cls.raise_user_error('third_pay_check_not_delivered',
+                            (check.name,))
                 ThirdCheck.write(list(voucher.third_pay_checks), {
                     'destiny_party': None,
                     'date_out': None,
-                    'state': 'draft',
+                    'state': 'held',
                     })
