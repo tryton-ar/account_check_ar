@@ -19,21 +19,21 @@ class AccountVoucher:
     issued_check = fields.One2Many('account.issued.check', 'voucher',
         'Issued Checks',
         add_remove=[
-                ('state', '=', 'draft'),
-                ],
+            ('state', '=', 'draft'),
+            ],
         states={
             'invisible': Not(In(Eval('voucher_type'), ['payment'])),
             'readonly': Or(
-                            In(Eval('state'), ['posted']),
-                            Not(In(Eval('currency_code'), ['ARS']))),
+                In(Eval('state'), ['posted']),
+                Not(In(Eval('currency_code'), ['ARS']))),
             })
     third_pay_checks = fields.Many2Many('account.voucher-account.third.check',
         'voucher', 'third_check', 'Third Checks',
         states={
             'invisible': Not(In(Eval('voucher_type'), ['payment'])),
             'readonly': Or(
-                            In(Eval('state'), ['posted']),
-                            Not(In(Eval('currency_code'), ['ARS']))),
+                In(Eval('state'), ['posted']),
+                Not(In(Eval('currency_code'), ['ARS']))),
             },
         domain=[
             ('state', '=', 'held'),
@@ -42,21 +42,21 @@ class AccountVoucher:
     third_check = fields.One2Many('account.third.check', 'voucher_in',
         'Third Checks',
         add_remove=[
-                ('state', '=', 'draft'),
-                ],
+            ('state', '=', 'draft'),
+            ],
         states={
             'invisible': Not(In(Eval('voucher_type'), ['receipt'])),
             'readonly': Or(
-                            In(Eval('state'), ['posted']),
-                            Not(In(Eval('currency_code'), ['ARS']))),
+                In(Eval('state'), ['posted']),
+                Not(In(Eval('currency_code'), ['ARS']))),
             })
 
     @classmethod
     def __setup__(cls):
         super(AccountVoucher, cls).__setup__()
         cls._error_messages.update({
-            'no_journal_check_account': 'You need to define a check account '
-                'in the journal "%s",',
+            'no_journal_check_account': ('You need to define a check account '
+                'in the journal "%s"'),
             'check_not_in_draft': 'Check "%s" is not in draft state',
             'issued_check_not_issued': ('Issued check "%s" is not in '
                 'Issued state'),

@@ -70,15 +70,15 @@ class AccountIssuedCheck(ModelSQL, ModelView):
         super(AccountIssuedCheck, cls).__setup__()
         cls._error_messages.update({
             'delete_check': 'You can not delete a check that is used!',
-        })
+            })
         cls._buttons.update({
-                'issued': {
-                    'invisible': Eval('state') != 'draft',
-                    },
-                'debited': {
-                    'invisible': Eval('state') != 'issued',
-                    },
-                })
+            'issued': {
+                'invisible': Eval('state') != 'draft',
+                },
+            'debited': {
+                'invisible': Eval('state') != 'issued',
+                },
+            })
 
     @staticmethod
     def default_date_out():
@@ -180,22 +180,22 @@ class AccountThirdCheck(ModelSQL, ModelView):
         super(AccountThirdCheck, cls).__setup__()
         cls._error_messages.update({
             'delete_check': 'You can not delete a check that is used!',
-        })
+            })
         cls._buttons.update({
-                'held': {
-                    'invisible': Eval('state') != 'draft',
-                    },
-                'deposited': {
-                    'invisible': Eval('state') != 'held',
-                    },
-                'delivered': {
-                    'invisible': Eval('state') != 'held',
-                    },
-                'rejected': {
-                    'invisible': ~Eval('state').in_([
-                        'deposited', 'delivered']),
-                    },
-                })
+            'held': {
+                'invisible': Eval('state') != 'draft',
+                },
+            'deposited': {
+                'invisible': Eval('state') != 'held',
+                },
+            'delivered': {
+                'invisible': Eval('state') != 'held',
+                },
+            'rejected': {
+                'invisible': ~Eval('state').in_([
+                    'deposited', 'delivered']),
+                },
+            })
 
     @staticmethod
     def default_date_in():
@@ -286,8 +286,8 @@ class ThirdCheckHeld(Wizard):
         super(ThirdCheckHeld, cls).__setup__()
         cls._error_messages.update({
             'check_not_draft': 'Check "%s" is not draft',
-            'no_journal_check_account': 'You need to define a check account '
-                'in the journal "%s"',
+            'no_journal_check_account': ('You need to define a check account '
+                'in the journal "%s"'),
             })
 
     def transition_held(self):
@@ -371,8 +371,8 @@ class ThirdCheckDeposit(Wizard):
         super(ThirdCheckDeposit, cls).__setup__()
         cls._error_messages.update({
             'check_not_held': 'Check "%s" is not in held',
-            'no_journal_check_account': 'You need to define a check account '
-                'in the journal "%s"',
+            'no_journal_check_account': ('You need to define a check account '
+                'in the journal "%s"'),
             })
 
     def transition_deposit(self):
@@ -456,8 +456,8 @@ class ThirdCheckRevertDeposit(Wizard):
         super(ThirdCheckRevertDeposit, cls).__setup__()
         cls._error_messages.update({
             'check_not_deposited': 'Check "%s" is not deposited',
-            'no_journal_check_account': 'You need to define a check account '
-                'in the journal "%s"',
+            'no_journal_check_account': ('You need to define a check account '
+                'in the journal "%s"'),
             })
 
     def transition_revert(self):
@@ -543,8 +543,8 @@ class IssuedCheckDebit(Wizard):
         super(IssuedCheckDebit, cls).__setup__()
         cls._error_messages.update({
             'check_not_issued': 'Check "%s" is not issued',
-            'no_journal_check_account': 'You need to define a check account '
-                'in the journal "%s"',
+            'no_journal_check_account': ('You need to define a check account '
+                'in the journal "%s"'),
             })
 
     def transition_debit(self):
@@ -624,8 +624,8 @@ class IssuedCheckRevertDebit(Wizard):
         super(IssuedCheckRevertDebit, cls).__setup__()
         cls._error_messages.update({
             'check_not_debited': 'Check "%s" is not debited',
-            'no_journal_check_account': 'You need to define a check account '
-                'in the journal "%s"',
+            'no_journal_check_account': ('You need to define a check account '
+                'in the journal "%s"'),
             })
 
     def transition_revert(self):
