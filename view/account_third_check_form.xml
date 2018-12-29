@@ -41,7 +41,7 @@ the full copyright notices and license terms. -->
     <label name="state"/>
     <field name="state"/>
     <button name="held" colspan="2" string="_Held"
-        icon="tryton-go-next"/>
+        icon="tryton-forward"/>
     <button name="deposited" colspan="2" string="_Deposit"
-        icon="tryton-go-next"/>
+        icon="tryton-forward"/>
 </form>
