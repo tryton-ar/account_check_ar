@@ -3,27 +3,27 @@
 # the full copyright notices and license terms.
 
 from trytond.pool import Pool
-from .account_check_ar import *
-from .account_voucher_ar import *
+from . import account_check_ar
+from . import account_voucher_ar
 
 
 def register():
     Pool.register(
-        AccountIssuedCheck,
-        AccountThirdCheck,
-        AccountVoucherThirdCheck,
-        Journal,
-        ThirdCheckHeldStart,
-        ThirdCheckDepositStart,
-        ThirdCheckRevertDepositStart,
-        IssuedCheckDebitStart,
-        IssuedCheckRevertDebitStart,
-        AccountVoucher,
+        account_check_ar.AccountIssuedCheck,
+        account_check_ar.AccountThirdCheck,
+        account_check_ar.AccountVoucherThirdCheck,
+        account_check_ar.Journal,
+        account_check_ar.ThirdCheckHeldStart,
+        account_check_ar.ThirdCheckDepositStart,
+        account_check_ar.ThirdCheckRevertDepositStart,
+        account_check_ar.IssuedCheckDebitStart,
+        account_check_ar.IssuedCheckRevertDebitStart,
+        account_voucher_ar.AccountVoucher,
         module='account_check_ar', type_='model')
     Pool.register(
-        ThirdCheckHeld,
-        ThirdCheckDeposit,
-        ThirdCheckRevertDeposit,
-        IssuedCheckDebit,
-        IssuedCheckRevertDebit,
+        account_check_ar.ThirdCheckHeld,
+        account_check_ar.ThirdCheckDeposit,
+        account_check_ar.ThirdCheckRevertDeposit,
+        account_check_ar.IssuedCheckDebit,
+        account_check_ar.IssuedCheckRevertDebit,
         module='account_check_ar', type_='wizard')

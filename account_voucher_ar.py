@@ -12,9 +12,8 @@ __all__ = ['AccountVoucher']
 _ZERO = Decimal('0.0')
 
 
-class AccountVoucher:
+class AccountVoucher(metaclass=PoolMeta):
     __name__ = 'account.voucher'
-    __metaclass__ = PoolMeta
 
     issued_check = fields.One2Many('account.issued.check', 'voucher',
         'Issued Checks',
