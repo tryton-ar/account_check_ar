@@ -290,6 +290,10 @@ msgctxt "field:account.third.check.deposit.start,id:"
 msgid "ID"
 msgstr "ID"
 
+msgctxt "field:account.third.check.held.start,credit_account:"
+msgid "Credit Account"
+msgstr "Cuenta haber"
+
 msgctxt "field:account.third.check.held.start,id:"
 msgid "ID"
 msgstr "ID"

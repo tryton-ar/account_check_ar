@@ -268,6 +268,12 @@ class ThirdCheckHeldStart(ModelView):
     __name__ = 'account.third.check.held.start'
 
     journal = fields.Many2One('account.journal', 'Journal', required=True)
+    credit_account = fields.Many2One('account.account', 'Credit Account',
+        required=True,
+        domain=[
+            ('kind', '!=', 'view'),
+            ('company', '=', Eval('context', {}).get('company', -1)),
+            ])
 
 
 class ThirdCheckHeld(Wizard):
@@ -327,7 +333,7 @@ class ThirdCheckHeld(Wizard):
                 'maturity_date': check.date,
                 })
             lines.append({
-                'account': self.start.journal.credit_account.id,
+                'account': self.start.credit_account.id,
                 'move': move.id,
                 'journal': self.start.journal.id,
                 'period': period_id,
@@ -401,7 +407,7 @@ class ThirdCheckDeposit(Wizard):
             lines = []
             lines.append({
                 'account':
-                    self.start.bank_account.journal.debit_account.id,
+                    self.start.bank_account.debit_account.id,
                 'move': move.id,
                 'journal': self.start.bank_account.journal.id,
                 'period': period_id,
@@ -486,7 +492,7 @@ class ThirdCheckRevertDeposit(Wizard):
             lines = []
             lines.append({
                 'account':
-                    check.account_bank_out.journal.debit_account.id,
+                    check.account_bank_out.debit_account.id,
                 'move': move.id,
                 'journal': check.account_bank_out.journal.id,
                 'period': period_id,
@@ -582,7 +588,7 @@ class IssuedCheckDebit(Wizard):
                 'date': self.start.date,
                 })
             lines.append({
-                'account': self.start.bank_account.journal.debit_account.id,
+                'account': self.start.bank_account.debit_account.id,
                 'move': move.id,
                 'journal': self.start.bank_account.journal.id,
                 'period': period_id,
@@ -663,7 +669,7 @@ class IssuedCheckRevertDebit(Wizard):
                 'date': self.start.date,
                 })
             lines.append({
-                'account': check.bank_account.journal.debit_account.id,
+                'account': check.bank_account.debit_account.id,
                 'move': move.id,
                 'journal': check.bank_account.journal.id,
                 'period': period_id,
