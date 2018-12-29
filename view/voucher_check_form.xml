@@ -7,11 +7,11 @@ the full copyright notices and license terms. -->
         expr="/form/notebook/page[@id=&quot;pay_lines&quot;]"
         position="after">
         <page string="Checks" id="checks" col="6">
-            <field name="issued_check" mode="tree" colspan="6"
+            <field name="issued_check" colspan="6"
                 view_ids="account_check_ar.issued_check_view_tree"/>
-            <field name="third_pay_checks" mode="tree" colspan="6"
+            <field name="third_pay_checks" colspan="6"
                 view_ids="account_check_ar.third_pay_checks_view_tree"/>
-            <field name="third_check" mode="tree" colspan="3"
+            <field name="third_check" colspan="3"
                 view_ids="account_check_ar.third_check_view_tree"/>
         </page>
     </xpath>
