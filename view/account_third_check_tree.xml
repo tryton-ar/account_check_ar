@@ -13,5 +13,6 @@ the full copyright notices and license terms. -->
     <field name="date_out"/>
     <field name="destiny_party"/>
     <field name="account_bank_out"/>
+    <field name="clearing"/>
     <field name="state"/>
 </tree>
