@@ -62,8 +62,25 @@ class AccountIssuedCheck(ModelSQL, ModelView):
         ('debited', 'Debited'),
         ], 'State', readonly=True)
     bank_account = fields.Many2One('bank.account', 'Bank Account',
-        required=True, domain=[('owners', 'in', [1])],
-        states=_STATES, depends=_DEPENDS)
+        required=False, domain=[('owners', 'in', [Eval('party_company')])],
+        states=_STATES, context={
+            'owners': [Eval('party_company')],
+            }, depends=_DEPENDS + ['party_company'])
+    party_company = fields.Function(fields.Many2One('party.party', 'party_company'),
+        'on_change_with_party_company')
+
+    @staticmethod
+    def default_party_company():
+        Company = Pool().get('company.company')
+        if Transaction().context.get('company'):
+            company = Company(Transaction().context['company'])
+            return company.party.id
+
+    def on_change_with_party_company(self, name=None):
+        Company = Pool().get('company.company')
+        if Transaction().context.get('company'):
+            company = Company(Transaction().context['company'])
+            return company.party.id
 
     @classmethod
     def __setup__(cls):
