@@ -149,6 +149,7 @@ class AccountThirdCheck(ModelSQL, ModelView):
         ('deposited', 'Deposited'),
         ('delivered', 'Delivered'),
         ('rejected', 'Rejected'),
+        ('reverted', 'Reverted'),
         ], 'State', readonly=True)
     vat = fields.Char('Vat', states=_STATES, depends=_DEPENDS)
     clearing = fields.Selection([
@@ -195,6 +196,7 @@ class AccountThirdCheck(ModelSQL, ModelView):
                     'invisible': ~Eval('state').in_([
                         'deposited', 'delivered']),
                     },
+                'reverted': {},
                 })
 
     @staticmethod
@@ -231,6 +233,13 @@ class AccountThirdCheck(ModelSQL, ModelView):
     @classmethod
     @ModelView.button
     def rejected(self, checks):
+        for check in checks:
+            check.state = 'rejected'
+            check.save()
+
+    @classmethod
+    @ModelView.button
+    def reverted(self, checks):
         pass
 
     @classmethod
@@ -470,7 +479,7 @@ class ThirdCheckRevertDeposit(Wizard):
         period_id = Period.find(1, date=self.start.date)
         for check in ThirdCheck.browse(Transaction().context.get(
                 'active_ids')):
-            if check.state != 'deposited':
+            if check.state not in ['deposited', 'delivered']:
                 self.raise_user_error('check_not_deposited',
                     error_args=(check.name,))
             if not check.account_bank_out.journal.third_check_account:
@@ -507,7 +516,7 @@ class ThirdCheckRevertDeposit(Wizard):
             MoveLine.create(lines)
             ThirdCheck.write([check], {
                 'account_bank_out': None,
-                'state': 'held',
+                'state': 'reverted',
                 })
             Move.post([move])
         return 'end'
