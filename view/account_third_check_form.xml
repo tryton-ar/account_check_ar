@@ -44,4 +44,6 @@ the full copyright notices and license terms. -->
         icon="tryton-go-next"/>
     <button name="deposited" colspan="2" string="_Deposit"
         icon="tryton-go-next"/>
+    <button name="rejected" colspan="2" string="_Reject"
+        icon="tryton-go-next"/>
 </form>
