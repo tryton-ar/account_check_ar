@@ -36,7 +36,7 @@ class AccountVoucher:
                 Not(In(Eval('currency_code'), ['ARS']))),
             },
         domain=[
-            ('state', '=', 'held'),
+            ('state', 'in', ['held', 'reverted']),
             ('not_to_order', '=', False),
             ])
     third_check = fields.One2Many('account.third.check', 'voucher_in',
@@ -191,7 +191,7 @@ class AccountVoucher:
                     })
             if voucher.third_check:
                 for check in voucher.third_check:
-                    if check.state != 'held':
+                    if check.state not in ['held', 'reverted']:
                         cls.raise_user_error('third_check_not_held',
                             (check.name,))
                 ThirdCheck.write(list(voucher.third_check), {
