@@ -183,21 +183,23 @@ class AccountThirdCheck(ModelSQL, ModelView):
             'delete_check': 'You can not delete a check that is used!',
         })
         cls._buttons.update({
-                'held': {
-                    'invisible': Eval('state') != 'draft',
-                    },
-                'deposited': {
-                    'invisible': Eval('state') != 'held',
-                    },
-                'delivered': {
-                    'invisible': Eval('state') != 'held',
-                    },
-                'rejected': {
-                    'invisible': ~Eval('state').in_([
-                        'deposited', 'delivered']),
-                    },
-                'reverted': {},
-                })
+            'held': {
+                'invisible': Eval('state') != 'draft',
+                },
+            'deposited': {
+                'invisible': ~Eval('state').in_(['held', 'reverted']),
+                },
+            'delivered': {
+                'invisible': Eval('state') != 'held',
+                },
+            'rejected': {
+                'invisible': ~Eval('state') != 'reverted',
+                },
+            'reverted': {
+                'invisible': ~Eval('state').in_([
+                    'deposited', 'delivered']),
+                },
+            })
 
     @staticmethod
     def default_date_in():
