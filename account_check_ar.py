@@ -294,9 +294,9 @@ class ThirdCheckHeld(Wizard):
     def __setup__(cls):
         super(ThirdCheckHeld, cls).__setup__()
         cls._error_messages.update({
-            'check_not_draft': 'Check "%s" is not draft or reverted',
-            'no_journal_check_account': ('You need to define a check account '
-                'in the journal "%s"'),
+            'check_not_draft': 'Check "%s" is not draft',
+            'no_journal_check_account': 'You need to define a check account '
+                'in the journal "%s"',
             })
 
     def transition_held(self):
@@ -311,7 +311,7 @@ class ThirdCheckHeld(Wizard):
         period_id = Period.find(1, date)
         for check in ThirdCheck.browse(Transaction().context.get(
                 'active_ids')):
-            if check.state not in ['draft', 'reverted']:
+            if check.state != 'draft':
                 self.raise_user_error('check_not_draft',
                     error_args=(check.name,))
             if not self.start.journal.third_check_account:
