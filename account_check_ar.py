@@ -204,16 +204,18 @@ class AccountThirdCheck(ModelSQL, ModelView):
                 'invisible': Eval('state') != 'draft',
                 },
             'deposited': {
-                'invisible': Eval('state') != 'held',
+                'invisible': ~Eval('state').in_(['held', 'reverted']),
                 },
             'delivered': {
                 'invisible': Eval('state') != 'held',
                 },
             'rejected': {
+                'invisible': ~Eval('state') != 'reverted',
+                },
+            'reverted': {
                 'invisible': ~Eval('state').in_([
                     'deposited', 'delivered']),
                 },
-            'reverted': {},
             })
 
     @staticmethod
