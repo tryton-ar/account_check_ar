@@ -419,7 +419,7 @@ class ThirdCheckDeposit(Wizard):
         period_id = Period.find(1, date=self.start.date)
         for check in ThirdCheck.browse(Transaction().context.get(
                 'active_ids')):
-            if check.state != 'held':
+            if check.state not in ['held', 'reverted']:
                 self.raise_user_error('check_not_held',
                     error_args=(check.name,))
             if not self.start.bank_account.journal.third_check_account:
