@@ -62,8 +62,28 @@ class AccountIssuedCheck(ModelSQL, ModelView):
         ('debited', 'Debited'),
         ], 'State', readonly=True)
     bank_account = fields.Many2One('bank.account', 'Bank Account',
-        required=True, domain=[('owners', 'in', [1])],
-        states=_STATES, depends=_DEPENDS)
+        required=False, domain=[('owners', 'in', [Eval('party_company')])],
+        states=_STATES, context={
+            'owners': [Eval('party_company')],
+            }, depends=_DEPENDS + ['party_company'])
+    party_company = fields.Function(fields.Many2One('party.party', 'party_company'),
+        'on_change_with_party_company')
+    electronic = fields.Boolean('E-Check', states=_STATES,
+        depends=_DEPENDS)
+
+    @staticmethod
+    def default_party_company():
+        Company = Pool().get('company.company')
+        if Transaction().context.get('company'):
+            company = Company(Transaction().context['company'])
+            return company.party.id
+
+    def on_change_with_party_company(self, name=None):
+        Company = Pool().get('company.company')
+        if Transaction().context.get('company'):
+            company = Company(Transaction().context['company'])
+            return company.party.id
+>>>>>>> 74d86ce... FIX #8 Se agrega el campo bool electronic.
 
     @classmethod
     def __setup__(cls):
@@ -92,6 +112,10 @@ class AccountIssuedCheck(ModelSQL, ModelView):
     @staticmethod
     def default_amount():
         return _ZERO
+
+    @staticmethod
+    def default_electronic():
+        return False
 
     @classmethod
     def issued(cls, checks):
@@ -140,6 +164,8 @@ class AccountThirdCheck(ModelSQL, ModelView):
             'invisible': Eval('state') != 'delivered',
             }, depends=_DEPENDS)
     not_to_order = fields.Boolean('Not to order', states=_STATES,
+        depends=_DEPENDS)
+    electronic = fields.Boolean('E-Check', states=_STATES,
         depends=_DEPENDS)
     on_order = fields.Char('On Order', states=_STATES, depends=_DEPENDS)
     signatory = fields.Char('Signatory', states=_STATES, depends=_DEPENDS)
@@ -216,6 +242,10 @@ class AccountThirdCheck(ModelSQL, ModelView):
 
     @staticmethod
     def default_not_to_order():
+        return False
+
+    @staticmethod
+    def default_electronic():
         return False
 
     @classmethod
