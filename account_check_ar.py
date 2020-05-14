@@ -68,6 +68,8 @@ class AccountIssuedCheck(ModelSQL, ModelView):
             }, depends=_DEPENDS + ['party_company'])
     party_company = fields.Function(fields.Many2One('party.party', 'party_company'),
         'on_change_with_party_company')
+    electronic = fields.Boolean('E-Check', states=_STATES,
+        depends=_DEPENDS)
 
     @staticmethod
     def default_party_company():
@@ -109,6 +111,10 @@ class AccountIssuedCheck(ModelSQL, ModelView):
     @staticmethod
     def default_amount():
         return _ZERO
+
+    @staticmethod
+    def default_electronic():
+        return False
 
     @classmethod
     def issued(cls, checks):
@@ -157,6 +163,8 @@ class AccountThirdCheck(ModelSQL, ModelView):
             'invisible': Eval('state') != 'delivered',
             }, depends=_DEPENDS)
     not_to_order = fields.Boolean('Not to order', states=_STATES,
+        depends=_DEPENDS)
+    electronic = fields.Boolean('E-Check', states=_STATES,
         depends=_DEPENDS)
     on_order = fields.Char('On Order', states=_STATES, depends=_DEPENDS)
     signatory = fields.Char('Signatory', states=_STATES, depends=_DEPENDS)
@@ -233,6 +241,10 @@ class AccountThirdCheck(ModelSQL, ModelView):
 
     @staticmethod
     def default_not_to_order():
+        return False
+
+    @staticmethod
+    def default_electronic():
         return False
 
     @classmethod

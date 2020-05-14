@@ -12,6 +12,7 @@ the full copyright notices and license terms. -->
     <field name="receiving_party"/>
     <field name="debit_date"/>
     <field name="on_order"/>
+    <field name="electronic"/>
     <field name="clearing"/>
     <field name="state"/>
 </tree>
