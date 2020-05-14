@@ -40,11 +40,16 @@ download_url = 'https://github.com/tryton-ar/account_check_ar/tree/%s.%s' % (
 
 requires = []
 for dep in info.get('depends', []):
-    if dep in ('bank_ar', 'account_voucher_ar'):
-        requires.append(get_require_version('trytonar_%s' % dep))
+    if dep == 'bank_ar':
+        requires.append('trytonar_bank_ar @ git+https://github.com/tryton-ar/bank_ar.git@%s.%s#egg=trytonar_bank_ar-%s.%s' % (major_version, minor_version, major_version, minor_version))
+    elif dep == 'account_voucher_ar':
+        requires.append('trytonar_account_voucher_ar @ git+https://github.com/tryton-ar/account_voucher_ar.git@%s.%s#egg=trytonar_account_voucher_ar-%s.%s' % (major_version, minor_version, major_version, minor_version))
     elif not re.match(r'(ir|res)(\W|$)', dep):
         requires.append(get_require_version('trytond_%s' % dep))
 requires.append(get_require_version('trytond'))
+requires.append('trytonar_party_ar @ git+https://github.com/tryton-ar/party_ar.git@%s.%s#egg=trytonar_party_ar-%s.%s' % (major_version, minor_version, major_version, minor_version))
+requires.append('pyafipws @ git+https://github.com/reingart/pyafipws.git@py3k#egg=pyafipws-py3k')
+requires.append('pysimplesoap @ git+https://github.com/pysimplesoap/pysimplesoap.git@stable_py3k#egg=pysimplesoap-stable_py3k')
 
 tests_require = [get_require_version('proteus')]
 dependency_links = []
