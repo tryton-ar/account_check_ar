@@ -34,6 +34,8 @@ the full copyright notices and license terms. -->
     <separator string="Extra Info" colspan="4" id="extra_info"/>
     <label name="on_order"/>
     <field name="on_order"/>
+    <label name="electronic"/>
+    <field name="electronic"/>
     <label name="signatory"/>
     <field name="signatory"/>
     <label name="clearing"/>
