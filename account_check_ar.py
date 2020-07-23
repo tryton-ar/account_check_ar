@@ -30,8 +30,9 @@ class AccountIssuedCheck(ModelSQL, ModelView):
     'Account Issued Check'
     __name__ = 'account.issued.check'
 
-    name = fields.Char('Number', required=True, states=_STATES,
-        depends=_DEPENDS)
+    name = fields.Char('Number', states={
+        'required': Eval('state') != 'draft',
+        }, depends=_DEPENDS)
     amount = fields.Numeric('Amount', digits=(16, 2), required=True,
         states=_STATES, depends=_DEPENDS)
     date_out = fields.Date('Date Out', states=_STATES, depends=_DEPENDS)
@@ -64,27 +65,12 @@ class AccountIssuedCheck(ModelSQL, ModelView):
         ('debited', 'Debited'),
         ], 'State', readonly=True)
     bank_account = fields.Many2One('bank.account', 'Bank Account',
-        required=False, domain=[('owners', 'in', [Eval('party_company')])],
-        states=_STATES, context={
-            'owners': [Eval('party_company')],
-            }, depends=_DEPENDS + ['party_company'])
-    party_company = fields.Function(fields.Many2One('party.party', 'party_company'),
-        'on_change_with_party_company')
-    electronic = fields.Boolean('E-Check', states=_STATES,
-        depends=_DEPENDS)
-
-    @staticmethod
-    def default_party_company():
-        Company = Pool().get('company.company')
-        if Transaction().context.get('company'):
-            company = Company(Transaction().context['company'])
-            return company.party.id
-
-    def on_change_with_party_company(self, name=None):
-        Company = Pool().get('company.company')
-        if Transaction().context.get('company'):
-            company = Company(Transaction().context['company'])
-            return company.party.id
+        required=True, domain=[('owners', 'in', [Eval('party_company')])],
+        states=_STATES, context={'owners': [Eval('party_company')]},
+        depends=_DEPENDS + ['party_company'])
+    party_company = fields.Function(fields.Many2One('party.party', 'Company'),
+        'get_party_company')
+    electronic = fields.Boolean('E-Check', states=_STATES, depends=_DEPENDS)
 
     @classmethod
     def __setup__(cls):
@@ -97,6 +83,15 @@ class AccountIssuedCheck(ModelSQL, ModelView):
                 'invisible': Eval('state') != 'issued',
                 },
             })
+
+    @staticmethod
+    def default_party_company():
+        Company = Pool().get('company.company')
+        if Transaction().context.get('company'):
+            return Company(Transaction().context['company']).party.id
+
+    def get_party_company(self, name=None):
+        return self.default_party_company()
 
     @staticmethod
     def default_date_out():
@@ -116,13 +111,14 @@ class AccountIssuedCheck(ModelSQL, ModelView):
         return False
 
     @classmethod
-    def issued(cls, checks):
-        pass
-
-    @classmethod
-    @ModelView.button
-    def debited(cls, checks):
-        pass
+    def copy(cls, checks, default=None):
+        if default is None:
+            default = {}
+        else:
+            default = default.copy()
+        default.setdefault('name', None)
+        default.setdefault('state', cls.default_state())
+        return super(AccountIssuedCheck, cls).copy(checks, default=default)
 
     @classmethod
     def delete(cls, checks):
@@ -133,13 +129,23 @@ class AccountIssuedCheck(ModelSQL, ModelView):
                 raise UserError(gettext('account_check_ar.msg_delete_check'))
         return super(AccountIssuedCheck, cls).delete(checks)
 
+    @classmethod
+    def issued(cls, checks):
+        pass
+
+    @classmethod
+    @ModelView.button
+    def debited(cls, checks):
+        pass
+
 
 class AccountThirdCheck(ModelSQL, ModelView):
     'Account Third Check'
     __name__ = 'account.third.check'
 
-    name = fields.Char('Number', required=True, states=_STATES,
-        depends=_DEPENDS)
+    name = fields.Char('Number', states={
+        'required': Eval('state') != 'draft',
+        }, depends=_DEPENDS)
     amount = fields.Numeric('Amount', digits=(16, 2), required=True,
         states=_STATES, depends=_DEPENDS)
     date_in = fields.Date('Date In', required=True, states=_STATES,
@@ -163,8 +169,7 @@ class AccountThirdCheck(ModelSQL, ModelView):
             }, depends=_DEPENDS)
     not_to_order = fields.Boolean('Not to order', states=_STATES,
         depends=_DEPENDS)
-    electronic = fields.Boolean('E-Check', states=_STATES,
-        depends=_DEPENDS)
+    electronic = fields.Boolean('E-Check', states=_STATES, depends=_DEPENDS)
     on_order = fields.Char('On Order', states=_STATES, depends=_DEPENDS)
     signatory = fields.Char('Signatory', states=_STATES, depends=_DEPENDS)
     state = fields.Selection([
@@ -213,12 +218,11 @@ class AccountThirdCheck(ModelSQL, ModelView):
             'delivered': {
                 'invisible': Eval('state') != 'held',
                 },
+            'reverted': {
+                'invisible': ~Eval('state').in_(['deposited', 'delivered']),
+                },
             'rejected': {
                 'invisible': Eval('state') != 'reverted',
-                },
-            'reverted': {
-                'invisible': ~Eval('state').in_([
-                    'deposited', 'delivered']),
                 },
             })
 
@@ -244,6 +248,16 @@ class AccountThirdCheck(ModelSQL, ModelView):
         return False
 
     @classmethod
+    def copy(cls, checks, default=None):
+        if default is None:
+            default = {}
+        else:
+            default = default.copy()
+        default.setdefault('name', None)
+        default.setdefault('state', cls.default_state())
+        return super(AccountThirdCheck, cls).copy(checks, default=default)
+
+    @classmethod
     def delete(cls, checks):
         if not checks:
             return True
@@ -254,29 +268,27 @@ class AccountThirdCheck(ModelSQL, ModelView):
 
     @classmethod
     @ModelView.button_action('account_check_ar.wizard_third_check_held')
-    def held(self, checks):
+    def held(cls, checks):
         pass
 
     @classmethod
     @ModelView.button_action('account_check_ar.wizard_third_check_deposit')
-    def deposited(self, checks):
+    def deposited(cls, checks):
         pass
 
     @classmethod
-    def delivered(self, checks):
+    def delivered(cls, checks):
         pass
 
     @classmethod
     @ModelView.button
-    def rejected(self, checks):
-        for check in checks:
-            check.state = 'rejected'
-            check.save()
+    def reverted(cls, checks):
+        pass
 
     @classmethod
     @ModelView.button
-    def reverted(self, checks):
-        pass
+    def rejected(cls, checks):
+        cls.write(checks, {'state': 'rejected'})
 
 
 class AccountVoucherThirdCheck(ModelSQL):
