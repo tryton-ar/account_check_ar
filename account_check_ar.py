@@ -8,6 +8,8 @@ from trytond.wizard import Wizard, StateView, StateTransition, Button
 from trytond.transaction import Transaction
 from trytond.pyson import Eval, In
 from trytond.pool import Pool
+from trytond.exceptions import UserError
+from trytond.i18n import gettext
 
 __all__ = ['AccountIssuedCheck', 'AccountThirdCheck',
     'AccountVoucherThirdCheck', 'Journal', 'ThirdCheckHeldStart',
@@ -87,9 +89,6 @@ class AccountIssuedCheck(ModelSQL, ModelView):
     @classmethod
     def __setup__(cls):
         super(AccountIssuedCheck, cls).__setup__()
-        cls._error_messages.update({
-            'delete_check': 'You can not delete a check that is used!',
-            })
         cls._buttons.update({
             'issued': {
                 'invisible': Eval('state') != 'draft',
@@ -131,7 +130,7 @@ class AccountIssuedCheck(ModelSQL, ModelView):
             return True
         for check in checks:
             if check.state != 'draft':
-                cls.raise_user_error('delete_check')
+                raise UserError(gettext('account_check_ar.msg_delete_check'))
         return super(AccountIssuedCheck, cls).delete(checks)
 
 
@@ -204,9 +203,6 @@ class AccountThirdCheck(ModelSQL, ModelView):
     @classmethod
     def __setup__(cls):
         super(AccountThirdCheck, cls).__setup__()
-        cls._error_messages.update({
-            'delete_check': 'You can not delete a check that is used!',
-            })
         cls._buttons.update({
             'held': {
                 'invisible': Eval('state') != 'draft',
@@ -248,6 +244,15 @@ class AccountThirdCheck(ModelSQL, ModelView):
         return False
 
     @classmethod
+    def delete(cls, checks):
+        if not checks:
+            return True
+        for check in checks:
+            if check.state != 'draft':
+                raise UserError(gettext('account_check_ar.msg_delete_check'))
+        return super(AccountThirdCheck, cls).delete(checks)
+
+    @classmethod
     @ModelView.button_action('account_check_ar.wizard_third_check_held')
     def held(self, checks):
         pass
@@ -272,15 +277,6 @@ class AccountThirdCheck(ModelSQL, ModelView):
     @ModelView.button
     def reverted(self, checks):
         pass
-
-    @classmethod
-    def delete(cls, checks):
-        if not checks:
-            return True
-        for check in checks:
-            if check.state != 'draft':
-                cls.raise_user_error('delete_check')
-        return super(AccountThirdCheck, cls).delete(checks)
 
 
 class AccountVoucherThirdCheck(ModelSQL):
@@ -327,15 +323,6 @@ class ThirdCheckHeld(Wizard):
             ])
     held = StateTransition()
 
-    @classmethod
-    def __setup__(cls):
-        super(ThirdCheckHeld, cls).__setup__()
-        cls._error_messages.update({
-            'check_not_draft': 'Check "%s" is not draft',
-            'no_journal_check_account': ('You need to define a check account '
-                'in the journal "%s"'),
-            })
-
     def transition_held(self):
         pool = Pool()
         ThirdCheck = pool.get('account.third.check')
@@ -349,11 +336,12 @@ class ThirdCheckHeld(Wizard):
         for check in ThirdCheck.browse(Transaction().context.get(
                 'active_ids')):
             if check.state != 'draft':
-                self.raise_user_error('check_not_draft',
-                    error_args=(check.name,))
+                raise UserError(gettext(
+                    'account_check_ar.msg_check_not_draft', check=check.name))
             if not self.start.journal.third_check_account:
-                self.raise_user_error('no_journal_check_account',
-                    error_args=(self.start.journal.name,))
+                raise UserError(gettext(
+                    'account_voucher_ar.msg_no_journal_check_account',
+                    journal=self.start.journal.name))
 
             move, = Move.create([{
                 'journal': self.start.journal.id,
@@ -412,15 +400,6 @@ class ThirdCheckDeposit(Wizard):
             ])
     deposit = StateTransition()
 
-    @classmethod
-    def __setup__(cls):
-        super(ThirdCheckDeposit, cls).__setup__()
-        cls._error_messages.update({
-            'check_not_held': 'Check "%s" is not in held',
-            'no_journal_check_account': ('You need to define a check account '
-                'in the journal "%s"'),
-            })
-
     def transition_deposit(self):
         pool = Pool()
         ThirdCheck = pool.get('account.third.check')
@@ -432,11 +411,13 @@ class ThirdCheckDeposit(Wizard):
         for check in ThirdCheck.browse(Transaction().context.get(
                 'active_ids')):
             if check.state not in ['held', 'reverted']:
-                self.raise_user_error('check_not_held',
-                    error_args=(check.name,))
+                raise UserError(gettext(
+                    'account_check_ar.msg_check_not_held',
+                    check=check.name))
             if not self.start.bank_account.journal.third_check_account:
-                self.raise_user_error('no_journal_check_account',
-                    error_args=(self.start.bank_account.journal.name,))
+                raise UserError(gettext(
+                    'account_voucher_ar.msg_no_journal_check_account',
+                    journal=self.start.bank_account.journal.name))
 
             move, = Move.create([{
                 'journal': self.start.bank_account.journal.id,
@@ -497,15 +478,6 @@ class ThirdCheckRevertDeposit(Wizard):
             ])
     revert = StateTransition()
 
-    @classmethod
-    def __setup__(cls):
-        super(ThirdCheckRevertDeposit, cls).__setup__()
-        cls._error_messages.update({
-            'check_not_deposited': 'Check "%s" is not deposited',
-            'no_journal_check_account': ('You need to define a check account '
-                'in the journal "%s"'),
-            })
-
     def transition_revert(self):
         pool = Pool()
         ThirdCheck = pool.get('account.third.check')
@@ -517,11 +489,13 @@ class ThirdCheckRevertDeposit(Wizard):
         for check in ThirdCheck.browse(Transaction().context.get(
                 'active_ids')):
             if check.state not in ['deposited', 'delivered']:
-                self.raise_user_error('check_not_deposited',
-                    error_args=(check.name,))
+                raise UserError(gettext(
+                    'account_check_ar.msg_check_not_deposited',
+                    check=check.name))
             if not check.account_bank_out.journal.third_check_account:
-                self.raise_user_error('no_journal_check_account',
-                    error_args=(check.account_bank_out.journal.name,))
+                raise UserError(gettext(
+                    'account_voucher_ar.msg_no_journal_check_account',
+                    journal=check.account_bank_out.journal.name))
 
             move, = Move.create([{
                 'journal': check.account_bank_out.journal.id,
@@ -584,15 +558,6 @@ class IssuedCheckDebit(Wizard):
             ])
     debit = StateTransition()
 
-    @classmethod
-    def __setup__(cls):
-        super(IssuedCheckDebit, cls).__setup__()
-        cls._error_messages.update({
-            'check_not_issued': 'Check "%s" is not issued',
-            'no_journal_check_account': ('You need to define a check account '
-                'in the journal "%s"'),
-            })
-
     def transition_debit(self):
         pool = Pool()
         IssuedCheck = pool.get('account.issued.check')
@@ -604,11 +569,13 @@ class IssuedCheckDebit(Wizard):
         for check in IssuedCheck.browse(Transaction().context.get(
                 'active_ids')):
             if check.state != 'issued':
-                self.raise_user_error('check_not_issued',
-                    error_args=(check.name,))
+                raise UserError(gettext(
+                    'account_check_ar.msg_check_not_issued',
+                    check=check.name))
             if not self.start.bank_account.journal.issued_check_account:
-                self.raise_user_error('no_journal_check_account',
-                    error_args=(self.start.bank_account.journal.name,))
+                raise UserError(gettext(
+                    'account_voucher_ar.msg_no_journal_check_account',
+                    journal=self.start.bank_account.journal.name))
 
             move, = Move.create([{
                 'journal': self.start.bank_account.journal.id,
@@ -665,15 +632,6 @@ class IssuedCheckRevertDebit(Wizard):
             ])
     revert = StateTransition()
 
-    @classmethod
-    def __setup__(cls):
-        super(IssuedCheckRevertDebit, cls).__setup__()
-        cls._error_messages.update({
-            'check_not_debited': 'Check "%s" is not debited',
-            'no_journal_check_account': ('You need to define a check account '
-                'in the journal "%s"'),
-            })
-
     def transition_revert(self):
         pool = Pool()
         IssuedCheck = pool.get('account.issued.check')
@@ -685,11 +643,13 @@ class IssuedCheckRevertDebit(Wizard):
         for check in IssuedCheck.browse(Transaction().context.get(
                 'active_ids')):
             if check.state != 'debited':
-                self.raise_user_error('check_not_debited',
-                    error_args=(check.name,))
+                raise UserError(gettext(
+                    'account_check_ar.msg_check_not_debited',
+                    check=check.name))
             if not check.bank_account.journal.issued_check_account:
-                self.raise_user_error('no_journal_check_account',
-                    error_args=(check.bank_account.journal.name,))
+                raise UserError(gettext(
+                    'account_voucher_ar.msg_no_journal_check_account',
+                    journal=check.bank_account.journal.name))
 
             move, = Move.create([{
                 'journal': check.bank_account.journal.id,

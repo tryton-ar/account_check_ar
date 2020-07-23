@@ -2,74 +2,6 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
-msgctxt "error:account.issued.check.debit:"
-msgid "Check \"%s\" is not issued"
-msgstr "Cheque \"%s\" no está emitido"
-
-msgctxt "error:account.issued.check.debit:"
-msgid "You need to define a check account in the journal \"%s\""
-msgstr "Debe definir la cuenta del cheque en el diario \"%s\""
-
-msgctxt "error:account.issued.check.revert_debit:"
-msgid "Check \"%s\" is not debited"
-msgstr "Cheque \"%s\" no está debitado"
-
-msgctxt "error:account.issued.check.revert_debit:"
-msgid "You need to define a check account in the journal \"%s\""
-msgstr "Debe definir la cuenta del cheque en el diario \"%s\""
-
-msgctxt "error:account.issued.check:"
-msgid "You can not delete a check that is used!"
-msgstr "No puede eliminar un cheque usado"
-
-msgctxt "error:account.third.check.deposit:"
-msgid "Check \"%s\" is not in held"
-msgstr "Cheque \"%s\" no está en cartera"
-
-msgctxt "error:account.third.check.deposit:"
-msgid "You need to define a check account in the journal \"%s\""
-msgstr "Debe definir la cuenta del cheque en el diario \"%s\""
-
-msgctxt "error:account.third.check.held:"
-msgid "Check \"%s\" is not draft"
-msgstr "Cheque \"%s\" no está en borrador"
-
-msgctxt "error:account.third.check.held:"
-msgid "You need to define a check account in the journal \"%s\""
-msgstr "Debe definir la cuenta del cheque en el diario \"%s\""
-
-msgctxt "error:account.third.check.revert_deposit:"
-msgid "Check \"%s\" is not deposited"
-msgstr "Cheque \"%s\" no está depositado"
-
-msgctxt "error:account.third.check.revert_deposit:"
-msgid "You need to define a check account in the journal \"%s\""
-msgstr "Debe definir la cuenta del cheque en el diario \"%s\""
-
-msgctxt "error:account.third.check:"
-msgid "You can not delete a check that is used!"
-msgstr "No puede eliminar un cheque usado"
-
-msgctxt "error:account.voucher:"
-msgid "Check \"%s\" is not in draft state"
-msgstr "Cheque \"%s\" no está en estado borrador"
-
-msgctxt "error:account.voucher:"
-msgid "Issued check \"%s\" is not in Issued state"
-msgstr "El cheque emitido número \"%s\" no figura como \"Emitido\""
-
-msgctxt "error:account.voucher:"
-msgid "Third check \"%s\" is not in Delivered state"
-msgstr "El cheque de tercero número \"%s\" no figura como \"Entregado\""
-
-msgctxt "error:account.voucher:"
-msgid "Third check \"%s\" is not in Held state"
-msgstr "El cheque de tercero número \"%s\" no figura como \"En cartera\""
-
-msgctxt "error:account.voucher:"
-msgid "You need to define a check account in the journal \"%s\""
-msgstr "Debe definir la cuenta del cheque en el diario \"%s\""
-
 msgctxt "field:account.issued.check,amount:"
 msgid "Amount"
 msgstr "Importe"
@@ -413,6 +345,30 @@ msgstr "Cheque de Tercero a Cartera"
 msgctxt "model:ir.action,name:wizard_third_check_revert_deposit"
 msgid "Revert Check Deposit"
 msgstr "Revertir Depósito de Cheque"
+
+msgctxt "model:ir.message,text:msg_check_not_debited"
+msgid "Check \"%(check)s\" is not debited"
+msgstr "Cheque \"%(check)s\" no está debitado"
+
+msgctxt "model:ir.message,text:msg_check_not_deposited"
+msgid "Check \"%(check)s\" is not deposited"
+msgstr "Cheque \"%(check)s\" no está depositado"
+
+msgctxt "model:ir.message,text:msg_check_not_draft"
+msgid "Check \"%(check)s\" is not draft"
+msgstr "Cheque \"%(check)s\" no está en borrador"
+
+msgctxt "model:ir.message,text:msg_check_not_held"
+msgid "Check \"%(check)s\" is not in held"
+msgstr "Cheque \"%(check)s\" no está en cartera"
+
+msgctxt "model:ir.message,text:msg_check_not_issued"
+msgid "Check \"%(check)s\" is not issued"
+msgstr "Cheque \"%(check)s\" no está emitido"
+
+msgctxt "model:ir.message,text:msg_delete_check"
+msgid "You can not delete a check that is used!"
+msgstr "No puede eliminar un cheque usado"
 
 msgctxt "model:ir.ui.menu,name:menu_issued_check"
 msgid "Issued Checks"

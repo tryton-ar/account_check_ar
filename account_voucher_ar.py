@@ -6,6 +6,8 @@ from decimal import Decimal
 from trytond.model import ModelView, fields
 from trytond.pyson import Eval, Not, In, Or
 from trytond.pool import Pool, PoolMeta
+from trytond.exceptions import UserError
+from trytond.i18n import gettext
 
 __all__ = ['AccountVoucher']
 
@@ -50,20 +52,6 @@ class AccountVoucher(metaclass=PoolMeta):
                 Not(In(Eval('currency_code'), ['ARS']))),
             })
 
-    @classmethod
-    def __setup__(cls):
-        super(AccountVoucher, cls).__setup__()
-        cls._error_messages.update({
-            'no_journal_check_account': ('You need to define a check account '
-                'in the journal "%s"'),
-            'check_not_in_draft': 'Check "%s" is not in draft state',
-            'issued_check_not_issued': ('Issued check "%s" is not in '
-                'Issued state'),
-            'third_check_not_held': 'Third check "%s" is not in Held state',
-            'third_pay_check_not_delivered': ('Third check "%s" is not in '
-                'Delivered state'),
-            })
-
     @fields.depends('party', 'pay_lines', 'lines_credits', 'lines_debits',
         'issued_check', 'third_check', 'third_pay_checks')
     def on_change_with_amount(self, name=None):
@@ -80,46 +68,50 @@ class AccountVoucher(metaclass=PoolMeta):
         return amount
 
     def prepare_move_lines(self):
-        move_lines = super(AccountVoucher, self).prepare_move_lines()
         Period = Pool().get('account.period')
+        move_lines = super(AccountVoucher, self).prepare_move_lines()
+        journal = self.journal
         if self.voucher_type == 'receipt':
             if self.third_check:
-                if not self.journal.third_check_account:
-                    self.raise_user_error('no_journal_check_account',
-                        error_args=(self.journal.name,))
+                if not journal.third_check_account:
+                    raise UserError(gettext(
+                        'account_voucher_ar.msg_no_journal_check_account',
+                        journal=journal.name))
                 for check in self.third_check:
                     if check.state != 'draft':
-                        self.raise_user_error('check_not_in_draft',
-                            error_args=(check.name,))
+                        raise UserError(gettext(
+                            'account_voucher_ar.msg_check_not_in_draft',
+                            check=check.name))
                     move_lines.append({
                         'debit': check.amount,
                         'credit': _ZERO,
-                        'account': self.journal.third_check_account.id,
+                        'account': journal.third_check_account.id,
                         'move': self.move.id,
-                        'journal': self.journal.id,
+                        'journal': journal.id,
                         'period': Period.find(self.company.id, date=self.date),
                         'party': (
-                            self.journal.third_check_account.party_required
-                            and self.party.id or None),
+                            journal.third_check_account.party_required and
+                            self.party.id or None),
                         'maturity_date': check.date,
                     })
 
         if self.voucher_type == 'payment':
             if self.issued_check:
-                if not self.journal.issued_check_account:
-                    self.raise_user_error('no_journal_check_account',
-                        error_args=(self.journal.name,))
+                if not journal.issued_check_account:
+                    raise UserError(gettext(
+                        'account_voucher_ar.msg_no_journal_check_account',
+                        journal=journal.name))
                 for check in self.issued_check:
                     move_lines.append({
                         'debit': _ZERO,
                         'credit': check.amount,
-                        'account': self.journal.issued_check_account.id,
+                        'account': journal.issued_check_account.id,
                         'move': self.move.id,
-                        'journal': self.journal.id,
+                        'journal': journal.id,
                         'period': Period.find(self.company.id, date=self.date),
                         'party': (
-                            self.journal.issued_check_account.party_required
-                            and self.party.id or None),
+                            journal.issued_check_account.party_required and
+                            self.party.id or None),
                         'maturity_date': check.date,
                         })
             if self.third_pay_checks:
@@ -127,13 +119,13 @@ class AccountVoucher(metaclass=PoolMeta):
                     move_lines.append({
                         'debit': _ZERO,
                         'credit': check.amount,
-                        'account': self.journal.third_check_account.id,
+                        'account': journal.third_check_account.id,
                         'move': self.move.id,
-                        'journal': self.journal.id,
+                        'journal': journal.id,
                         'period': Period.find(self.company.id, date=self.date),
                         'party': (
-                            self.journal.third_check_account.party_required
-                            and self.party.id or None),
+                            journal.third_check_account.party_required and
+                            self.party.id or None),
                         'maturity_date': check.date,
                         })
 
@@ -182,8 +174,9 @@ class AccountVoucher(metaclass=PoolMeta):
             if voucher.issued_check:
                 for check in voucher.issued_check:
                     if check.state != 'issued':
-                        cls.raise_user_error('issued_check_not_issued',
-                            (check.name,))
+                        raise UserError(gettext(
+                            'account_voucher_ar.msg_issued_check_not_issued',
+                            check=check.name))
                 IssuedCheck.write(list(voucher.issued_check), {
                     'receiving_party': None,
                     'state': 'draft',
@@ -191,8 +184,9 @@ class AccountVoucher(metaclass=PoolMeta):
             if voucher.third_check:
                 for check in voucher.third_check:
                     if check.state not in ['held', 'reverted']:
-                        cls.raise_user_error('third_check_not_held',
-                            (check.name,))
+                        raise UserError(gettext(
+                            'account_voucher_ar.msg_third_check_not_held',
+                            check=check.name))
                 ThirdCheck.write(list(voucher.third_check), {
                     'source_party': None,
                     'state': 'draft',
@@ -200,8 +194,9 @@ class AccountVoucher(metaclass=PoolMeta):
             if voucher.third_pay_checks:
                 for check in voucher.third_pay_checks:
                     if check.state != 'delivered':
-                        cls.raise_user_error('third_pay_check_not_delivered',
-                            (check.name,))
+                        raise UserError(gettext('account_voucher_ar.'
+                            'msg_third_pay_check_not_delivered',
+                            check=check.name))
                 ThirdCheck.write(list(voucher.third_pay_checks), {
                     'destiny_party': None,
                     'date_out': None,
