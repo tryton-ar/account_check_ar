@@ -42,10 +42,10 @@ the full copyright notices and license terms. -->
     <field name="clearing"/>
     <label name="state"/>
     <field name="state"/>
-    <button name="held" colspan="2" string="_Held"
+    <button name="held" colspan="2" string="Held"
         icon="tryton-forward"/>
-    <button name="deposited" colspan="2" string="_Deposit"
+    <button name="deposited" colspan="2" string="Deposit"
         icon="tryton-forward"/>
-    <button name="rejected" colspan="2" string="_Reject"
+    <button name="rejected" colspan="2" string="Reject"
         icon="tryton-forward"/>
 </form>

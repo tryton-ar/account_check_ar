@@ -8,7 +8,7 @@ msgstr "Importe"
 
 msgctxt "field:account.issued.check,bank_account:"
 msgid "Bank Account"
-msgstr "Cuenta Bancaria"
+msgstr "Cuenta bancaria"
 
 msgctxt "field:account.issued.check,clearing:"
 msgid "Clearing"
@@ -34,6 +34,10 @@ msgctxt "field:account.issued.check,debit_date:"
 msgid "Debit Date"
 msgstr "Fecha Débito"
 
+msgctxt "field:account.issued.check,electronic:"
+msgid "E-Check"
+msgstr ""
+
 msgctxt "field:account.issued.check,id:"
 msgid "ID"
 msgstr "ID"
@@ -49,6 +53,10 @@ msgstr "A la orden"
 msgctxt "field:account.issued.check,origin:"
 msgid "Origin"
 msgstr "Origen"
+
+msgctxt "field:account.issued.check,party_company:"
+msgid "Company"
+msgstr "Empresa"
 
 msgctxt "field:account.issued.check,rec_name:"
 msgid "Record Name"
@@ -80,7 +88,7 @@ msgstr "Usuario modificación"
 
 msgctxt "field:account.issued.check.debit.start,bank_account:"
 msgid "Bank Account"
-msgstr "Cuenta Bancaria"
+msgstr "Cuenta bancaria"
 
 msgctxt "field:account.issued.check.debit.start,date:"
 msgid "Date"
@@ -108,7 +116,7 @@ msgstr "Cuenta Cheque Tercero"
 
 msgctxt "field:account.third.check,account_bank_out:"
 msgid "Bank Account"
-msgstr "Cuenta Bancaria"
+msgstr "Cuenta bancaria"
 
 msgctxt "field:account.third.check,amount:"
 msgid "Amount"
@@ -149,6 +157,10 @@ msgstr "Fecha Débito"
 msgctxt "field:account.third.check,destiny_party:"
 msgid "Destiny Party"
 msgstr "Destino"
+
+msgctxt "field:account.third.check,electronic:"
+msgid "E-Check"
+msgstr ""
 
 msgctxt "field:account.third.check,id:"
 msgid "ID"
@@ -212,7 +224,7 @@ msgstr "Usuario modificación"
 
 msgctxt "field:account.third.check.deposit.start,bank_account:"
 msgid "Bank Account"
-msgstr "Cuenta Bancaria"
+msgstr "Cuenta bancaria"
 
 msgctxt "field:account.third.check.deposit.start,date:"
 msgid "Date"
@@ -370,6 +382,34 @@ msgctxt "model:ir.message,text:msg_delete_check"
 msgid "You can not delete a check that is used!"
 msgstr "No puede eliminar un cheque usado"
 
+msgctxt "model:ir.model.button,string:check_debited_button"
+msgid "Debit"
+msgstr "Debitar"
+
+msgctxt "model:ir.model.button,string:check_delivered_button"
+msgid "Deliver"
+msgstr "Entregar"
+
+msgctxt "model:ir.model.button,string:check_deposited_button"
+msgid "Deposit"
+msgstr "Depositar"
+
+msgctxt "model:ir.model.button,string:check_held_button"
+msgid "Held"
+msgstr "A Cartera"
+
+msgctxt "model:ir.model.button,string:check_issued_button"
+msgid "Issued"
+msgstr "Emitido"
+
+msgctxt "model:ir.model.button,string:check_rejected_button"
+msgid "Reject"
+msgstr "Rechazar"
+
+msgctxt "model:ir.model.button,string:check_reverted_button"
+msgid "Revert"
+msgstr "Revertir"
+
 msgctxt "model:ir.ui.menu,name:menu_issued_check"
 msgid "Issued Checks"
 msgstr "Cheques Emitidos"
@@ -381,10 +421,6 @@ msgstr "Cheques de Terceros"
 msgctxt "model:ir.ui.menu,name:menu_treasury"
 msgid "Treasury"
 msgstr "Tesorería"
-
-msgctxt "selection:account.issued.check,clearing:"
-msgid ""
-msgstr ""
 
 msgctxt "selection:account.issued.check,clearing:"
 msgid "24 hs"
@@ -409,10 +445,6 @@ msgstr "Borrador"
 msgctxt "selection:account.issued.check,state:"
 msgid "Issued"
 msgstr "Emitido"
-
-msgctxt "selection:account.third.check,clearing:"
-msgid ""
-msgstr ""
 
 msgctxt "selection:account.third.check,clearing:"
 msgid "24 hs"
@@ -446,9 +478,9 @@ msgctxt "selection:account.third.check,state:"
 msgid "Rejected"
 msgstr "Rechazado"
 
-msgctxt "view:account.issued.check.debit.start:"
-msgid "Check Debit"
-msgstr "Debitar Cheque"
+msgctxt "selection:account.third.check,state:"
+msgid "Reverted"
+msgstr "Revertido"
 
 msgctxt "view:account.issued.check:"
 msgid "Extra Info"
@@ -462,37 +494,29 @@ msgctxt "view:account.journal:"
 msgid "Checks"
 msgstr "Cheques"
 
-msgctxt "view:account.third.check.deposit.start:"
-msgid "Check Deposit"
-msgstr "Depósito de Cheque"
-
-msgctxt "view:account.third.check.held.start:"
-msgid "Check Held"
-msgstr "Cheque en Cartera"
+msgctxt "view:account.third.check:"
+msgid "Deposit"
+msgstr "Depositar"
 
 msgctxt "view:account.third.check:"
 msgid "Extra Info"
 msgstr "Información Extra"
 
 msgctxt "view:account.third.check:"
+msgid "Held"
+msgstr "A Cartera"
+
+msgctxt "view:account.third.check:"
 msgid "Origin"
 msgstr "Origen"
 
 msgctxt "view:account.third.check:"
+msgid "Reject"
+msgstr "Rechazar"
+
+msgctxt "view:account.third.check:"
 msgid "Target"
 msgstr "Destino"
-
-msgctxt "view:account.third.check:"
-msgid "_Deposit"
-msgstr "_Depositar"
-
-msgctxt "view:account.third.check:"
-msgid "_Held"
-msgstr "_Cartera"
-
-msgctxt "view:account.voucher-account.third.check:"
-msgid "Third Checks"
-msgstr "Cheques de Terceros"
 
 msgctxt "view:account.voucher:"
 msgid "Checks"
