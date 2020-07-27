@@ -11,6 +11,8 @@ the full copyright notices and license terms. -->
             <field name="third_check_account"/>
             <label name="issued_check_account"/>
             <field name="issued_check_account"/>
+            <label name="rejected_check_account"/>
+            <field name="rejected_check_account"/>
         </page>
     </xpath>
 </data>
