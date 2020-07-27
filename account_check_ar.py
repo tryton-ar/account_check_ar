@@ -16,7 +16,9 @@ __all__ = ['AccountIssuedCheck', 'AccountThirdCheck',
     'ThirdCheckHeld', 'ThirdCheckDepositStart', 'ThirdCheckDeposit',
     'ThirdCheckRevertDepositStart', 'ThirdCheckRevertDeposit',
     'IssuedCheckDebitStart', 'IssuedCheckDebit',
-    'IssuedCheckRevertDebitStart', 'IssuedCheckRevertDebit']
+    'IssuedCheckRevertDebitStart', 'IssuedCheckRevertDebit',
+    'ThirdCheckRejectStart', 'ThirdCheckReject',
+    'ThirdCheckRevertRejectStart', 'ThirdCheckRevertReject']
 
 _STATES = {
     'readonly': Eval('state') != 'draft',
@@ -222,7 +224,7 @@ class AccountThirdCheck(ModelSQL, ModelView):
                 'invisible': ~Eval('state').in_(['deposited', 'delivered']),
                 },
             'rejected': {
-                'invisible': Eval('state') != 'reverted',
+                'invisible': ~Eval('state').in_(['held', 'reverted']),
                 },
             })
 
@@ -286,9 +288,9 @@ class AccountThirdCheck(ModelSQL, ModelView):
         pass
 
     @classmethod
-    @ModelView.button
+    @ModelView.button_action('account_check_ar.wizard_third_check_reject')
     def rejected(cls, checks):
-        cls.write(checks, {'state': 'rejected'})
+        pass
 
 
 class AccountVoucherThirdCheck(ModelSQL):
@@ -309,6 +311,8 @@ class Journal(ModelSQL, ModelView):
         'Third Check Account')
     issued_check_account = fields.Many2One('account.account',
         'Issued Check Account')
+    rejected_check_account = fields.Many2One('account.account',
+        'Rejected Check Account')
 
 
 class ThirdCheckHeldStart(ModelView):
@@ -319,7 +323,7 @@ class ThirdCheckHeldStart(ModelView):
     credit_account = fields.Many2One('account.account', 'Credit Account',
         required=True,
         domain=[
-            ('kind', '!=', 'view'),
+            ('type', '!=', None),
             ('company', '=', Eval('context', {}).get('company', -1)),
             ])
 
@@ -691,5 +695,147 @@ class IssuedCheckRevertDebit(Wizard):
                 })
             MoveLine.create(lines)
             IssuedCheck.write([check], {'state': 'issued'})
+            Move.post([move])
+        return 'end'
+
+
+class ThirdCheckRejectStart(ModelView):
+    'Third Check Reject'
+    __name__ = 'account.third.check.reject.start'
+
+    journal = fields.Many2One('account.journal', 'Journal', required=True)
+
+
+class ThirdCheckReject(Wizard):
+    'Third Check Reject'
+    __name__ = 'account.third.check.reject'
+
+    start = StateView('account.third.check.reject.start',
+        'account_check_ar.view_third_check_reject', [
+            Button('Cancel', 'end', 'tryton-cancel'),
+            Button('Reject', 'reject', 'tryton-ok', default=True),
+            ])
+    reject = StateTransition()
+
+    def transition_reject(self):
+        pool = Pool()
+        ThirdCheck = pool.get('account.third.check')
+        Move = pool.get('account.move')
+        MoveLine = pool.get('account.move.line')
+        Date = pool.get('ir.date')
+        Period = pool.get('account.period')
+
+        date = Date.today()
+        period_id = Period.find(1, date)
+        for check in ThirdCheck.browse(Transaction().context.get(
+                'active_ids')):
+            if check.state not in ['held', 'reverted']:
+                raise UserError(gettext(
+                    'account_check_ar.msg_check_not_held',
+                    check=check.name))
+            if (not self.start.journal.third_check_account or
+                    not self.start.journal.rejected_check_account):
+                raise UserError(gettext(
+                    'account_voucher_ar.msg_no_journal_check_account',
+                    journal=self.start.journal.name))
+
+            move, = Move.create([{
+                'journal': self.start.journal.id,
+                'period': period_id,
+                'date': date,
+                'description': 'Cheque: ' + check.name,
+                }])
+            lines = []
+            lines.append({
+                'account': self.start.journal.rejected_check_account.id,
+                'move': move.id,
+                'journal': self.start.journal.id,
+                'period': period_id,
+                'debit': check.amount,
+                'credit': _ZERO,
+                'date': date,
+                })
+            lines.append({
+                'account': self.start.journal.third_check_account.id,
+                'move': move.id,
+                'journal': self.start.journal.id,
+                'period': period_id,
+                'debit': _ZERO,
+                'credit': check.amount,
+                'date': date,
+                })
+            MoveLine.create(lines)
+            ThirdCheck.write([check], {'state': 'rejected'})
+            Move.post([move])
+        return 'end'
+
+
+class ThirdCheckRevertRejectStart(ModelView):
+    'Revert Third Check Reject'
+    __name__ = 'account.third.check.revert_reject.start'
+
+    journal = fields.Many2One('account.journal', 'Journal', required=True)
+
+
+class ThirdCheckRevertReject(Wizard):
+    'Revert Third Check Reject'
+    __name__ = 'account.third.check.revert_reject'
+
+    start = StateView('account.third.check.revert_reject.start',
+        'account_check_ar.view_third_check_revert_reject', [
+            Button('Cancel', 'end', 'tryton-cancel'),
+            Button('Revert Reject', 'revert', 'tryton-ok', default=True),
+            ])
+    revert = StateTransition()
+
+    def transition_revert(self):
+        pool = Pool()
+        ThirdCheck = pool.get('account.third.check')
+        Move = pool.get('account.move')
+        MoveLine = pool.get('account.move.line')
+        Date = pool.get('ir.date')
+        Period = pool.get('account.period')
+
+        date = Date.today()
+        period_id = Period.find(1, date)
+        for check in ThirdCheck.browse(Transaction().context.get(
+                'active_ids')):
+            if check.state != 'rejected':
+                raise UserError(gettext(
+                    'account_check_ar.msg_check_not_rejected',
+                    check=check.name))
+            if (not self.start.journal.third_check_account or
+                    not self.start.journal.rejected_check_account):
+                raise UserError(gettext(
+                    'account_voucher_ar.msg_no_journal_check_account',
+                    journal=self.start.journal.name))
+
+            move, = Move.create([{
+                'journal': self.start.journal.id,
+                'period': period_id,
+                'date': date,
+                'description': 'Cheque: ' + check.name,
+                }])
+            lines = []
+            lines.append({
+                'account': self.start.journal.rejected_check_account.id,
+                'move': move.id,
+                'journal': self.start.journal.id,
+                'period': period_id,
+                'debit': _ZERO,
+                'credit': check.amount,
+                'date': date,
+                })
+            lines.append({
+                'account': self.start.journal.third_check_account.id,
+                'move': move.id,
+                'journal': self.start.journal.id,
+                'period': period_id,
+                'debit': check.amount,
+                'credit': _ZERO,
+                'date': date,
+                })
+            MoveLine.create(lines)
+            ThirdCheck.write([check], {'state': 'reverted'})
             Move.post([move])
         return 'end'

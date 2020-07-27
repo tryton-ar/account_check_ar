@@ -21,6 +21,7 @@ the full copyright notices and license terms. -->
             <field name="type">tree</field>
             <field name="name">account_issued_check_tree</field>
         </record>
+
         <record model="ir.action.act_window" id="act_issued_check_tree">
             <field name="name">Issued Checks</field>
             <field name="res_model">account.issued.check</field>
@@ -35,8 +36,30 @@ the full copyright notices and license terms. -->
             <field name="view" ref="account_issued_check_form"/>
             <field name="act_window" ref="act_issued_check_tree"/>
         </record>
+
         <menuitem parent="menu_treasury" action="act_issued_check_tree"
             id="menu_issued_check" sequence="5"/>
+
+        <record model="ir.model.button" id="check_issued_button">
+            <field name="name">issued</field>
+            <field name="string">Issued</field>
+            <field name="model" search="[('model', '=', 'account.issued.check')]"/>
+        </record>
+        <record model="ir.model.button-res.group"
+            id="check_issued_button_group_account">
+            <field name="button" ref="check_issued_button"/>
+            <field name="group" ref="account.group_account"/>
+        </record>
+        <record model="ir.model.button" id="check_debited_button">
+            <field name="name">debited</field>
+            <field name="string">Debit</field>
+            <field name="model" search="[('model', '=', 'account.issued.check')]"/>
+        </record>
+        <record model="ir.model.button-res.group"
+            id="check_debited_button_group_account">
+            <field name="button" ref="check_debited_button"/>
+            <field name="group" ref="account.group_account"/>
+        </record>
 
         <!-- Third Checks -->
         <record model="ir.ui.view" id="account_third_check_form">
@@ -49,6 +72,7 @@ the full copyright notices and license terms. -->
             <field name="type">tree</field>
             <field name="name">account_third_check_tree</field>
         </record>
+
         <record model="ir.action.act_window" id="act_third_check_tree">
             <field name="name">Third Checks</field>
             <field name="res_model">account.third.check</field>
@@ -63,8 +87,60 @@ the full copyright notices and license terms. -->
             <field name="view" ref="account_third_check_form"/>
             <field name="act_window" ref="act_third_check_tree"/>
         </record>
+
         <menuitem parent="menu_treasury" action="act_third_check_tree"
             id="menu_third_check" sequence="10"/>
+
+        <record model="ir.model.button" id="check_held_button">
+            <field name="name">held</field>
+            <field name="string">Held</field>
+            <field name="model" search="[('model', '=', 'account.third.check')]"/>
+        </record>
+        <record model="ir.model.button-res.group"
+            id="check_held_button_group_account">
+            <field name="button" ref="check_held_button"/>
+            <field name="group" ref="account.group_account"/>
+        </record>
+        <record model="ir.model.button" id="check_deposited_button">
+            <field name="name">deposited</field>
+            <field name="string">Deposit</field>
+            <field name="model" search="[('model', '=', 'account.third.check')]"/>
+        </record>
+        <record model="ir.model.button-res.group"
+            id="check_deposited_button_group_account">
+            <field name="button" ref="check_deposited_button"/>
+            <field name="group" ref="account.group_account"/>
+        </record>
+        <record model="ir.model.button" id="check_delivered_button">
+            <field name="name">delivered</field>
+            <field name="string">Deliver</field>
+            <field name="model" search="[('model', '=', 'account.third.check')]"/>
+        </record>
+        <record model="ir.model.button-res.group"
+            id="check_delivered_button_group_account">
+            <field name="button" ref="check_delivered_button"/>
+            <field name="group" ref="account.group_account"/>
+        </record>
+        <record model="ir.model.button" id="check_reverted_button">
+            <field name="name">reverted</field>
+            <field name="string">Revert</field>
+            <field name="model" search="[('model', '=', 'account.third.check')]"/>
+        </record>
+        <record model="ir.model.button-res.group"
+            id="check_reverted_button_group_account">
+            <field name="button" ref="check_reverted_button"/>
+            <field name="group" ref="account.group_account"/>
+        </record>
+        <record model="ir.model.button" id="check_rejected_button">
+            <field name="name">rejected</field>
+            <field name="string">Reject</field>
+            <field name="model" search="[('model', '=', 'account.third.check')]"/>
+        </record>
+        <record model="ir.model.button-res.group"
+            id="check_rejected_button_group_account">
+            <field name="button" ref="check_rejected_button"/>
+            <field name="group" ref="account.group_account"/>
+        </record>
 
         <!-- Wizard: Issued Check Debit -->
         <record model="ir.action.wizard" id="wizard_issued_check_debit">
@@ -151,78 +227,38 @@ the full copyright notices and license terms. -->
             <field name="action" ref="wizard_third_check_revert_deposit"/>
         </record>
 
-        <!-- buttons -->
-        <record model="ir.model.button" id="check_issued_button">
-            <field name="name">issued</field>
-            <field name="string">Issued</field>
-            <field name="model" search="[('model', '=', 'account.issued.check')]"/>
+        <!-- Wizard: Third Check Reject -->
+        <record model="ir.action.wizard" id="wizard_third_check_reject">
+            <field name="name">Check Reject</field>
+            <field name="wiz_name">account.third.check.reject</field>
+            <field name="model">account.third.check</field>
         </record>
-        <record model="ir.model.button-res.group"
-            id="check_issued_button_group_account">
-            <field name="button" ref="check_issued_button"/>
-            <field name="group" ref="account.group_account"/>
+        <record model="ir.ui.view" id="view_third_check_reject">
+            <field name="model">account.third.check.reject.start</field>
+            <field name="type">form</field>
+            <field name="name">third_check_reject</field>
         </record>
-
-        <record model="ir.model.button" id="check_debited_button">
-            <field name="name">debited</field>
-            <field name="string">Debit</field>
-            <field name="model" search="[('model', '=', 'account.issued.check')]"/>
-        </record>
-        <record model="ir.model.button-res.group"
-            id="check_debited_button_group_account">
-            <field name="button" ref="check_debited_button"/>
-            <field name="group" ref="account.group_account"/>
+        <record model="ir.action.keyword" id="third_check_reject_keyword">
+            <field name="keyword">form_action</field>
+            <field name="model">account.third.check,-1</field>
+            <field name="action" ref="wizard_third_check_reject"/>
         </record>
 
-        <record model="ir.model.button" id="check_held_button">
-            <field name="name">held</field>
-            <field name="string">Held</field>
-            <field name="model" search="[('model', '=', 'account.third.check')]"/>
+        <!-- Wizard: Revert Third Check Reject -->
+        <record model="ir.action.wizard" id="wizard_third_check_revert_reject">
+            <field name="name">Revert Check Reject</field>
+            <field name="wiz_name">account.third.check.revert_reject</field>
+            <field name="model">account.third.check</field>
         </record>
-        <record model="ir.model.button-res.group"
-            id="check_held_button_group_account">
-            <field name="button" ref="check_held_button"/>
-            <field name="group" ref="account.group_account"/>
+        <record model="ir.ui.view" id="view_third_check_revert_reject">
+            <field name="model">account.third.check.revert_reject.start</field>
+            <field name="type">form</field>
+            <field name="name">third_check_reject_revert</field>
         </record>
-        <record model="ir.model.button" id="check_deposited_button">
-            <field name="name">deposited</field>
-            <field name="string">Deposit</field>
-            <field name="model" search="[('model', '=', 'account.third.check')]"/>
-        </record>
-        <record model="ir.model.button-res.group"
-            id="check_deposited_button_group_account">
-            <field name="button" ref="check_deposited_button"/>
-            <field name="group" ref="account.group_account"/>
-        </record>
-        <record model="ir.model.button" id="check_delivered_button">
-            <field name="name">delivered</field>
-            <field name="string">Deliver</field>
-            <field name="model" search="[('model', '=', 'account.third.check')]"/>
-        </record>
-        <record model="ir.model.button-res.group"
-            id="check_delivered_button_group_account">
-            <field name="button" ref="check_delivered_button"/>
-            <field name="group" ref="account.group_account"/>
-        </record>
-        <record model="ir.model.button" id="check_rejected_button">
-            <field name="name">rejected</field>
-            <field name="string">Reject</field>
-            <field name="model" search="[('model', '=', 'account.third.check')]"/>
-        </record>
-        <record model="ir.model.button-res.group"
-            id="check_rejected_button_group_account">
-            <field name="button" ref="check_rejected_button"/>
-            <field name="group" ref="account.group_account"/>
-        </record>
-        <record model="ir.model.button" id="check_reverted_button">
-            <field name="name">reverted</field>
-            <field name="string">Revert</field>
-            <field name="model" search="[('model', '=', 'account.third.check')]"/>
-        </record>
-        <record model="ir.model.button-res.group"
-            id="check_reverted_button_group_account">
-            <field name="button" ref="check_reverted_button"/>
-            <field name="group" ref="account.group_account"/>
+        <record model="ir.action.keyword" id="third_check_revert_reject_keyword">
+            <field name="keyword">form_action</field>
+            <field name="model">account.third.check,-1</field>
+            <field name="action" ref="wizard_third_check_revert_reject"/>
         </record>
 
     </data>
