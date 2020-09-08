@@ -14,14 +14,6 @@ msgctxt "field:account.issued.check,clearing:"
 msgid "Clearing"
 msgstr "Clearing"
 
-msgctxt "field:account.issued.check,create_date:"
-msgid "Create Date"
-msgstr "Fecha creación"
-
-msgctxt "field:account.issued.check,create_uid:"
-msgid "Create User"
-msgstr "Usuario creación"
-
 msgctxt "field:account.issued.check,date:"
 msgid "Date"
 msgstr "Fecha Cheque"
@@ -37,10 +29,6 @@ msgstr "Fecha Débito"
 msgctxt "field:account.issued.check,electronic:"
 msgid "E-Check"
 msgstr ""
-
-msgctxt "field:account.issued.check,id:"
-msgid "ID"
-msgstr "ID"
 
 msgctxt "field:account.issued.check,name:"
 msgid "Number"
@@ -58,10 +46,6 @@ msgctxt "field:account.issued.check,party_company:"
 msgid "Company"
 msgstr "Empresa"
 
-msgctxt "field:account.issued.check,rec_name:"
-msgid "Record Name"
-msgstr "Nombre"
-
 msgctxt "field:account.issued.check,receiving_party:"
 msgid "Receiving Party"
 msgstr "Recibe"
@@ -78,14 +62,6 @@ msgctxt "field:account.issued.check,voucher:"
 msgid "Voucher"
 msgstr "Comprobante"
 
-msgctxt "field:account.issued.check,write_date:"
-msgid "Write Date"
-msgstr "Fecha modificación"
-
-msgctxt "field:account.issued.check,write_uid:"
-msgid "Write User"
-msgstr "Usuario modificación"
-
 msgctxt "field:account.issued.check.debit.start,bank_account:"
 msgid "Bank Account"
 msgstr "Cuenta bancaria"
@@ -94,17 +70,9 @@ msgctxt "field:account.issued.check.debit.start,date:"
 msgid "Date"
 msgstr "Fecha"
 
-msgctxt "field:account.issued.check.debit.start,id:"
-msgid "ID"
-msgstr "ID"
-
 msgctxt "field:account.issued.check.revert_debit.start,date:"
 msgid "Date"
 msgstr "Fecha"
-
-msgctxt "field:account.issued.check.revert_debit.start,id:"
-msgid "ID"
-msgstr "ID"
 
 msgctxt "field:account.journal,issued_check_account:"
 msgid "Issued Check Account"
@@ -134,14 +102,6 @@ msgctxt "field:account.third.check,clearing:"
 msgid "Clearing"
 msgstr "Clearing"
 
-msgctxt "field:account.third.check,create_date:"
-msgid "Create Date"
-msgstr "Fecha creación"
-
-msgctxt "field:account.third.check,create_uid:"
-msgid "Create User"
-msgstr "Usuario creación"
-
 msgctxt "field:account.third.check,date:"
 msgid "Date"
 msgstr "Fecha Cheque"
@@ -166,10 +126,6 @@ msgctxt "field:account.third.check,electronic:"
 msgid "E-Check"
 msgstr ""
 
-msgctxt "field:account.third.check,id:"
-msgid "ID"
-msgstr "ID"
-
 msgctxt "field:account.third.check,name:"
 msgid "Number"
 msgstr "Número"
@@ -185,10 +141,6 @@ msgstr "A la orden"
 msgctxt "field:account.third.check,origin:"
 msgid "Origin"
 msgstr "Origen"
-
-msgctxt "field:account.third.check,rec_name:"
-msgid "Record Name"
-msgstr "Nombre"
 
 msgctxt "field:account.third.check,reject_debit_note:"
 msgid "Debit Note"
@@ -218,14 +170,6 @@ msgctxt "field:account.third.check,voucher_out:"
 msgid "Target Voucher"
 msgstr "Comprobante destino"
 
-msgctxt "field:account.third.check,write_date:"
-msgid "Write Date"
-msgstr "Fecha modificación"
-
-msgctxt "field:account.third.check,write_uid:"
-msgid "Write User"
-msgstr "Usuario modificación"
-
 msgctxt "field:account.third.check.deposit.start,bank_account:"
 msgid "Bank Account"
 msgstr "Cuenta bancaria"
@@ -234,25 +178,13 @@ msgctxt "field:account.third.check.deposit.start,date:"
 msgid "Date"
 msgstr "Fecha Cheque"
 
-msgctxt "field:account.third.check.deposit.start,id:"
-msgid "ID"
-msgstr "ID"
-
 msgctxt "field:account.third.check.held.start,credit_account:"
 msgid "Credit Account"
 msgstr "Cuenta haber"
 
-msgctxt "field:account.third.check.held.start,id:"
-msgid "ID"
-msgstr "ID"
-
 msgctxt "field:account.third.check.held.start,journal:"
 msgid "Journal"
 msgstr "Diario"
-
-msgctxt "field:account.third.check.reject.start,id:"
-msgid "ID"
-msgstr "ID"
 
 msgctxt "field:account.third.check.reject.start,journal:"
 msgid "Journal"
@@ -261,14 +193,6 @@ msgstr "Diario"
 msgctxt "field:account.third.check.revert_deposit.start,date:"
 msgid "Date"
 msgstr "Fecha"
-
-msgctxt "field:account.third.check.revert_deposit.start,id:"
-msgid "ID"
-msgstr "ID"
-
-msgctxt "field:account.third.check.revert_reject.start,id:"
-msgid "ID"
-msgstr "ID"
 
 msgctxt "field:account.third.check.revert_reject.start,journal:"
 msgid "Journal"
@@ -286,22 +210,6 @@ msgctxt "field:account.voucher,third_pay_checks:"
 msgid "Third Checks"
 msgstr "Cheques de Terceros"
 
-msgctxt "field:account.voucher-account.third.check,create_date:"
-msgid "Create Date"
-msgstr "Fecha creación"
-
-msgctxt "field:account.voucher-account.third.check,create_uid:"
-msgid "Create User"
-msgstr "Usuario creación"
-
-msgctxt "field:account.voucher-account.third.check,id:"
-msgid "ID"
-msgstr "ID"
-
-msgctxt "field:account.voucher-account.third.check,rec_name:"
-msgid "Record Name"
-msgstr "Nombre"
-
 msgctxt "field:account.voucher-account.third.check,third_check:"
 msgid "Third Check"
 msgstr "Cheque de Tercero"
@@ -309,14 +217,6 @@ msgstr "Cheque de Tercero"
 msgctxt "field:account.voucher-account.third.check,voucher:"
 msgid "Voucher"
 msgstr "Comprobante"
-
-msgctxt "field:account.voucher-account.third.check,write_date:"
-msgid "Write Date"
-msgstr "Fecha modificación"
-
-msgctxt "field:account.voucher-account.third.check,write_uid:"
-msgid "Write User"
-msgstr "Usuario modificación"
 
 msgctxt "model:account.issued.check,name:"
 msgid "Account Issued Check"
