@@ -5,9 +5,9 @@ from decimal import Decimal
 
 from trytond.model import ModelView, ModelSQL, fields
 from trytond.wizard import Wizard, StateView, StateTransition, Button
-from trytond.transaction import Transaction
-from trytond.pyson import Eval, In
 from trytond.pool import Pool
+from trytond.pyson import Eval, In
+from trytond.transaction import Transaction
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
 

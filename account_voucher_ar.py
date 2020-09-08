@@ -4,8 +4,8 @@
 from decimal import Decimal
 
 from trytond.model import ModelView, fields
-from trytond.pyson import Eval, Not, In, Or
 from trytond.pool import Pool, PoolMeta
+from trytond.pyson import Eval, Not, In, Or
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
 
@@ -50,8 +50,7 @@ class AccountVoucher(metaclass=PoolMeta):
                 Not(In(Eval('currency_code'), ['ARS']))),
             })
 
-    @fields.depends('party', 'pay_lines', 'lines_credits', 'lines_debits',
-        'issued_check', 'third_check', 'third_pay_checks')
+    @fields.depends('third_check', 'issued_check', 'third_pay_checks')
     def on_change_with_amount(self, name=None):
         amount = super().on_change_with_amount(name)
         if self.third_check:
