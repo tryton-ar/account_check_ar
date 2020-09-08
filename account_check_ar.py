@@ -298,11 +298,20 @@ class Journal(ModelSQL, ModelView):
     __name__ = 'account.journal'
 
     third_check_account = fields.Many2One('account.account',
-        'Third Check Account')
+        'Third Check Account', domain=[
+            ('type', '!=', None),
+            ('closed', '!=', True),
+            ])
     issued_check_account = fields.Many2One('account.account',
-        'Issued Check Account')
+        'Issued Check Account', domain=[
+            ('type', '!=', None),
+            ('closed', '!=', True),
+            ])
     rejected_check_account = fields.Many2One('account.account',
-        'Rejected Check Account')
+        'Rejected Check Account', domain=[
+            ('type', '!=', None),
+            ('closed', '!=', True),
+            ])
 
 
 class ThirdCheckHeldStart(ModelView):
@@ -313,6 +322,7 @@ class ThirdCheckHeldStart(ModelView):
     credit_account = fields.Many2One('account.account', 'Credit Account',
         required=True, domain=[
             ('type', '!=', None),
+            ('closed', '!=', True),
             ('company', '=', Eval('context', {}).get('company', -1)),
             ])
 
