@@ -55,7 +55,7 @@ class AccountVoucher(metaclass=PoolMeta):
     @fields.depends('party', 'pay_lines', 'lines_credits', 'lines_debits',
         'issued_check', 'third_check', 'third_pay_checks')
     def on_change_with_amount(self, name=None):
-        amount = super(AccountVoucher, self).on_change_with_amount(name)
+        amount = super().on_change_with_amount(name)
         if self.third_check:
             for t_check in self.third_check:
                 amount += t_check.amount
@@ -69,7 +69,7 @@ class AccountVoucher(metaclass=PoolMeta):
 
     def prepare_move_lines(self):
         Period = Pool().get('account.period')
-        move_lines = super(AccountVoucher, self).prepare_move_lines()
+        move_lines = super().prepare_move_lines()
         journal = self.journal
         if self.voucher_type == 'receipt':
             if self.third_check:
@@ -139,7 +139,7 @@ class AccountVoucher(metaclass=PoolMeta):
         IssuedCheck = pool.get('account.issued.check')
         Date = pool.get('ir.date')
 
-        super(AccountVoucher, cls).post(vouchers)
+        super().post(vouchers)
 
         today = Date.today()
         for voucher in vouchers:
@@ -168,7 +168,7 @@ class AccountVoucher(metaclass=PoolMeta):
         ThirdCheck = pool.get('account.third.check')
         IssuedCheck = pool.get('account.issued.check')
 
-        super(AccountVoucher, cls).cancel(vouchers)
+        super().cancel(vouchers)
 
         for voucher in vouchers:
             if voucher.issued_check:

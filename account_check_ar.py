@@ -76,7 +76,7 @@ class AccountIssuedCheck(ModelSQL, ModelView):
 
     @classmethod
     def __setup__(cls):
-        super(AccountIssuedCheck, cls).__setup__()
+        super().__setup__()
         cls._buttons.update({
             'issued': {
                 'invisible': Eval('state') != 'draft',
@@ -120,7 +120,7 @@ class AccountIssuedCheck(ModelSQL, ModelView):
             default = default.copy()
         default.setdefault('name', None)
         default.setdefault('state', cls.default_state())
-        return super(AccountIssuedCheck, cls).copy(checks, default=default)
+        return super().copy(checks, default=default)
 
     @classmethod
     def delete(cls, checks):
@@ -129,7 +129,7 @@ class AccountIssuedCheck(ModelSQL, ModelView):
         for check in checks:
             if check.state != 'draft':
                 raise UserError(gettext('account_check_ar.msg_delete_check'))
-        return super(AccountIssuedCheck, cls).delete(checks)
+        return super().delete(checks)
 
     @classmethod
     def issued(cls, checks):
@@ -209,7 +209,7 @@ class AccountThirdCheck(ModelSQL, ModelView):
 
     @classmethod
     def __setup__(cls):
-        super(AccountThirdCheck, cls).__setup__()
+        super().__setup__()
         cls._buttons.update({
             'held': {
                 'invisible': Eval('state') != 'draft',
@@ -257,7 +257,7 @@ class AccountThirdCheck(ModelSQL, ModelView):
             default = default.copy()
         default.setdefault('name', None)
         default.setdefault('state', cls.default_state())
-        return super(AccountThirdCheck, cls).copy(checks, default=default)
+        return super().copy(checks, default=default)
 
     @classmethod
     def delete(cls, checks):
@@ -266,7 +266,7 @@ class AccountThirdCheck(ModelSQL, ModelView):
         for check in checks:
             if check.state != 'draft':
                 raise UserError(gettext('account_check_ar.msg_delete_check'))
-        return super(AccountThirdCheck, cls).delete(checks)
+        return super().delete(checks)
 
     @classmethod
     @ModelView.button_action('account_check_ar.wizard_third_check_held')
