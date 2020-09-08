@@ -11,11 +11,6 @@ from trytond.pool import Pool
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
 
-_STATES = {
-    'readonly': Eval('state') != 'draft',
-    }
-_DEPENDS = ['state']
-
 _ZERO = Decimal('0.0')
 
 
@@ -23,35 +18,38 @@ class AccountIssuedCheck(ModelSQL, ModelView):
     'Account Issued Check'
     __name__ = 'account.issued.check'
 
-    name = fields.Char('Number', states={
-        'required': Eval('state') != 'draft',
-        }, depends=_DEPENDS)
+    _states = {'readonly': Eval('state') != 'draft'}
+    _depends = ['state']
+
+    name = fields.Char('Number',
+        states={'required': Eval('state') != 'draft'},
+        depends=_depends)
     amount = fields.Numeric('Amount', digits=(16, 2), required=True,
-        states=_STATES, depends=_DEPENDS)
-    date_out = fields.Date('Date Out', states=_STATES, depends=_DEPENDS)
-    date = fields.Date('Date', required=True, states=_STATES, depends=_DEPENDS)
+        states=_states, depends=_depends)
+    date_out = fields.Date('Date Out', states=_states, depends=_depends)
+    date = fields.Date('Date', required=True,
+        states=_states, depends=_depends)
     debit_date = fields.Date('Debit Date', readonly=True,
-        states={
-            'invisible': Eval('state') != 'debited',
-            }, depends=_DEPENDS)
+        states={'invisible': Eval('state') != 'debited'},
+        depends=_depends)
     receiving_party = fields.Many2One('party.party', 'Receiving Party',
         states={
             'invisible': Eval('state') == 'draft',
             'readonly': Eval('state') != 'draft',
-            }, depends=_DEPENDS)
-    on_order = fields.Char('On Order', states=_STATES, depends=_DEPENDS)
-    signatory = fields.Char('Signatory', states=_STATES, depends=_DEPENDS)
+            },
+        depends=_depends)
+    on_order = fields.Char('On Order', states=_states, depends=_depends)
+    signatory = fields.Char('Signatory', states=_states, depends=_depends)
     clearing = fields.Selection([
         (None, ''),
         ('24', '24 hs'),
         ('48', '48 hs'),
         ('72', '72 hs'),
-        ], 'Clearing', states=_STATES, depends=_DEPENDS)
-    origin = fields.Char('Origin', states=_STATES, depends=_DEPENDS)
+        ], 'Clearing', states=_states, depends=_depends)
+    origin = fields.Char('Origin', states=_states, depends=_depends)
     voucher = fields.Many2One('account.voucher', 'Voucher', readonly=True,
-        states={
-            'invisible': Eval('state') == 'draft',
-            }, depends=_DEPENDS)
+        states={'invisible': Eval('state') == 'draft'},
+        depends=_depends)
     state = fields.Selection([
         ('draft', 'Draft'),
         ('issued', 'Issued'),
@@ -59,11 +57,13 @@ class AccountIssuedCheck(ModelSQL, ModelView):
         ], 'State', readonly=True)
     bank_account = fields.Many2One('bank.account', 'Bank Account',
         required=True, domain=[('owners', 'in', [Eval('party_company')])],
-        states=_STATES, context={'owners': [Eval('party_company')]},
-        depends=_DEPENDS + ['party_company'])
+        context={'owners': [Eval('party_company')]},
+        states=_states, depends=_depends + ['party_company'])
     party_company = fields.Function(fields.Many2One('party.party', 'Company'),
         'get_party_company')
-    electronic = fields.Boolean('E-Check', states=_STATES, depends=_DEPENDS)
+    electronic = fields.Boolean('E-Check', states=_states, depends=_depends)
+
+    del _states, _depends
 
     @classmethod
     def __setup__(cls):
@@ -136,35 +136,35 @@ class AccountThirdCheck(ModelSQL, ModelView):
     'Account Third Check'
     __name__ = 'account.third.check'
 
-    name = fields.Char('Number', states={
-        'required': Eval('state') != 'draft',
-        }, depends=_DEPENDS)
+    _states = {'readonly': Eval('state') != 'draft'}
+    _depends = ['state']
+
+    name = fields.Char('Number',
+        states={'required': Eval('state') != 'draft'},
+        depends=_depends)
     amount = fields.Numeric('Amount', digits=(16, 2), required=True,
-        states=_STATES, depends=_DEPENDS)
-    date_in = fields.Date('Date In', required=True, states=_STATES,
-        depends=_DEPENDS)
-    date = fields.Date('Date', required=True, states=_STATES, depends=_DEPENDS)
+        states=_states, depends=_depends)
+    date_in = fields.Date('Date In', required=True,
+        states=_states, depends=_depends)
+    date = fields.Date('Date', required=True,
+        states=_states, depends=_depends)
     date_out = fields.Date('Date Out', readonly=True,
-        states={
-            'invisible': In(Eval('state'), ['draft', 'held']),
-            }, depends=_DEPENDS)
+        states={'invisible': In(Eval('state'), ['draft', 'held'])},
+        depends=_depends)
     debit_date = fields.Date('Debit Date', readonly=True,
-        states={
-            'invisible': In(Eval('state'), ['draft', 'held']),
-            }, depends=_DEPENDS)
+        states={'invisible': In(Eval('state'), ['draft', 'held'])},
+        depends=_depends)
     source_party = fields.Many2One('party.party', 'Source Party',
-        readonly=True, states={
-            'invisible': Eval('state') == 'draft',
-            }, depends=_DEPENDS)
+        readonly=True, states={'invisible': Eval('state') == 'draft'},
+        depends=_depends)
     destiny_party = fields.Many2One('party.party', 'Destiny Party',
-        readonly=True, states={
-            'invisible': Eval('state') != 'delivered',
-            }, depends=_DEPENDS)
-    not_to_order = fields.Boolean('Not to order', states=_STATES,
-        depends=_DEPENDS)
-    electronic = fields.Boolean('E-Check', states=_STATES, depends=_DEPENDS)
-    on_order = fields.Char('On Order', states=_STATES, depends=_DEPENDS)
-    signatory = fields.Char('Signatory', states=_STATES, depends=_DEPENDS)
+        readonly=True, states={'invisible': Eval('state') != 'delivered'},
+        depends=_depends)
+    not_to_order = fields.Boolean('Not to order', states=_states,
+        depends=_depends)
+    electronic = fields.Boolean('E-Check', states=_states, depends=_depends)
+    on_order = fields.Char('On Order', states=_states, depends=_depends)
+    signatory = fields.Char('Signatory', states=_states, depends=_depends)
     state = fields.Selection([
         ('draft', 'Draft'),
         ('held', 'Held'),
@@ -173,30 +173,29 @@ class AccountThirdCheck(ModelSQL, ModelView):
         ('rejected', 'Rejected'),
         ('reverted', 'Reverted'),
         ], 'State', readonly=True)
-    vat = fields.Char('Vat', states=_STATES, depends=_DEPENDS)
+    vat = fields.Char('Vat', states=_states, depends=_depends)
     clearing = fields.Selection([
         (None, ''),
         ('24', '24 hs'),
         ('48', '48 hs'),
         ('72', '72 hs'),
-        ], 'Clearing', states=_STATES, depends=_DEPENDS)
-    origin = fields.Char('Origin', states=_STATES, depends=_DEPENDS)
+        ], 'Clearing', states=_states, depends=_depends)
+    origin = fields.Char('Origin', states=_states, depends=_depends)
     voucher_in = fields.Many2One('account.voucher', 'Origin Voucher',
-        readonly=True, states={
-            'invisible': Eval('state') == 'draft',
-            }, depends=_DEPENDS)
+        readonly=True, states={'invisible': Eval('state') == 'draft'},
+        depends=_depends)
     voucher_out = fields.Many2One('account.voucher', 'Target Voucher',
-        readonly=True, states={
-            'invisible': Eval('state') != 'delivered',
-            }, depends=_DEPENDS)
+        readonly=True, states={'invisible': Eval('state') != 'delivered'},
+        depends=_depends)
     reject_debit_note = fields.Many2One('account.invoice', 'Debit Note',
-        readonly=True, depends=_DEPENDS)  # TODO
+        readonly=True, depends=_depends)  # TODO
     bank = fields.Many2One('bank', 'Bank', required=True,
-        states=_STATES, depends=_DEPENDS)
+        states=_states, depends=_depends)
     account_bank_out = fields.Many2One('bank.account', 'Bank Account',
-        readonly=True, states={
-            'invisible': Eval('state') != 'deposited',
-            }, depends=_DEPENDS)
+        readonly=True, states={'invisible': Eval('state') != 'deposited'},
+        depends=_depends)
+
+    del _states, _depends
 
     @classmethod
     def __setup__(cls):
@@ -289,10 +288,10 @@ class AccountVoucherThirdCheck(ModelSQL):
     __name__ = 'account.voucher-account.third.check'
     _table = 'account_voucher_account_third_check'
 
-    voucher = fields.Many2One('account.voucher', 'Voucher', required=True,
-        select=True, ondelete='CASCADE')
+    voucher = fields.Many2One('account.voucher', 'Voucher',
+        required=True, select=True, ondelete='CASCADE')
     third_check = fields.Many2One('account.third.check', 'Third Check',
-        required=True, ondelete='RESTRICT')
+        required=True, select=True, ondelete='CASCADE')
 
 
 class Journal(ModelSQL, ModelView):
@@ -312,8 +311,7 @@ class ThirdCheckHeldStart(ModelView):
 
     journal = fields.Many2One('account.journal', 'Journal', required=True)
     credit_account = fields.Many2One('account.account', 'Credit Account',
-        required=True,
-        domain=[
+        required=True, domain=[
             ('type', '!=', None),
             ('company', '=', Eval('context', {}).get('company', -1)),
             ])
