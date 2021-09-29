@@ -165,8 +165,6 @@ class AccountVoucher(metaclass=PoolMeta):
         ThirdCheck = pool.get('account.third.check')
         IssuedCheck = pool.get('account.issued.check')
 
-        super().cancel(vouchers)
-
         for voucher in vouchers:
             if voucher.issued_check:
                 for check in voucher.issued_check:
@@ -199,3 +197,5 @@ class AccountVoucher(metaclass=PoolMeta):
                     'date_out': None,
                     'state': 'held',
                     })
+
+        super().cancel(vouchers)
