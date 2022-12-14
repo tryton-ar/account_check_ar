@@ -48,11 +48,11 @@ msgstr "Clearing"
 
 msgctxt "field:account.issued.check,date:"
 msgid "Date"
-msgstr "Fecha Cheque"
+msgstr "Fecha Cobro/Vencimiento"
 
 msgctxt "field:account.issued.check,date_out:"
 msgid "Date Out"
-msgstr "Fecha Vencimiento"
+msgstr "Fecha Emisión"
 
 msgctxt "field:account.issued.check,debit_date:"
 msgid "Debit Date"
@@ -156,7 +156,7 @@ msgstr "Clearing"
 
 msgctxt "field:account.third.check,date:"
 msgid "Date"
-msgstr "Fecha Cheque"
+msgstr "Fecha Cobro/Vencimiento"
 
 msgctxt "field:account.third.check,date_in:"
 msgid "Date In"
@@ -164,7 +164,7 @@ msgstr "Fecha Ingreso"
 
 msgctxt "field:account.third.check,date_out:"
 msgid "Date Out"
-msgstr "Fecha Vencimiento"
+msgstr "Fecha Emisión"
 
 msgctxt "field:account.third.check,debit_date:"
 msgid "Debit Date"
