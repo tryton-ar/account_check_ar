@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <form>
+    <label name="checkbook"/>
+    <field name="checkbook"/>
     <label name="bank_account"/>
     <field name="bank_account"/>
     <label name="name"/>
@@ -10,6 +12,8 @@
     <field name="date"/>
     <label name="date_out"/>
     <field name="date_out"/>
+    <label name="electronic"/>
+    <field name="electronic"/>
     <label name="voucher"/>
     <field name="voucher"/>
     <separator string="Target" colspan="4" id="target"/>
@@ -20,8 +24,6 @@
     <separator string="Extra Info" colspan="4" id="extra_info"/>
     <label name="on_order"/>
     <field name="on_order"/>
-    <label name="electronic"/>
-    <field name="electronic"/>
     <label name="signatory"/>
     <field name="signatory"/>
     <label name="clearing"/>

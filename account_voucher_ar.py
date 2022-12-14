@@ -141,10 +141,13 @@ class AccountVoucher(metaclass=PoolMeta):
         today = Date.today()
         for voucher in vouchers:
             if voucher.issued_check:
-                IssuedCheck.write(list(voucher.issued_check), {
-                    'receiving_party': voucher.party.id,
-                    'state': 'issued',
-                    })
+                for check in voucher.issued_check:
+                    IssuedCheck.write([check], {
+                        'receiving_party': voucher.party.id,
+                        'state': 'issued',
+                        'name': check.checkbook and
+                            check.checkbook.sequence.get() or check.name
+                        })
                 IssuedCheck.issued(voucher.issued_check)
             if voucher.third_check:
                 ThirdCheck.write(list(voucher.third_check), {
