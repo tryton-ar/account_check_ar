@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!-- This file is part of the account_check_ar module for Tryton.
+The COPYRIGHT file at the top level of this repository contains
+the full copyright notices and license terms. -->
+<form>
+    <label name="bank_account"/>
+    <field name="bank_account"/>
+    <label name="name"/>
+    <field name="name"/>
+    <label name="sequence"/>
+    <field name="sequence"/>
+    <label name="last_number"/>
+    <field name="last_number"/>
+    <label name="electronic"/>
+    <field name="electronic"/>
+    <newline/>
+    <label name="state"/>
+    <field name="state"/>
+    <group col="-1" colspan="2" id="buttons">
+        <button name="draft" string="Draft" icon="tryton-back"/>
+        <button name="activate" string="Activate" icon="tryton-forward"/>
+        <button name="close" string="Close" icon="tryton-ok"/>
+    </group>
+</form>

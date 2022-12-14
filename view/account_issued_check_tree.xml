@@ -2,14 +2,15 @@
 <tree>
     <field name="bank_account"/>
     <field name="name"/>
+    <field name="checkbook"/>
     <field name="amount"/>
     <field name="date"/>
     <field name="date_out"/>
+    <field name="electronic"/>
     <field name="voucher"/>
     <field name="receiving_party"/>
     <field name="debit_date"/>
     <field name="on_order"/>
-    <field name="electronic"/>
     <field name="clearing"/>
     <field name="state"/>
 </tree>

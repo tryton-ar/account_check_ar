@@ -9,6 +9,7 @@ from . import account_voucher_ar
 
 def register():
     Pool.register(
+        account_check_ar.AccountCheckbook,
         account_check_ar.AccountIssuedCheck,
         account_check_ar.AccountThirdCheck,
         account_check_ar.AccountVoucherThirdCheck,
@@ -20,6 +21,7 @@ def register():
         account_check_ar.IssuedCheckRevertDebitStart,
         account_check_ar.ThirdCheckRejectStart,
         account_check_ar.ThirdCheckRevertRejectStart,
+        account_check_ar.IssuedCheckCancelStart,
         account_voucher_ar.AccountVoucher,
         module='account_check_ar', type_='model')
     Pool.register(
@@ -30,4 +32,5 @@ def register():
         account_check_ar.IssuedCheckRevertDebit,
         account_check_ar.ThirdCheckReject,
         account_check_ar.ThirdCheckRevertReject,
+        account_check_ar.IssuedCheckCancel,
         module='account_check_ar', type_='wizard')

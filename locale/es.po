@@ -2,6 +2,34 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
+msgctxt "field:account.checkbook,bank_account:"
+msgid "Bank Account"
+msgstr "Cuenta bancaria"
+
+msgctxt "field:account.checkbook,electronic:"
+msgid "e-Checkbook"
+msgstr "Electrónica"
+
+msgctxt "field:account.checkbook,last_number:"
+msgid "Last Number"
+msgstr "Último número"
+
+msgctxt "field:account.checkbook,name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:account.checkbook,party_company:"
+msgid "Company"
+msgstr "Empresa"
+
+msgctxt "field:account.checkbook,sequence:"
+msgid "Sequence"
+msgstr "Secuencia"
+
+msgctxt "field:account.checkbook,state:"
+msgid "State"
+msgstr "Estado"
+
 msgctxt "field:account.issued.check,amount:"
 msgid "Amount"
 msgstr "Importe"
@@ -9,6 +37,10 @@ msgstr "Importe"
 msgctxt "field:account.issued.check,bank_account:"
 msgid "Bank Account"
 msgstr "Cuenta bancaria"
+
+msgctxt "field:account.issued.check,checkbook:"
+msgid "Checkbook"
+msgstr "Chequera"
 
 msgctxt "field:account.issued.check,clearing:"
 msgid "Clearing"
@@ -20,15 +52,15 @@ msgstr "Fecha Cheque"
 
 msgctxt "field:account.issued.check,date_out:"
 msgid "Date Out"
-msgstr "Fecha Salida"
+msgstr "Fecha Vencimiento"
 
 msgctxt "field:account.issued.check,debit_date:"
 msgid "Debit Date"
 msgstr "Fecha Débito"
 
 msgctxt "field:account.issued.check,electronic:"
-msgid "E-Check"
-msgstr ""
+msgid "e-Check"
+msgstr "Electrónico"
 
 msgctxt "field:account.issued.check,name:"
 msgid "Number"
@@ -61,6 +93,26 @@ msgstr "Estado"
 msgctxt "field:account.issued.check,voucher:"
 msgid "Voucher"
 msgstr "Comprobante"
+
+msgctxt "field:account.issued.check.cancel.start,bank_account:"
+msgid "Bank Account"
+msgstr "Cuenta bancaria"
+
+msgctxt "field:account.issued.check.cancel.start,checkbook:"
+msgid "Checkbook"
+msgstr "Chequera"
+
+msgctxt "field:account.issued.check.cancel.start,date:"
+msgid "Date"
+msgstr "Fecha Cheque"
+
+msgctxt "field:account.issued.check.cancel.start,from_number:"
+msgid "From Number"
+msgstr "Desde número"
+
+msgctxt "field:account.issued.check.cancel.start,to_number:"
+msgid "To Number"
+msgstr "Hasta número"
 
 msgctxt "field:account.issued.check.debit.start,bank_account:"
 msgid "Bank Account"
@@ -112,7 +164,7 @@ msgstr "Fecha Ingreso"
 
 msgctxt "field:account.third.check,date_out:"
 msgid "Date Out"
-msgstr "Fecha Salida"
+msgstr "Fecha Vencimiento"
 
 msgctxt "field:account.third.check,debit_date:"
 msgid "Debit Date"
@@ -123,8 +175,8 @@ msgid "Destiny Party"
 msgstr "Destino"
 
 msgctxt "field:account.third.check,electronic:"
-msgid "E-Check"
-msgstr ""
+msgid "e-Check"
+msgstr "Electrónico"
 
 msgctxt "field:account.third.check,name:"
 msgid "Number"
@@ -218,9 +270,17 @@ msgctxt "field:account.voucher-account.third.check,voucher:"
 msgid "Voucher"
 msgstr "Comprobante"
 
+msgctxt "model:account.checkbook,name:"
+msgid "Account Checkbook"
+msgstr "Chequera"
+
 msgctxt "model:account.issued.check,name:"
 msgid "Account Issued Check"
 msgstr "Cuenta de Cheque Emitido"
+
+msgctxt "model:account.issued.check.cancel.start,name:"
+msgid "Issued Check Cancel Start"
+msgstr "Cancelar cheques propios - Inicio"
 
 msgctxt "model:account.issued.check.debit.start,name:"
 msgid "Issued Check Debit"
@@ -257,6 +317,14 @@ msgstr "Revertir Rechazo de Cheque"
 msgctxt "model:account.voucher-account.third.check,name:"
 msgid "Account Voucher - Account Third Check"
 msgstr "Comprobante contable - Cuenta de Cheque de Tercero"
+
+msgctxt "model:ir.action,name:act_checkbook_tree"
+msgid "Checkbooks"
+msgstr "Chequeras"
+
+msgctxt "model:ir.action,name:act_issued_check_cancel"
+msgid "Cancel Issued Checks"
+msgstr "Cancelar cheques propios"
 
 msgctxt "model:ir.action,name:act_issued_check_tree"
 msgid "Issued Checks"
@@ -318,9 +386,32 @@ msgctxt "model:ir.message,text:msg_check_not_rejected"
 msgid "Check \"%(check)s\" is not rejected"
 msgstr "Cheque \"%(check)s\" no está rechazado"
 
+msgctxt "model:ir.message,text:msg_checkbook_last_number_reached"
+msgid ""
+"The last number in checkbook was reached. You should close the checkbook."
+msgstr "Ya se utilizó el último número de cheque. Debería cerrar la chequera."
+
+msgctxt "model:ir.message,text:msg_checkbook_must_be_next_number"
+msgid "The first number must be the next number in checkbook sequence."
+msgstr "El primer número debería ser el siguiente en la secuencia de la "
+"chequera."
+
+msgctxt "model:ir.message,text:msg_checkbook_to_draft"
+msgid "There are checks from this checkbook. Can not set to draft."
+msgstr "Ya hay cheques emitidos desde esta chequera. No se puede pasar a "
+"borrador."
+
+msgctxt "model:ir.message,text:msg_checkbook_to_number_lower"
+msgid "The second number can not be lower than the first."
+msgstr "El segundo número no puede ser menor al primero."
+
 msgctxt "model:ir.message,text:msg_delete_check"
 msgid "You can not delete a check that is used!"
 msgstr "No puede eliminar un cheque usado"
+
+msgctxt "model:ir.message,text:msg_delete_checkbook"
+msgid "You can not delete a used checkbook."
+msgstr "No es posible eliminar una chequera en uso."
 
 msgctxt "model:ir.model.button,string:check_debited_button"
 msgid "Debit"
@@ -350,9 +441,21 @@ msgctxt "model:ir.model.button,string:check_reverted_button"
 msgid "Revert"
 msgstr "Revertir"
 
+msgctxt "model:ir.sequence.type,name:sequence_type_account_checkbook"
+msgid "Checkbook"
+msgstr "Chequera"
+
+msgctxt "model:ir.ui.menu,name:menu_checkbook"
+msgid "Checkbooks"
+msgstr "Chequeras"
+
 msgctxt "model:ir.ui.menu,name:menu_issued_check"
 msgid "Issued Checks"
 msgstr "Cheques Emitidos"
+
+msgctxt "model:ir.ui.menu,name:menu_issued_check_cancel"
+msgid "Cancel Issued Checks"
+msgstr "Cancelar cheques propios"
 
 msgctxt "model:ir.ui.menu,name:menu_third_check"
 msgid "Third Checks"
@@ -361,6 +464,18 @@ msgstr "Cheques de Terceros"
 msgctxt "model:ir.ui.menu,name:menu_treasury"
 msgid "Treasury"
 msgstr "Tesorería"
+
+msgctxt "selection:account.checkbook,state:"
+msgid "Active"
+msgstr "Activa"
+
+msgctxt "selection:account.checkbook,state:"
+msgid "Closed"
+msgstr "Cerrada"
+
+msgctxt "selection:account.checkbook,state:"
+msgid "Draft"
+msgstr "Borrador"
 
 msgctxt "selection:account.issued.check,clearing:"
 msgid "24 hs"
@@ -373,6 +488,10 @@ msgstr "48 hs"
 msgctxt "selection:account.issued.check,clearing:"
 msgid "72 hs"
 msgstr "72 hs"
+
+msgctxt "selection:account.issued.check,state:"
+msgid "Canceled"
+msgstr "Cancelado"
 
 msgctxt "selection:account.issued.check,state:"
 msgid "Debited"
@@ -422,6 +541,18 @@ msgctxt "selection:account.third.check,state:"
 msgid "Reverted"
 msgstr "Revertido"
 
+msgctxt "view:account.checkbook:"
+msgid "Activate"
+msgstr "Activar"
+
+msgctxt "view:account.checkbook:"
+msgid "Close"
+msgstr "Cerrar"
+
+msgctxt "view:account.checkbook:"
+msgid "Draft"
+msgstr "Borrador"
+
 msgctxt "view:account.issued.check:"
 msgid "Extra Info"
 msgstr "Información adicional"
@@ -461,6 +592,14 @@ msgstr "Destino"
 msgctxt "view:account.voucher:"
 msgid "Checks"
 msgstr "Cheques"
+
+msgctxt "wizard_button:account.issued.check.cancel,start,cancel:"
+msgid "Proceed"
+msgstr "Proceder"
+
+msgctxt "wizard_button:account.issued.check.cancel,start,end:"
+msgid "Abort"
+msgstr "Abortar"
 
 msgctxt "wizard_button:account.issued.check.debit,start,debit:"
 msgid "Debit"
