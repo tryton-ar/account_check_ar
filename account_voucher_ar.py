@@ -17,13 +17,11 @@ class AccountVoucher(metaclass=PoolMeta):
 
     issued_check = fields.One2Many('account.issued.check', 'voucher',
         'Issued Checks',
-        add_remove=[
-            ('state', '=', 'draft'),
-            ],
+        add_remove=[('state', '=', 'draft')],
         states={
             'invisible': Not(In(Eval('voucher_type'), ['payment'])),
             'readonly': Or(
-                In(Eval('state'), ['posted']),
+                In(Eval('state'), ['posted', 'cancelled']),
                 Not(In(Eval('currency_code'), ['ARS']))),
             })
     third_pay_checks = fields.Many2Many('account.voucher-account.third.check',
@@ -31,7 +29,7 @@ class AccountVoucher(metaclass=PoolMeta):
         states={
             'invisible': Not(In(Eval('voucher_type'), ['payment'])),
             'readonly': Or(
-                In(Eval('state'), ['posted']),
+                In(Eval('state'), ['posted', 'cancelled']),
                 Not(In(Eval('currency_code'), ['ARS']))),
             },
         domain=[
@@ -40,13 +38,11 @@ class AccountVoucher(metaclass=PoolMeta):
             ])
     third_check = fields.One2Many('account.third.check', 'voucher_in',
         'Third Checks',
-        add_remove=[
-            ('state', '=', 'draft'),
-            ],
+        add_remove=[('state', '=', 'draft')],
         states={
             'invisible': Not(In(Eval('voucher_type'), ['receipt'])),
             'readonly': Or(
-                In(Eval('state'), ['posted']),
+                In(Eval('state'), ['posted', 'cancelled']),
                 Not(In(Eval('currency_code'), ['ARS']))),
             })
 
