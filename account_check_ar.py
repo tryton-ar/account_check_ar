@@ -406,9 +406,9 @@ class AccountVoucherThirdCheck(ModelSQL):
     _table = 'account_voucher_account_third_check'
 
     voucher = fields.Many2One('account.voucher', 'Voucher',
-        required=True, select=True, ondelete='CASCADE')
+        required=True, ondelete='CASCADE')
     third_check = fields.Many2One('account.third.check', 'Third Check',
-        required=True, select=True, ondelete='CASCADE')
+        required=True, ondelete='CASCADE')
 
 
 class Journal(ModelSQL, ModelView):
