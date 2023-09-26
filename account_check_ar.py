@@ -465,8 +465,7 @@ class ThirdCheckHeld(Wizard):
 
         date = Date.today()
         period_id = Period.find(1, date)
-        for check in ThirdCheck.browse(Transaction().context.get(
-                'active_ids')):
+        for check in self.records:
             if check.state != 'draft':
                 raise UserError(gettext(
                     'account_check_ar.msg_check_not_draft', check=check.name))
@@ -540,8 +539,7 @@ class ThirdCheckDeposit(Wizard):
         Period = pool.get('account.period')
 
         period_id = Period.find(1, date=self.start.date)
-        for check in ThirdCheck.browse(Transaction().context.get(
-                'active_ids')):
+        for check in self.records:
             if check.state not in ['held', 'reverted']:
                 raise UserError(gettext(
                     'account_check_ar.msg_check_not_held',
@@ -618,8 +616,7 @@ class ThirdCheckRevertDeposit(Wizard):
         Period = pool.get('account.period')
 
         period_id = Period.find(1, date=self.start.date)
-        for check in ThirdCheck.browse(Transaction().context.get(
-                'active_ids')):
+        for check in self.records:
             if check.state not in ['deposited', 'delivered']:
                 raise UserError(gettext(
                     'account_check_ar.msg_check_not_deposited',
@@ -673,17 +670,6 @@ class IssuedCheckDebitStart(ModelView):
         required=True)
     date = fields.Date('Date', required=True)
 
-    @staticmethod
-    def default_bank_account():
-        IssuedCheck = Pool().get('account.issued.check')
-        check, = IssuedCheck.browse([Transaction().context.get('active_id')])
-        return check.bank_account.id
-
-    @staticmethod
-    def default_date():
-        date_obj = Pool().get('ir.date')
-        return date_obj.today()
-
 
 class IssuedCheckDebit(Wizard):
     'Issued Check Debit'
@@ -696,6 +682,13 @@ class IssuedCheckDebit(Wizard):
             ])
     debit = StateTransition()
 
+    def default_start(self, fields):
+        Date = Pool().get('ir.date')
+        return {
+            'bank_account': self.record.bank_account.id,
+            'date': Date.today(),
+            }
+
     def transition_debit(self):
         pool = Pool()
         IssuedCheck = pool.get('account.issued.check')
@@ -704,8 +697,7 @@ class IssuedCheckDebit(Wizard):
         Period = pool.get('account.period')
 
         period_id = Period.find(1, date=self.start.date)
-        for check in IssuedCheck.browse(Transaction().context.get(
-                'active_ids')):
+        for check in self.records:
             if check.state != 'issued':
                 raise UserError(gettext(
                     'account_check_ar.msg_check_not_issued',
@@ -778,8 +770,7 @@ class IssuedCheckRevertDebit(Wizard):
         Period = pool.get('account.period')
 
         period_id = Period.find(1, date=self.start.date)
-        for check in IssuedCheck.browse(Transaction().context.get(
-                'active_ids')):
+        for check in self.records:
             if check.state != 'debited':
                 raise UserError(gettext(
                     'account_check_ar.msg_check_not_debited',
@@ -849,8 +840,7 @@ class ThirdCheckReject(Wizard):
 
         date = Date.today()
         period_id = Period.find(1, date)
-        for check in ThirdCheck.browse(Transaction().context.get(
-                'active_ids')):
+        for check in self.records:
             if check.state not in ['held', 'reverted']:
                 raise UserError(gettext(
                     'account_check_ar.msg_check_not_held',
@@ -920,8 +910,7 @@ class ThirdCheckRevertReject(Wizard):
 
         date = Date.today()
         period_id = Period.find(1, date)
-        for check in ThirdCheck.browse(Transaction().context.get(
-                'active_ids')):
+        for check in self.records:
             if check.state != 'rejected':
                 raise UserError(gettext(
                     'account_check_ar.msg_check_not_rejected',

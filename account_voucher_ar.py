@@ -61,8 +61,11 @@ class AccountVoucher(metaclass=PoolMeta):
         return amount
 
     def prepare_move_lines(self):
-        Period = Pool().get('account.period')
+        pool = Pool()
+        Period = pool.get('account.period')
+
         move_lines = super().prepare_move_lines()
+
         journal = self.journal
         if self.voucher_type == 'receipt':
             if self.third_check:

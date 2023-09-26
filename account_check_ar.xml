@@ -35,6 +35,37 @@
         <menuitem parent="menu_treasury" action="act_checkbook_tree"
             id="menu_checkbook" sequence="3"/>
 
+        <record model="ir.model.button" id="checkbook_draft_button">
+            <field name="name">draft</field>
+            <field name="string">Draft</field>
+            <field name="model" search="[('model', '=', 'account.checkbook')]"/>
+        </record>
+        <record model="ir.model.button-res.group"
+            id="checkbook_draft_button_group_account">
+            <field name="button" ref="checkbook_draft_button"/>
+            <field name="group" ref="account.group_account"/>
+        </record>
+        <record model="ir.model.button" id="checkbook_activate_button">
+            <field name="name">activate</field>
+            <field name="string">Activate</field>
+            <field name="model" search="[('model', '=', 'account.checkbook')]"/>
+        </record>
+        <record model="ir.model.button-res.group"
+            id="checkbook_activate_button_group_account">
+            <field name="button" ref="checkbook_activate_button"/>
+            <field name="group" ref="account.group_account"/>
+        </record>
+        <record model="ir.model.button" id="checkbook_close_button">
+            <field name="name">close</field>
+            <field name="string">Close</field>
+            <field name="model" search="[('model', '=', 'account.checkbook')]"/>
+        </record>
+        <record model="ir.model.button-res.group"
+            id="checkbook_close_button_group_account">
+            <field name="button" ref="checkbook_close_button"/>
+            <field name="group" ref="account.group_account"/>
+        </record>
+
         <!-- Checkbooks sequence -->
         <record model="ir.sequence.type" id="sequence_type_account_checkbook">
             <field name="name">Checkbook</field>
