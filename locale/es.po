@@ -82,6 +82,10 @@ msgctxt "field:account.issued.check,receiving_party:"
 msgid "Receiving Party"
 msgstr "Recibe"
 
+msgctxt "field:account.issued.check,related_statement_line:"
+msgid "Statement Line"
+msgstr "Línea de extracto relacionada"
+
 msgctxt "field:account.issued.check,signatory:"
 msgid "Signatory"
 msgstr "Firma"
@@ -198,6 +202,10 @@ msgctxt "field:account.third.check,reject_debit_note:"
 msgid "Debit Note"
 msgstr "Nota de Débito"
 
+msgctxt "field:account.third.check,related_statement_line:"
+msgid "Statement Line"
+msgstr "Línea de extracto relacionada"
+
 msgctxt "field:account.third.check,signatory:"
 msgid "Signatory"
 msgstr "Firma"
@@ -276,7 +284,7 @@ msgstr "Chequera"
 
 msgctxt "model:account.issued.check,name:"
 msgid "Account Issued Check"
-msgstr "Cuenta de Cheque Emitido"
+msgstr "Cheque Emitido"
 
 msgctxt "model:account.issued.check.cancel.start,name:"
 msgid "Issued Check Cancel Start"
@@ -292,7 +300,7 @@ msgstr "Revertir Débito de Cheque"
 
 msgctxt "model:account.third.check,name:"
 msgid "Account Third Check"
-msgstr "Cuenta de Cheque de Tercero"
+msgstr "Cheque de Tercero"
 
 msgctxt "model:account.third.check.deposit.start,name:"
 msgid "Third Check Deposit"
@@ -316,7 +324,7 @@ msgstr "Revertir Rechazo de Cheque"
 
 msgctxt "model:account.voucher-account.third.check,name:"
 msgid "Account Voucher - Account Third Check"
-msgstr "Comprobante contable - Cuenta de Cheque de Tercero"
+msgstr "Comprobante contable - Cheque de Tercero"
 
 msgctxt "model:ir.action,name:act_checkbook_tree"
 msgid "Checkbooks"
