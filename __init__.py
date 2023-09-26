@@ -5,6 +5,7 @@
 from trytond.pool import Pool
 from . import account_check_ar
 from . import account_voucher_ar
+from . import statement
 
 
 def register():
@@ -24,6 +25,13 @@ def register():
         account_check_ar.IssuedCheckCancelStart,
         account_voucher_ar.AccountVoucher,
         module='account_check_ar', type_='model')
+    Pool.register(
+        statement.AccountIssuedCheck,
+        statement.AccountThirdCheck,
+        statement.Statement,
+        statement.StatementLine,
+        module='account_check_ar', type_='model',
+        depends=['account_statement'])
     Pool.register(
         account_check_ar.ThirdCheckHeld,
         account_check_ar.ThirdCheckDeposit,
