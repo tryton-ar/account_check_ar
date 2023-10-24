@@ -270,6 +270,7 @@ class AccountThirdCheck(ModelSQL, ModelView):
 
     name = fields.Char('Number',
         states={'required': Eval('state') != 'draft'})
+    currency = fields.Many2One('currency.currency', 'Currency', required=True)
     amount = fields.Numeric('Amount', digits=(16, 2), required=True,
         states=_states)
     date_in = fields.Date('Date In', required=True, states=_states)

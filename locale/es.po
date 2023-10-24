@@ -158,6 +158,10 @@ msgctxt "field:account.third.check,clearing:"
 msgid "Clearing"
 msgstr "Clearing"
 
+msgctxt "field:account.third.check,currency:"
+msgid "Currency"
+msgstr "Moneda"
+
 msgctxt "field:account.third.check,date:"
 msgid "Date"
 msgstr "Fecha Cobro/Vencimiento"
