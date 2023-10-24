@@ -4,6 +4,7 @@
 from decimal import Decimal
 
 from trytond.model import Workflow, ModelView, ModelSQL, fields
+from trytond.modules.currency.fields import Monetary
 from trytond.wizard import Wizard, StateView, StateTransition, Button
 from trytond.pool import Pool
 from trytond.pyson import Bool, Eval, In, And, Or
@@ -138,11 +139,11 @@ class AccountIssuedCheck(ModelSQL, ModelView):
         'readonly': Eval('state') != 'draft',
         'invisible': And(Bool(Eval('checkbook')), Eval('state') == 'draft'),
         })
-    amount = fields.Numeric('Amount', digits=(16, 2), required=True,
-        states=_states)
+    amount = Monetary("Amount", currency='currency', digits='currency',
+        required=True, states=_states, depends={'checkbook', 'bank_account'})
     checkbook = fields.Many2One('account.checkbook', 'Checkbook',
         ondelete='RESTRICT', domain=[('state', 'in', ['active'])],
-        states=_STATES)
+        states=_states)
     electronic = fields.Boolean('e-Check', states={
         'readonly': Or(Bool(Eval('checkbook')), Eval('state') != 'draft'),
         })
@@ -178,6 +179,8 @@ class AccountIssuedCheck(ModelSQL, ModelView):
         states=_states, depends={'party_company'})
     party_company = fields.Function(fields.Many2One('party.party', 'Company'),
         'get_party_company')
+    currency = fields.Function(fields.Many2One(
+        'currency.currency', "Currency"), 'on_change_with_currency')
 
     del _states
 
@@ -233,6 +236,11 @@ class AccountIssuedCheck(ModelSQL, ModelView):
             self.bank_account = self.checkbook.bank_account
             self.electronic = self.checkbook.electronic
 
+    @fields.depends('checkbook', 'bank_account')
+    def on_change_with_currency(self, name=None):
+        if self.bank_account:
+            return self.bank_account.currency.id
+
     @classmethod
     def copy(cls, checks, default=None):
         if default is None:
@@ -271,8 +279,8 @@ class AccountThirdCheck(ModelSQL, ModelView):
     name = fields.Char('Number',
         states={'required': Eval('state') != 'draft'})
     currency = fields.Many2One('currency.currency', 'Currency', required=True)
-    amount = fields.Numeric('Amount', digits=(16, 2), required=True,
-        states=_states)
+    amount = Monetary("Amount", currency='currency', digits='currency',
+        required=True, states=_states)
     date_in = fields.Date('Date In', required=True, states=_states)
     date = fields.Date('Date', required=True, states=_states)
     date_out = fields.Date('Date Out', readonly=True,
