@@ -1,5 +1,9 @@
 <?xml version="1.0"?>
 <form>
+    <label name="bank"/>
+    <field name="bank"/>
+    <label name="currency"/>
+    <field name="currency"/>
     <label name="name"/>
     <field name="name"/>
     <label name="amount"/>
@@ -8,8 +12,6 @@
     <field name="date_in"/>
     <label name="date"/>
     <field name="date"/>
-    <label name="bank"/>
-    <field name="bank"/>
     <label name="not_to_order"/>
     <field name="not_to_order"/>
     <separator string="Origin" colspan="4" id="origin"/>
