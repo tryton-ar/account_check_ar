@@ -1,7 +1,10 @@
 <?xml version="1.0"?>
 <tree>
     <field name="name"/>
+    <field name="date_in"/>
     <field name="date"/>
-    <field name="source_party"/>
     <field name="amount"/>
+    <field name="bank"/>
+    <field name="source_party"/>
+    <field name="electronic"/>
 </tree>
