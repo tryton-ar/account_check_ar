@@ -46,6 +46,13 @@ class AccountVoucher(metaclass=PoolMeta):
                 Not(In(Eval('currency_code'), ['ARS']))),
             })
 
+    @classmethod
+    def __setup__(cls):
+        super().__setup__()
+        cls.third_pay_checks.search_order = [
+            ('date', 'ASC'),
+            ]
+
     @fields.depends('third_check', 'issued_check', 'third_pay_checks')
     def on_change_with_amount(self, name=None):
         amount = super().on_change_with_amount(name)
