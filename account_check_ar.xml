@@ -108,6 +108,44 @@
             <field name="act_window" ref="act_issued_check_tree"/>
         </record>
 
+        <record model="ir.action.act_window.domain"
+            id="act_issued_check_domain_draft">
+            <field name="name">Draft</field>
+            <field name="sequence" eval="10"/>
+            <field name="domain" eval="[('state', '=', 'draft')]" pyson="1"/>
+            <field name="count" eval="True"/>
+            <field name="act_window" ref="act_issued_check_tree"/>
+        </record>
+        <record model="ir.action.act_window.domain"
+            id="act_issued_check_domain_issued">
+            <field name="name">Issued</field>
+            <field name="sequence" eval="20"/>
+            <field name="domain" eval="[('state', '=', 'issued')]" pyson="1"/>
+            <field name="count" eval="True"/>
+            <field name="act_window" ref="act_issued_check_tree"/>
+        </record>
+        <record model="ir.action.act_window.domain"
+            id="act_issued_check_domain_debited">
+            <field name="name">Debited</field>
+            <field name="sequence" eval="30"/>
+            <field name="domain" eval="[('state', '=', 'debited')]" pyson="1"/>
+            <field name="act_window" ref="act_issued_check_tree"/>
+        </record>
+        <record model="ir.action.act_window.domain"
+            id="act_issued_check_domain_canceled">
+            <field name="name">Canceled</field>
+            <field name="sequence" eval="40"/>
+            <field name="domain" eval="[('state', '=', 'canceled')]" pyson="1"/>
+            <field name="act_window" ref="act_issued_check_tree"/>
+        </record>
+        <record model="ir.action.act_window.domain"
+            id="act_issued_check_domain_all">
+            <field name="name">All</field>
+            <field name="sequence" eval="9999"/>
+            <field name="domain"></field>
+            <field name="act_window" ref="act_issued_check_tree"/>
+        </record>
+
         <menuitem parent="menu_treasury" action="act_issued_check_tree"
             id="menu_issued_check" sequence="5"/>
 
@@ -156,6 +194,58 @@
         <record model="ir.action.act_window.view" id="act_third_check_tree_view2">
             <field name="sequence" eval="20"/>
             <field name="view" ref="account_third_check_form"/>
+            <field name="act_window" ref="act_third_check_tree"/>
+        </record>
+
+        <record model="ir.action.act_window.domain"
+            id="act_third_check_domain_draft">
+            <field name="name">Draft</field>
+            <field name="sequence" eval="10"/>
+            <field name="domain" eval="[('state', '=', 'draft')]" pyson="1"/>
+            <field name="count" eval="True"/>
+            <field name="act_window" ref="act_third_check_tree"/>
+        </record>
+        <record model="ir.action.act_window.domain"
+            id="act_third_check_domain_held">
+            <field name="name">Held</field>
+            <field name="sequence" eval="20"/>
+            <field name="domain" eval="[('state', '=', 'held')]" pyson="1"/>
+            <field name="count" eval="True"/>
+            <field name="act_window" ref="act_third_check_tree"/>
+        </record>
+        <record model="ir.action.act_window.domain"
+            id="act_third_check_domain_deposited">
+            <field name="name">Deposited</field>
+            <field name="sequence" eval="30"/>
+            <field name="domain" eval="[('state', '=', 'deposited')]" pyson="1"/>
+            <field name="act_window" ref="act_third_check_tree"/>
+        </record>
+        <record model="ir.action.act_window.domain"
+            id="act_third_check_domain_delivered">
+            <field name="name">Delivered</field>
+            <field name="sequence" eval="40"/>
+            <field name="domain" eval="[('state', '=', 'delivered')]" pyson="1"/>
+            <field name="act_window" ref="act_third_check_tree"/>
+        </record>
+        <record model="ir.action.act_window.domain"
+            id="act_third_check_domain_rejected">
+            <field name="name">Rejected</field>
+            <field name="sequence" eval="50"/>
+            <field name="domain" eval="[('state', '=', 'rejected')]" pyson="1"/>
+            <field name="act_window" ref="act_third_check_tree"/>
+        </record>
+        <record model="ir.action.act_window.domain"
+            id="act_third_check_domain_reverted">
+            <field name="name">Reverted</field>
+            <field name="sequence" eval="60"/>
+            <field name="domain" eval="[('state', '=', 'reverted')]" pyson="1"/>
+            <field name="act_window" ref="act_third_check_tree"/>
+        </record>
+        <record model="ir.action.act_window.domain"
+            id="act_third_check_domain_all">
+            <field name="name">All</field>
+            <field name="sequence" eval="9999"/>
+            <field name="domain"></field>
             <field name="act_window" ref="act_third_check_tree"/>
         </record>
 
