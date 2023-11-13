@@ -382,6 +382,61 @@ msgctxt "model:ir.action,name:wizard_third_check_revert_reject"
 msgid "Revert Check Reject"
 msgstr "Revertir Rechazo de Cheque"
 
+msgctxt ""
+"model:ir.action.act_window.domain,name:act_issued_check_domain_debited"
+msgid "Debited"
+msgstr "Debitado"
+
+msgctxt "model:ir.action.act_window.domain,name:act_issued_check_domain_all"
+msgid "All"
+msgstr "Todo"
+
+msgctxt ""
+"model:ir.action.act_window.domain,name:act_issued_check_domain_canceled"
+msgid "Canceled"
+msgstr "Cancelado"
+
+msgctxt "model:ir.action.act_window.domain,name:act_issued_check_domain_draft"
+msgid "Draft"
+msgstr "Borrador"
+
+msgctxt ""
+"model:ir.action.act_window.domain,name:act_issued_check_domain_issued"
+msgid "Issued"
+msgstr "Emitido"
+
+msgctxt "model:ir.action.act_window.domain,name:act_third_check_domain_all"
+msgid "All"
+msgstr "Todo"
+
+msgctxt ""
+"model:ir.action.act_window.domain,name:act_third_check_domain_delivered"
+msgid "Delivered"
+msgstr "Entregado"
+
+msgctxt ""
+"model:ir.action.act_window.domain,name:act_third_check_domain_deposited"
+msgid "Deposited"
+msgstr "Depositado"
+
+msgctxt "model:ir.action.act_window.domain,name:act_third_check_domain_draft"
+msgid "Draft"
+msgstr "Borrador"
+
+msgctxt "model:ir.action.act_window.domain,name:act_third_check_domain_held"
+msgid "Held"
+msgstr "En cartera"
+
+msgctxt ""
+"model:ir.action.act_window.domain,name:act_third_check_domain_rejected"
+msgid "Rejected"
+msgstr "Rechazado"
+
+msgctxt ""
+"model:ir.action.act_window.domain,name:act_third_check_domain_reverted"
+msgid "Reverted"
+msgstr "Revertido"
+
 msgctxt "model:ir.message,text:msg_check_not_debited"
 msgid "Check \"%(check)s\" is not debited"
 msgstr "Cheque \"%(check)s\" no está debitado"

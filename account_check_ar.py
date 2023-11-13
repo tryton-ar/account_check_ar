@@ -326,6 +326,9 @@ class AccountThirdCheck(ModelSQL, ModelView):
     @classmethod
     def __setup__(cls):
         super().__setup__()
+        cls._order = [
+            ('date', 'ASC'),
+            ]
         cls._buttons.update({
             'held': {
                 'invisible': Eval('state') != 'draft',
