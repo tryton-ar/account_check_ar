@@ -295,6 +295,7 @@ class AccountThirdCheck(ModelSQL, ModelView):
     electronic = fields.Boolean('e-Check', states=_states)
     on_order = fields.Char('On Order', states=_states)
     signatory = fields.Char('Signatory', states=_states)
+    endorsed = fields.Char('Endorsed', states=_states)
     state = fields.Selection([
         ('draft', 'Draft'),
         ('held', 'Held'),
