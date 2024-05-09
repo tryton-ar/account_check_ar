@@ -6,9 +6,10 @@
     <field name="date"/>
     <field name="bank"/>
     <field name="source_party"/>
-    <field name="not_to_order"/>
     <field name="electronic"/>
+    <field name="not_to_order"/>
     <field name="date_out"/>
+    <field name="endorsed"/>
     <field name="destiny_party"/>
     <field name="account_bank_out"/>
     <field name="clearing"/>

@@ -222,6 +222,10 @@ msgctxt "field:account.third.check,signatory:"
 msgid "Signatory"
 msgstr "Firma"
 
+msgctxt "field:account.third.check,endorsed:"
+msgid "Endorsed"
+msgstr "Endosado"
+
 msgctxt "field:account.third.check,source_party:"
 msgid "Source Party"
 msgstr "Origen"
