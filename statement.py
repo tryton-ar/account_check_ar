@@ -152,6 +152,29 @@ class StatementLine(metaclass=PoolMeta):
                 self.account = self.third_check.account_bank_out.credit_account
 
     @classmethod
+    def create(cls, vlist):
+        pool = Pool()
+        IssuedCheck = pool.get('account.issued.check')
+        ThirdCheck = pool.get('account.third.check')
+
+        lines = super(StatementLine, cls).create(vlist)
+        update_issued = {}
+        update_third = {}
+        for l in lines:
+            if l.related_to:
+                if str(l.related_to).split(',')[0] == IssuedCheck.__name__:
+                    check_id = int(str(l.related_to).split(',')[1])
+                    update_issued[check_id] = l.id
+                elif str(l.related_to).split(',')[0] == ThirdCheck.__name__:
+                    check_id = int(str(l.related_to).split(',')[1])
+                    update_third[check_id] = l.id
+        if update_issued:
+            cls.update_issued_checks(update_issued)
+        if update_third:
+            cls.update_third_checks(update_third)
+        return lines
+
+    @classmethod
     def write(cls, *args):
         pool = Pool()
         IssuedCheck = pool.get('account.issued.check')
@@ -176,8 +199,10 @@ class StatementLine(metaclass=PoolMeta):
                     check_id = int(values['related_to'].split(',')[1])
                     update_third[check_id] = lines[0].id
         super(StatementLine, cls).write(*args)
-        cls.update_issued_checks(update_issued)
-        cls.update_third_checks(update_third)
+        if update_issued:
+            cls.update_issued_checks(update_issued)
+        if update_third:
+            cls.update_third_checks(update_third)
 
     def update_issued_checks(update_issued):
         pool = Pool()
