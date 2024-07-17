@@ -22,6 +22,7 @@ def register():
         account_check_ar.IssuedCheckRevertDebitStart,
         account_check_ar.ThirdCheckRejectStart,
         account_check_ar.ThirdCheckRevertRejectStart,
+        account_check_ar.IssuedCheckCashStart,
         account_check_ar.IssuedCheckCancelStart,
         account_voucher_ar.AccountVoucher,
         module='account_check_ar', type_='model')
@@ -40,5 +41,6 @@ def register():
         account_check_ar.IssuedCheckRevertDebit,
         account_check_ar.ThirdCheckReject,
         account_check_ar.ThirdCheckRevertReject,
+        account_check_ar.IssuedCheckCash,
         account_check_ar.IssuedCheckCancel,
         module='account_check_ar', type_='wizard')

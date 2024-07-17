@@ -31,6 +31,12 @@
         <record model="ir.message" id="msg_checkbook_last_number_reached">
             <field name="text">The last number in checkbook was reached. You should close the checkbook.</field>
         </record>
+        <record model="ir.message" id="msg_check_already_exists">
+            <field name="text">The check "%(number)s" already exists.</field>
+        </record>
+        <record model="ir.message" id="msg_number_not_valid">
+            <field name="text">The number "%(number)s" is not valid for the sequence.</field>
+        </record>
         <record model="ir.message" id="msg_checkbook_must_be_next_number">
             <field name="text">The first number must be the next number in checkbook sequence.</field>
         </record>

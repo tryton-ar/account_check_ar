@@ -14,8 +14,11 @@
     <field name="date_out"/>
     <label name="electronic"/>
     <field name="electronic"/>
+    <newline/>
     <label name="voucher"/>
     <field name="voucher"/>
+    <label name="cash_move"/>
+    <field name="cash_move"/>
     <separator string="Target" colspan="4" id="target"/>
     <label name="receiving_party"/>
     <field name="receiving_party"/>
