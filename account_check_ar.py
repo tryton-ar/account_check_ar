@@ -167,6 +167,8 @@ class AccountIssuedCheck(ModelSQL, ModelView):
     origin = fields.Char('Origin', states=_states)
     voucher = fields.Many2One('account.voucher', 'Voucher', readonly=True,
         states={'invisible': Eval('state') == 'draft'})
+    cash_move = fields.Many2One('account.move', 'Cash Move', readonly=True,
+        states={'invisible': Eval('state') == 'draft'})
     state = fields.Selection([
         ('draft', 'Draft'),
         ('issued', 'Issued'),
@@ -962,6 +964,142 @@ class ThirdCheckRevertReject(Wizard):
             MoveLine.create(lines)
             ThirdCheck.write([check], {'state': 'reverted'})
             Move.post([move])
+        return 'end'
+
+
+class IssuedCheckCashStart(ModelView):
+    'Issued Check Cash Start'
+    __name__ = 'account.issued.check.cash.start'
+
+    checkbook = fields.Many2One('account.checkbook', 'Checkbook',
+        required=True, domain=[('state', 'in', ['active'])])
+    bank_account = fields.Function(fields.Many2One('bank.account',
+        'Bank Account'), 'on_change_with_bank_account')
+    number = fields.Integer('Number', required=True)
+    date_out = fields.Date('Date Out', required=True)
+    date = fields.Date('Date', required=True)
+    amount = Monetary("Amount", currency='currency', digits='currency',
+        required=True, depends={'checkbook', 'bank_account'})
+    currency = fields.Function(fields.Many2One(
+        'currency.currency', "Currency"), 'on_change_with_currency')
+    cash_account = fields.Many2One('account.account',
+        'Cash Account', domain=[
+            ('type', '!=', None),
+            ('closed', '!=', True),
+            ('company', '=', Eval('context', {}).get('company', -1)),
+            ], required=True)
+
+    @staticmethod
+    def default_date_out():
+        Date = Pool().get('ir.date')
+        return Date.today()
+
+    @staticmethod
+    def default_date():
+        Date = Pool().get('ir.date')
+        return Date.today()
+
+    @fields.depends('checkbook')
+    def on_change_with_bank_account(self, name=None):
+        if self.checkbook:
+            return self.checkbook.bank_account.id
+
+    @fields.depends('checkbook')
+    def on_change_with_number(self, name=None):
+        if self.checkbook:
+            return self.checkbook.sequence.number_next
+
+    @staticmethod
+    def default_amount():
+        return _ZERO
+
+    @fields.depends('checkbook', 'bank_account')
+    def on_change_with_currency(self, name=None):
+        if self.bank_account:
+            return self.bank_account.currency.id
+
+
+class IssuedCheckCash(Wizard):
+    'Issued Check Cash'
+    __name__ = 'account.issued.check.cash'
+
+    start = StateView('account.issued.check.cash.start',
+        'account_check_ar.view_issued_check_cash_start', [
+            Button('Abort', 'end', 'tryton-cancel'),
+            Button('Proceed', 'cash', 'tryton-ok', default=True),
+            ])
+    cash = StateTransition()
+
+    def transition_cash(self):
+        pool = Pool()
+        IssuedCheck = pool.get('account.issued.check')
+        Move = pool.get('account.move')
+        MoveLine = pool.get('account.move.line')
+        Period = pool.get('account.period')
+
+        company = Transaction().context.get('company')
+        period_id = Period.find(company, date=self.start.date)
+        checkbook = self.start.checkbook
+        number = self.start.number
+        if checkbook.sequence.number_next == int(number):
+            # Clean number to get next one from sequence
+            number = None
+        elif checkbook.sequence.number_next < int(number):
+            number = '%%0%sd' % checkbook.sequence.padding % number
+            raise UserError(
+                gettext('account_check_ar.msg_number_not_valid',
+                    number=number))
+        if number:
+            # Previous number: not from sequence
+            number = '%%0%sd' % checkbook.sequence.padding % number
+            check_exists = IssuedCheck.search([
+                    ('name', '=', number),
+                    ('bank_account', '=', checkbook.bank_account.id),
+                    ])
+            if check_exists:
+                raise UserError(
+                    gettext('account_check_ar.msg_check_already_exists',
+                        number=number))
+        check, = IssuedCheck.create([{
+            'name': number and number or checkbook.sequence.get(),
+            'checkbook': checkbook.id,
+            'bank_account': self.start.bank_account.id,
+            'amount': self.start.amount,
+            'date_out': self.start.date_out,
+            'date': self.start.date,
+            'debit_date': self.start.date,
+            'electronic': checkbook.electronic,
+            'state': 'issued',
+            }])
+
+        move, = Move.create([{
+            'journal': self.start.bank_account.journal.id,
+            'period': period_id,
+            'date': self.start.date,
+            'description': 'Cobro Cheque propio: ' + check.name,
+            }])
+        lines = []
+        lines.append({
+            'account':
+                self.start.bank_account.credit_account.id,
+            'move': move.id,
+            'debit': _ZERO,
+            'credit': check.amount,
+            })
+        lines.append({
+            'account': self.start.cash_account.id,
+            'move': move.id,
+            'debit': check.amount,
+            'credit': _ZERO,
+            })
+
+        MoveLine.create(lines)
+        Move.post([move])
+        IssuedCheck.write([check], {
+            'state': 'debited',
+            'cash_move': move
+            })
+
         return 'end'
 
 

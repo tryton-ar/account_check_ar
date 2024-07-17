@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<form>
+    <label name="checkbook"/>
+    <field name="checkbook"/>
+    <label name="bank_account"/>
+    <field name="bank_account"/>
+    <label name="number"/>
+    <field name="number"/>
+    <label name="amount"/>
+    <field name="amount"/>
+    <label name="date_out"/>
+    <field name="date_out"/>
+    <label name="date"/>
+    <field name="date"/>
+    <label name="cash_account"/>
+    <field name="cash_account"/>
+</form>

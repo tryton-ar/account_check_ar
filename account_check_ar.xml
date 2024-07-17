@@ -422,6 +422,25 @@
             <field name="action" ref="wizard_third_check_revert_reject"/>
         </record>
 
+        <!-- Wizard: Cash Issued Check -->
+        <record model="ir.ui.view" id="view_issued_check_cash_start">
+            <field name="model">account.issued.check.cash.start</field>
+            <field name="type">form</field>
+            <field name="name">issued_check_cash_start</field>
+        </record>
+
+        <record model="ir.action.wizard" id="act_issued_check_cash">
+            <field name="name">Cash Issued Checks</field>
+            <field name="wiz_name">account.issued.check.cash</field>
+        </record>
+        <record model="ir.action-res.group"
+                id="act_issued_check_cash_group_admin">
+            <field name="action" ref="act_issued_check_cash"/>
+            <field name="group" ref="account.group_account_admin"/>
+        </record>
+        <menuitem parent="menu_treasury" sequence="40"
+            action="act_issued_check_cash" id="menu_issued_check_cash"/>
+
         <!-- Wizard: Cancel Issued Check -->
         <record model="ir.ui.view" id="view_issued_check_cancel_start">
             <field name="model">account.issued.check.cancel.start</field>
