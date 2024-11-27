@@ -1,4 +1,5 @@
-Account Check Argentina Module
-##############################
+#########################
+trytonar_account_check_ar
+#########################
 
-Account Check for Argentina
+The account_check_ar module of the Tryton application platform.

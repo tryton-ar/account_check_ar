@@ -1,6 +1,8 @@
-* Add Currency field to Third Party Check
+Version 7.0.0 - 2024-11-26
+* Bug fixes (see git logs for details)
 
 Version 6.6.0 - 2023-09-26
+* Add Currency field to Third Party Check
 * Bug fixes (see git logs for details)
 * Improves voucher form
 
