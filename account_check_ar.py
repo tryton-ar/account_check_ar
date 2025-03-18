@@ -7,7 +7,7 @@ from trytond.model import Workflow, ModelView, ModelSQL, fields
 from trytond.modules.currency.fields import Monetary
 from trytond.wizard import Wizard, StateView, StateTransition, Button
 from trytond.pool import Pool
-from trytond.pyson import Bool, Eval, In, And, Or
+from trytond.pyson import Bool, Eval, In, And, Or, Id
 from trytond.transaction import Transaction
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
@@ -30,7 +30,8 @@ class AccountCheckbook(Workflow, ModelSQL, ModelView):
     party_company = fields.Function(fields.Many2One('party.party', 'Company'),
         'get_party_company')
     sequence = fields.Many2One('ir.sequence', "Sequence", required=True,
-        domain=[('sequence_type.name', '=', 'Checkbook')])
+        domain=[('sequence_type', '=',
+            Id('account_check_ar', 'sequence_type_account_checkbook'))])
     electronic = fields.Boolean('e-Checkbook', states=_STATES)
     last_number = fields.Integer('Last Number', states={
         'invisible': Bool(Eval('electronic')),
