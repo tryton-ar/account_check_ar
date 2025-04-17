@@ -1,10 +1,13 @@
 # This file is part of the account_check_ar module for Tryton.
 # The COPYRIGHT file at the top level of this repository contains
 # the full copyright notices and license terms.
+from itertools import groupby
 
 from trytond.model import fields, Workflow
 from trytond.pool import Pool, PoolMeta
 from trytond.pyson import Eval, If, Bool
+from trytond.exceptions import UserError
+from trytond.i18n import gettext
 
 
 class AccountIssuedCheck(metaclass=PoolMeta):
@@ -54,6 +57,26 @@ class Statement(metaclass=PoolMeta):
             check.debit_date = l.date
             checks.append(check)
         IssuedCheck.save(checks)
+
+    @classmethod
+    def validate(cls, statements):
+        super(Statement, cls).validate(statements)
+        for statement in statements:
+            statement.repeated_check_related_to()
+
+    def repeated_check_related_to(self):
+        # Control if check is related twice
+        check_types = ['issued_check', 'third_check']
+        for type_ in check_types:
+            lines = [l for l in self.lines if getattr(l, type_, None)]
+            for key, group in groupby(lines, lambda x: getattr(x, type_)):
+                numbers = []
+                for line in group:
+                    numbers.append(line.number)
+                if len(numbers) > 1:
+                    raise UserError(gettext(
+                        'account_check_ar.msg_check_already_in_statement',
+                        check=key.name, lines=', '.join(numbers)))
 
 
 class StatementLine(metaclass=PoolMeta):
