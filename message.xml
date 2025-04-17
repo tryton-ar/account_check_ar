@@ -43,5 +43,8 @@
         <record model="ir.message" id="msg_checkbook_to_number_lower">
             <field name="text">The second number can not be lower than the first.</field>
         </record>
+        <record model="ir.message" id="msg_check_already_in_statement">
+            <field name="text">The check %(check)s is related to multiple lines: %(lines)s.</field>
+        </record>
     </data>
 </tryton>

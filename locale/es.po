@@ -528,6 +528,10 @@ msgctxt "model:ir.message,text:msg_checkbook_to_number_lower"
 msgid "The second number can not be lower than the first."
 msgstr "El segundo número no puede ser menor al primero."
 
+msgctxt "model:ir.message,text:msg_check_already_in_statement"
+msgid "The check %(check)s is related to multiple lines: %(lines)s."
+msgstr "El cheque %(check)s está relacionado en múltiples líneas: %(lines)s."
+
 msgctxt "model:ir.message,text:msg_delete_check"
 msgid "You can not delete a check that is used!"
 msgstr "No puede eliminar un cheque usado"
