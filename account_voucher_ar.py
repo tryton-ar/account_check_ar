@@ -74,6 +74,8 @@ class AccountVoucher(metaclass=PoolMeta):
         move_lines = super().prepare_move_lines()
 
         journal = self.journal
+        period = Period.find(self.company, date=self.date)
+
         if self.voucher_type == 'receipt':
             if self.third_check:
                 if not journal.third_check_account:
@@ -91,7 +93,7 @@ class AccountVoucher(metaclass=PoolMeta):
                         'account': journal.third_check_account.id,
                         'move': self.move.id,
                         'journal': journal.id,
-                        'period': Period.find(self.company.id, date=self.date),
+                        'period': period.id,
                         'party': (
                             journal.third_check_account.party_required and
                             self.party.id or None),
@@ -111,7 +113,7 @@ class AccountVoucher(metaclass=PoolMeta):
                         'account': journal.issued_check_account.id,
                         'move': self.move.id,
                         'journal': journal.id,
-                        'period': Period.find(self.company.id, date=self.date),
+                        'period': period.id,
                         'party': (
                             journal.issued_check_account.party_required and
                             self.party.id or None),
@@ -125,7 +127,7 @@ class AccountVoucher(metaclass=PoolMeta):
                         'account': journal.third_check_account.id,
                         'move': self.move.id,
                         'journal': journal.id,
-                        'period': Period.find(self.company.id, date=self.date),
+                        'period': period.id,
                         'party': (
                             journal.third_check_account.party_required and
                             self.party.id or None),

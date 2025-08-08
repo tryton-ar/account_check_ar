@@ -479,8 +479,9 @@ class ThirdCheckHeld(Wizard):
         Date = pool.get('ir.date')
         Period = pool.get('account.period')
 
+        company = Transaction().context.get('company')
         date = Date.today()
-        period_id = Period.find(1, date)
+        period = Period.find(company, date=date)
         for check in self.records:
             if check.state != 'draft':
                 raise UserError(gettext(
@@ -492,7 +493,7 @@ class ThirdCheckHeld(Wizard):
 
             move, = Move.create([{
                 'journal': self.start.journal.id,
-                'period': period_id,
+                'period': period.id,
                 'date': date,
                 'description': 'Cheque: ' + check.name,
                 }])
@@ -501,7 +502,7 @@ class ThirdCheckHeld(Wizard):
                 'account': self.start.journal.third_check_account.id,
                 'move': move.id,
                 'journal': self.start.journal.id,
-                'period': period_id,
+                'period': period.id,
                 'debit': check.amount,
                 'credit': _ZERO,
                 'date': date,
@@ -511,7 +512,7 @@ class ThirdCheckHeld(Wizard):
                 'account': self.start.credit_account.id,
                 'move': move.id,
                 'journal': self.start.journal.id,
-                'period': period_id,
+                'period': period.id,
                 'debit': _ZERO,
                 'credit': check.amount,
                 'date': date,
@@ -554,7 +555,8 @@ class ThirdCheckDeposit(Wizard):
         MoveLine = pool.get('account.move.line')
         Period = pool.get('account.period')
 
-        period_id = Period.find(1, date=self.start.date)
+        company = Transaction().context.get('company')
+        period = Period.find(company, date=self.start.date)
         for check in self.records:
             if check.state not in ['held', 'reverted']:
                 raise UserError(gettext(
@@ -567,7 +569,7 @@ class ThirdCheckDeposit(Wizard):
 
             move, = Move.create([{
                 'journal': self.start.bank_account.journal.id,
-                'period': period_id,
+                'period': period.id,
                 'date': self.start.date,
                 'description': 'Cheque: ' + check.name,
                 }])
@@ -577,7 +579,7 @@ class ThirdCheckDeposit(Wizard):
                     self.start.bank_account.debit_account.id,
                 'move': move.id,
                 'journal': self.start.bank_account.journal.id,
-                'period': period_id,
+                'period': period.id,
                 'debit': check.amount,
                 'credit': _ZERO,
                 'date': self.start.date,
@@ -587,7 +589,7 @@ class ThirdCheckDeposit(Wizard):
                     self.start.bank_account.journal.third_check_account.id,
                 'move': move.id,
                 'journal': self.start.bank_account.journal.id,
-                'period': period_id,
+                'period': period.id,
                 'debit': _ZERO,
                 'credit': check.amount,
                 'date': self.start.date,
@@ -631,7 +633,8 @@ class ThirdCheckRevertDeposit(Wizard):
         MoveLine = pool.get('account.move.line')
         Period = pool.get('account.period')
 
-        period_id = Period.find(1, date=self.start.date)
+        company = Transaction().context.get('company')
+        period = Period.find(company, date=self.start.date)
         for check in self.records:
             if check.state not in ['deposited', 'delivered']:
                 raise UserError(gettext(
@@ -644,7 +647,7 @@ class ThirdCheckRevertDeposit(Wizard):
 
             move, = Move.create([{
                 'journal': check.account_bank_out.journal.id,
-                'period': period_id,
+                'period': period.id,
                 'date': self.start.date,
                 'description': 'Cheque: ' + check.name,
                 }])
@@ -654,7 +657,7 @@ class ThirdCheckRevertDeposit(Wizard):
                     check.account_bank_out.debit_account.id,
                 'move': move.id,
                 'journal': check.account_bank_out.journal.id,
-                'period': period_id,
+                'period': period.id,
                 'debit': _ZERO,
                 'credit': check.amount,
                 'date': self.start.date,
@@ -664,7 +667,7 @@ class ThirdCheckRevertDeposit(Wizard):
                     check.account_bank_out.journal.third_check_account.id,
                 'move': move.id,
                 'journal': check.account_bank_out.journal.id,
-                'period': period_id,
+                'period': period.id,
                 'debit': check.amount,
                 'credit': _ZERO,
                 'date': self.start.date,
@@ -712,7 +715,8 @@ class IssuedCheckDebit(Wizard):
         MoveLine = pool.get('account.move.line')
         Period = pool.get('account.period')
 
-        period_id = Period.find(1, date=self.start.date)
+        company = Transaction().context.get('company')
+        period = Period.find(company, date=self.start.date)
         for check in self.records:
             if check.state != 'issued':
                 raise UserError(gettext(
@@ -725,7 +729,7 @@ class IssuedCheckDebit(Wizard):
 
             move, = Move.create([{
                 'journal': self.start.bank_account.journal.id,
-                'period': period_id,
+                'period': period.id,
                 'date': self.start.date,
                 'description': 'Cheque: ' + check.name,
                 }])
@@ -735,7 +739,7 @@ class IssuedCheckDebit(Wizard):
                     self.start.bank_account.journal.issued_check_account.id,
                 'move': move.id,
                 'journal': self.start.bank_account.journal.id,
-                'period': period_id,
+                'period': period.id,
                 'debit': check.amount,
                 'credit': _ZERO,
                 'date': self.start.date,
@@ -744,7 +748,7 @@ class IssuedCheckDebit(Wizard):
                 'account': self.start.bank_account.debit_account.id,
                 'move': move.id,
                 'journal': self.start.bank_account.journal.id,
-                'period': period_id,
+                'period': period.id,
                 'debit': _ZERO,
                 'credit': check.amount,
                 'date': self.start.date,
@@ -785,7 +789,8 @@ class IssuedCheckRevertDebit(Wizard):
         MoveLine = pool.get('account.move.line')
         Period = pool.get('account.period')
 
-        period_id = Period.find(1, date=self.start.date)
+        company = Transaction().context.get('company')
+        period = Period.find(company, date=self.start.date)
         for check in self.records:
             if check.state != 'debited':
                 raise UserError(gettext(
@@ -798,7 +803,7 @@ class IssuedCheckRevertDebit(Wizard):
 
             move, = Move.create([{
                 'journal': check.bank_account.journal.id,
-                'period': period_id,
+                'period': period.id,
                 'date': self.start.date,
                 'description': 'Cheque: ' + check.name,
                 }])
@@ -808,7 +813,7 @@ class IssuedCheckRevertDebit(Wizard):
                     check.bank_account.journal.issued_check_account.id,
                 'move': move.id,
                 'journal': check.bank_account.journal.id,
-                'period': period_id,
+                'period': period.id,
                 'debit': _ZERO,
                 'credit': check.amount,
                 'date': self.start.date,
@@ -817,7 +822,7 @@ class IssuedCheckRevertDebit(Wizard):
                 'account': check.bank_account.debit_account.id,
                 'move': move.id,
                 'journal': check.bank_account.journal.id,
-                'period': period_id,
+                'period': period.id,
                 'debit': check.amount,
                 'credit': _ZERO,
                 'date': self.start.date,
@@ -854,8 +859,9 @@ class ThirdCheckReject(Wizard):
         Date = pool.get('ir.date')
         Period = pool.get('account.period')
 
+        company = Transaction().context.get('company')
         date = Date.today()
-        period_id = Period.find(1, date)
+        period = Period.find(company, date=date)
         for check in self.records:
             if check.state not in ['held', 'reverted']:
                 raise UserError(gettext(
@@ -869,7 +875,7 @@ class ThirdCheckReject(Wizard):
 
             move, = Move.create([{
                 'journal': self.start.journal.id,
-                'period': period_id,
+                'period': period.id,
                 'date': date,
                 'description': 'Cheque: ' + check.name,
                 }])
@@ -878,7 +884,7 @@ class ThirdCheckReject(Wizard):
                 'account': self.start.journal.rejected_check_account.id,
                 'move': move.id,
                 'journal': self.start.journal.id,
-                'period': period_id,
+                'period': period.id,
                 'debit': check.amount,
                 'credit': _ZERO,
                 'date': date,
@@ -887,7 +893,7 @@ class ThirdCheckReject(Wizard):
                 'account': self.start.journal.third_check_account.id,
                 'move': move.id,
                 'journal': self.start.journal.id,
-                'period': period_id,
+                'period': period.id,
                 'debit': _ZERO,
                 'credit': check.amount,
                 'date': date,
@@ -924,8 +930,9 @@ class ThirdCheckRevertReject(Wizard):
         Date = pool.get('ir.date')
         Period = pool.get('account.period')
 
+        company = Transaction().context.get('company')
         date = Date.today()
-        period_id = Period.find(1, date)
+        period = Period.find(company, date=date)
         for check in self.records:
             if check.state != 'rejected':
                 raise UserError(gettext(
@@ -939,7 +946,7 @@ class ThirdCheckRevertReject(Wizard):
 
             move, = Move.create([{
                 'journal': self.start.journal.id,
-                'period': period_id,
+                'period': period.id,
                 'date': date,
                 'description': 'Cheque: ' + check.name,
                 }])
@@ -948,7 +955,7 @@ class ThirdCheckRevertReject(Wizard):
                 'account': self.start.journal.rejected_check_account.id,
                 'move': move.id,
                 'journal': self.start.journal.id,
-                'period': period_id,
+                'period': period.id,
                 'debit': _ZERO,
                 'credit': check.amount,
                 'date': date,
@@ -957,7 +964,7 @@ class ThirdCheckRevertReject(Wizard):
                 'account': self.start.journal.third_check_account.id,
                 'move': move.id,
                 'journal': self.start.journal.id,
-                'period': period_id,
+                'period': period.id,
                 'debit': check.amount,
                 'credit': _ZERO,
                 'date': date,
@@ -1039,7 +1046,7 @@ class IssuedCheckCash(Wizard):
         Period = pool.get('account.period')
 
         company = Transaction().context.get('company')
-        period_id = Period.find(company, date=self.start.date)
+        period = Period.find(company, date=self.start.date)
         checkbook = self.start.checkbook
         number = self.start.number
         if checkbook.sequence.number_next == int(number):
@@ -1075,7 +1082,7 @@ class IssuedCheckCash(Wizard):
 
         move, = Move.create([{
             'journal': self.start.bank_account.journal.id,
-            'period': period_id,
+            'period': period.id,
             'date': self.start.date,
             'description': 'Cobro Cheque propio: ' + check.name,
             }])
