@@ -94,7 +94,7 @@ class StatementLine(metaclass=PoolMeta):
             [('related_statement_line', '=', None),
                 ('voucher', '!=', None),
                 ('voucher.company', '=', Eval('company', -1)),
-                If(Bool(Eval('voucher.party')),
+                If(Bool(Eval('party')),
                     ('voucher.party', '=', Eval('party')),
                     ()),
                 ('checkbook.bank_account', '=',
@@ -120,7 +120,7 @@ class StatementLine(metaclass=PoolMeta):
             ('amount', 'ASC'),
             ]
 
-    @fields.depends('statement')
+    @fields.depends('statement', '_parent_statement.journal')
     def on_change_with_statement_journal_bank_account(self, name=None):
         if self.statement and self.statement.journal \
                 and self.statement.journal.bank_account:
