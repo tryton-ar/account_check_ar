@@ -7,6 +7,8 @@ from . import account_check_ar
 from . import account_voucher_ar
 from . import statement
 
+__all__ = ['register']
+
 
 def register():
     Pool.register(
