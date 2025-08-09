@@ -150,11 +150,21 @@ class AccountVoucher(metaclass=PoolMeta):
         for voucher in vouchers:
             if voucher.issued_check:
                 for check in voucher.issued_check:
+                    number = (check.checkbook and
+                        check.checkbook.sequence.get() or check.name)
+                    check_exists = IssuedCheck.search([
+                        ('name', '=', number),
+                        ('bank_account', '=', check.bank_account.id),
+                        ('id', '!=', check.id),
+                        ])
+                    if check_exists:
+                        raise UserError(gettext(
+                            'account_check_ar.msg_check_already_exists',
+                            number=number))
                     IssuedCheck.write([check], {
                         'receiving_party': voucher.party.id,
                         'state': 'issued',
-                        'name': check.checkbook and
-                            check.checkbook.sequence.get() or check.name
+                        'name': number,
                         })
                 IssuedCheck.issued(voucher.issued_check)
             if voucher.third_check:

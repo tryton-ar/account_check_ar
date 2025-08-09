@@ -382,6 +382,23 @@ class AccountThirdCheck(ModelSQL, ModelView):
         return False
 
     @classmethod
+    def validate(cls, checks):
+        cls.check_duplicate_check(checks)
+
+    @classmethod
+    def check_duplicate_check(cls, checks):
+        for check in checks:
+            if cls.search_count([
+                    ('id', '!=', check.id),
+                    ('bank', '=', check.bank),
+                    ('name', '=', check.name),
+                    ('source_party', '=', check.source_party),
+                    ]) > 0:
+                raise UserError(gettext(
+                    'account_check_ar.msg_third_check_already_exists',
+                    check=check.name))
+
+    @classmethod
     def copy(cls, checks, default=None):
         if default is None:
             default = {}
