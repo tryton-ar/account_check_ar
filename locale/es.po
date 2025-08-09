@@ -38,6 +38,10 @@ msgctxt "field:account.issued.check,bank_account:"
 msgid "Bank Account"
 msgstr "Cuenta bancaria"
 
+msgctxt "field:account.issued.check,cash_move:"
+msgid "Cash Move"
+msgstr "Asiento cobro"
+
 msgctxt "field:account.issued.check,checkbook:"
 msgid "Checkbook"
 msgstr "Chequera"
@@ -102,42 +106,6 @@ msgctxt "field:account.issued.check,voucher:"
 msgid "Voucher"
 msgstr "Comprobante"
 
-msgctxt "field:account.issued.check,cash_move:"
-msgid "Cash Move"
-msgstr "Asiento cobro"
-
-msgctxt "field:account.issued.check.cash.start,bank_account:"
-msgid "Bank Account"
-msgstr "Cuenta bancaria"
-
-msgctxt "field:account.issued.check.cash.start,checkbook:"
-msgid "Checkbook"
-msgstr "Chequera"
-
-msgctxt "field:account.issued.check.cash.start,date_out:"
-msgid "Date Out"
-msgstr "Fecha Emisión"
-
-msgctxt "field:account.issued.check.cash.start,date:"
-msgid "Date"
-msgstr "Fecha Cobro"
-
-msgctxt "field:account.issued.check.cash.start,number:"
-msgid "Number"
-msgstr "Número"
-
-msgctxt "field:account.issued.check.cash.start,amount:"
-msgid "Amount"
-msgstr "Importe"
-
-msgctxt "field:account.issued.check.cash.start,currency:"
-msgid "Currency"
-msgstr "Moneda"
-
-msgctxt "field:account.issued.check.cash.start,cash_account:"
-msgid "Cash Account"
-msgstr "Cuenta de cobro"
-
 msgctxt "field:account.issued.check.cancel.start,bank_account:"
 msgid "Bank Account"
 msgstr "Cuenta bancaria"
@@ -157,6 +125,38 @@ msgstr "Desde número"
 msgctxt "field:account.issued.check.cancel.start,to_number:"
 msgid "To Number"
 msgstr "Hasta número"
+
+msgctxt "field:account.issued.check.cash.start,amount:"
+msgid "Amount"
+msgstr "Importe"
+
+msgctxt "field:account.issued.check.cash.start,bank_account:"
+msgid "Bank Account"
+msgstr "Cuenta bancaria"
+
+msgctxt "field:account.issued.check.cash.start,cash_account:"
+msgid "Cash Account"
+msgstr "Cuenta de cobro"
+
+msgctxt "field:account.issued.check.cash.start,checkbook:"
+msgid "Checkbook"
+msgstr "Chequera"
+
+msgctxt "field:account.issued.check.cash.start,currency:"
+msgid "Currency"
+msgstr "Moneda"
+
+msgctxt "field:account.issued.check.cash.start,date:"
+msgid "Date"
+msgstr "Fecha Cobro"
+
+msgctxt "field:account.issued.check.cash.start,date_out:"
+msgid "Date Out"
+msgstr "Fecha Emisión"
+
+msgctxt "field:account.issued.check.cash.start,number:"
+msgid "Number"
+msgstr "Número"
 
 msgctxt "field:account.issued.check.debit.start,bank_account:"
 msgid "Bank Account"
@@ -230,6 +230,10 @@ msgctxt "field:account.third.check,electronic:"
 msgid "e-Check"
 msgstr "Electrónico"
 
+msgctxt "field:account.third.check,endorsed:"
+msgid "Endorsed"
+msgstr "Endosado"
+
 msgctxt "field:account.third.check,name:"
 msgid "Number"
 msgstr "Número"
@@ -257,10 +261,6 @@ msgstr "Línea de extracto relacionada"
 msgctxt "field:account.third.check,signatory:"
 msgid "Signatory"
 msgstr "Firma"
-
-msgctxt "field:account.third.check,endorsed:"
-msgid "Endorsed"
-msgstr "Endosado"
 
 msgctxt "field:account.third.check,source_party:"
 msgid "Source Party"
@@ -338,13 +338,13 @@ msgctxt "model:account.issued.check,name:"
 msgid "Account Issued Check"
 msgstr "Cheque Emitido"
 
-msgctxt "model:account.issued.check.cash.start,name:"
-msgid "Issued Check Cash Start"
-msgstr "Cobrar cheques propios - Inicio"
-
 msgctxt "model:account.issued.check.cancel.start,name:"
 msgid "Issued Check Cancel Start"
 msgstr "Cancelar cheques propios - Inicio"
+
+msgctxt "model:account.issued.check.cash.start,name:"
+msgid "Issued Check Cash Start"
+msgstr "Cobrar cheques propios - Inicio"
 
 msgctxt "model:account.issued.check.debit.start,name:"
 msgid "Issued Check Debit"
@@ -386,13 +386,13 @@ msgctxt "model:ir.action,name:act_checkbook_tree"
 msgid "Checkbooks"
 msgstr "Chequeras"
 
-msgctxt "model:ir.action,name:act_issued_check_cash"
-msgid "Cash Issued Checks"
-msgstr "Cobrar cheques propios"
-
 msgctxt "model:ir.action,name:act_issued_check_cancel"
 msgid "Cancel Issued Checks"
 msgstr "Cancelar cheques propios"
+
+msgctxt "model:ir.action,name:act_issued_check_cash"
+msgid "Cash Issued Checks"
+msgstr "Cobrar cheques propios"
 
 msgctxt "model:ir.action,name:act_issued_check_tree"
 msgid "Issued Checks"
@@ -430,11 +430,6 @@ msgctxt "model:ir.action,name:wizard_third_check_revert_reject"
 msgid "Revert Check Reject"
 msgstr "Revertir Rechazo de Cheque"
 
-msgctxt ""
-"model:ir.action.act_window.domain,name:act_issued_check_domain_debited"
-msgid "Debited"
-msgstr "Debitado"
-
 msgctxt "model:ir.action.act_window.domain,name:act_issued_check_domain_all"
 msgid "All"
 msgstr "Todo"
@@ -443,6 +438,11 @@ msgctxt ""
 "model:ir.action.act_window.domain,name:act_issued_check_domain_canceled"
 msgid "Canceled"
 msgstr "Cancelado"
+
+msgctxt ""
+"model:ir.action.act_window.domain,name:act_issued_check_domain_debited"
+msgid "Debited"
+msgstr "Debitado"
 
 msgctxt "model:ir.action.act_window.domain,name:act_issued_check_domain_draft"
 msgid "Draft"
@@ -612,13 +612,13 @@ msgctxt "model:ir.ui.menu,name:menu_issued_check"
 msgid "Issued Checks"
 msgstr "Cheques Emitidos"
 
-msgctxt "model:ir.ui.menu,name:menu_issued_check_cash"
-msgid "Cash Issued Checks"
-msgstr "Cobrar cheques propios"
-
 msgctxt "model:ir.ui.menu,name:menu_issued_check_cancel"
 msgid "Cancel Issued Checks"
 msgstr "Cancelar cheques propios"
+
+msgctxt "model:ir.ui.menu,name:menu_issued_check_cash"
+msgid "Cash Issued Checks"
+msgstr "Cobrar cheques propios"
 
 msgctxt "model:ir.ui.menu,name:menu_third_check"
 msgid "Third Checks"
@@ -756,19 +756,19 @@ msgctxt "view:account.voucher:"
 msgid "Checks"
 msgstr "Cheques"
 
-msgctxt "wizard_button:account.issued.check.cash,start,cash:"
-msgid "Proceed"
-msgstr "Proceder"
-
-msgctxt "wizard_button:account.issued.check.cash,start,end:"
-msgid "Abort"
-msgstr "Abortar"
-
 msgctxt "wizard_button:account.issued.check.cancel,start,cancel:"
 msgid "Proceed"
 msgstr "Proceder"
 
 msgctxt "wizard_button:account.issued.check.cancel,start,end:"
+msgid "Abort"
+msgstr "Abortar"
+
+msgctxt "wizard_button:account.issued.check.cash,start,cash:"
+msgid "Proceed"
+msgstr "Proceder"
+
+msgctxt "wizard_button:account.issued.check.cash,start,end:"
 msgid "Abort"
 msgstr "Abortar"
 
