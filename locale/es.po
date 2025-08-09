@@ -485,6 +485,10 @@ msgctxt ""
 msgid "Reverted"
 msgstr "Revertido"
 
+msgctxt "model:ir.message,text:msg_check_already_exists"
+msgid "The check \"%(number)s\" already exists."
+msgstr "El cheque \"%(number)s\" ya existe."
+
 msgctxt "model:ir.message,text:msg_check_not_debited"
 msgid "Check \"%(check)s\" is not debited"
 msgstr "Cheque \"%(check)s\" no está debitado"
@@ -540,13 +544,13 @@ msgctxt "model:ir.message,text:msg_delete_checkbook"
 msgid "You can not delete a used checkbook."
 msgstr "No es posible eliminar una chequera en uso."
 
-msgctxt "model:ir.message,text:msg_check_already_exists"
-msgid "The check \"%(number)s\" already exists."
-msgstr "El cheque \"%(number)s\" ya existe."
-
 msgctxt "model:ir.message,text:msg_number_not_valid"
 msgid "The number \"%(number)s\" is not valid for the sequence."
 msgstr "El número \"%(number)s\" no es válido según la secuencia."
+
+msgctxt "model:ir.message,text:msg_third_check_already_exists"
+msgid "Check \"%(check)s\" already exists"
+msgstr "Cheque \"%(check)s\" ya existe"
 
 msgctxt "model:ir.model.button,help:check_calculate_remaining_amount_button"
 msgid "Calculate remaining amount to balance the voucher"
