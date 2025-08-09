@@ -8,6 +8,11 @@
             <field name="name">voucher_check_form</field>
         </record>
 
+        <record model="ir.ui.view" id="issued_check_view_form">
+            <field name="model">account.issued.check</field>
+            <field name="type">form</field>
+            <field name="name">issued_check_form</field>
+        </record>
         <record model="ir.ui.view" id="issued_check_view_tree">
             <field name="model">account.issued.check</field>
             <field name="type">tree</field>

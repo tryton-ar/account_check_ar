@@ -548,6 +548,14 @@ msgctxt "model:ir.message,text:msg_number_not_valid"
 msgid "The number \"%(number)s\" is not valid for the sequence."
 msgstr "El número \"%(number)s\" no es válido según la secuencia."
 
+msgctxt "model:ir.model.button,help:check_calculate_remaining_amount_button"
+msgid "Calculate remaining amount to balance the voucher"
+msgstr "Calcular el importe remanente del comprobante"
+
+msgctxt "model:ir.model.button,string:check_calculate_remaining_amount_button"
+msgid "Calculate remaining"
+msgstr "Calcular remanente"
+
 msgctxt "model:ir.model.button,string:check_debited_button"
 msgid "Debit"
 msgstr "Debitar"

@@ -2,7 +2,7 @@
 <data>
     <xpath expr="/form/notebook/page[@id='payments']" position="inside">
         <field name="issued_check" colspan="4"
-            view_ids="account_check_ar.issued_check_view_tree"/>
+            view_ids="account_check_ar.issued_check_view_tree,account_check_ar.issued_check_view_form"/>
         <field name="third_pay_checks" colspan="4"
             view_ids="account_check_ar.third_pay_checks_view_tree"/>
         <field name="third_check" colspan="4"

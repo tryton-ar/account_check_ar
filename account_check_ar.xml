@@ -169,6 +169,13 @@
             <field name="button" ref="check_debited_button"/>
             <field name="group" ref="account.group_account"/>
         </record>
+        <record model="ir.model.button"
+            id="check_calculate_remaining_amount_button">
+            <field name="name">calculate_remaining_amount</field>
+            <field name="string">Calculate remaining</field>
+            <field name="model" search="[('model', '=', 'account.issued.check')]"/>
+            <field name="help">Calculate remaining amount to balance the voucher</field>
+        </record>
 
         <!-- Third Checks -->
         <record model="ir.ui.view" id="account_third_check_form">

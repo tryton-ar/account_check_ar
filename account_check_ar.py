@@ -197,6 +197,10 @@ class AccountIssuedCheck(ModelSQL, ModelView):
             'debited': {
                 'invisible': Eval('state') != 'issued',
                 },
+            'calculate_remaining_amount': {
+                'invisible': ~Eval('_parent_voucher.state').in_(
+                    ['draft', 'calculated']),
+                },
             })
 
     @staticmethod
@@ -271,6 +275,11 @@ class AccountIssuedCheck(ModelSQL, ModelView):
     @ModelView.button
     def debited(cls, checks):
         pass
+
+    @ModelView.button_change('voucher',
+        '_parent_voucher.amount_invoices', '_parent_voucher.amount')
+    def calculate_remaining_amount(self):
+        self.amount = self.voucher.amount_invoices - self.voucher.amount
 
 
 class AccountThirdCheck(ModelSQL, ModelView):
