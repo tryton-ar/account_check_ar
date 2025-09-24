@@ -312,19 +312,19 @@ msgstr "Diario"
 
 msgctxt "field:account.voucher,issued_check:"
 msgid "Issued Checks"
-msgstr "Cheques Emitidos"
+msgstr "Cheques emitidos"
 
 msgctxt "field:account.voucher,third_check:"
 msgid "Third Checks"
-msgstr "Cheques de Terceros"
+msgstr "Cheques de terceros"
 
 msgctxt "field:account.voucher,third_pay_checks:"
 msgid "Third Checks"
-msgstr "Cheques de Terceros"
+msgstr "Cheques de terceros"
 
 msgctxt "field:account.voucher-account.third.check,third_check:"
 msgid "Third Check"
-msgstr "Cheque de Tercero"
+msgstr "Cheque de tercero"
 
 msgctxt "field:account.voucher-account.third.check,voucher:"
 msgid "Voucher"
@@ -356,19 +356,19 @@ msgstr "Revertir Débito de Cheque"
 
 msgctxt "model:account.third.check,name:"
 msgid "Account Third Check"
-msgstr "Cheque de Tercero"
+msgstr "Cheque de tercero"
 
 msgctxt "model:account.third.check.deposit.start,name:"
 msgid "Third Check Deposit"
-msgstr "Depositar Cheque de Tercero"
+msgstr "Depositar Cheque de tercero"
 
 msgctxt "model:account.third.check.held.start,name:"
 msgid "Third Check Held"
-msgstr "Cheque de Tercero a Cartera"
+msgstr "Cheque de tercero a Cartera"
 
 msgctxt "model:account.third.check.reject.start,name:"
 msgid "Third Check Reject"
-msgstr "Rechazar Cheque de Tercero"
+msgstr "Rechazar Cheque de tercero"
 
 msgctxt "model:account.third.check.revert_deposit.start,name:"
 msgid "Revert Third Check Deposit"
@@ -380,7 +380,7 @@ msgstr "Revertir Rechazo de Cheque"
 
 msgctxt "model:account.voucher-account.third.check,name:"
 msgid "Account Voucher - Account Third Check"
-msgstr "Comprobante contable - Cheque de Tercero"
+msgstr "Comprobante contable - Cheque de tercero"
 
 msgctxt "model:ir.action,name:act_checkbook_tree"
 msgid "Checkbooks"
@@ -400,7 +400,7 @@ msgstr "Cheques Emitidos"
 
 msgctxt "model:ir.action,name:act_third_check_tree"
 msgid "Third Checks"
-msgstr "Cheques de Terceros"
+msgstr "Cheques de terceros"
 
 msgctxt "model:ir.action,name:wizard_issued_check_debit"
 msgid "Check Debit"
@@ -412,15 +412,15 @@ msgstr "Revertir Débito de Cheque"
 
 msgctxt "model:ir.action,name:wizard_third_check_deposit"
 msgid "Check Deposit"
-msgstr "Depositar Cheque de Tercero"
+msgstr "Depositar Cheque de tercero"
 
 msgctxt "model:ir.action,name:wizard_third_check_held"
 msgid "Check Held"
-msgstr "Cheque de Tercero a Cartera"
+msgstr "Cheque de tercero a Cartera"
 
 msgctxt "model:ir.action,name:wizard_third_check_reject"
 msgid "Check Reject"
-msgstr "Rechazar Cheque de Tercero"
+msgstr "Rechazar Cheque de tercero"
 
 msgctxt "model:ir.action,name:wizard_third_check_revert_deposit"
 msgid "Revert Check Deposit"
@@ -608,9 +608,13 @@ msgctxt "model:ir.ui.menu,name:menu_checkbook"
 msgid "Checkbooks"
 msgstr "Chequeras"
 
+msgctxt "model:ir.ui.menu,name:menu_checks"
+msgid "Checks"
+msgstr "Cheques"
+
 msgctxt "model:ir.ui.menu,name:menu_issued_check"
 msgid "Issued Checks"
-msgstr "Cheques Emitidos"
+msgstr "Cheques emitidos"
 
 msgctxt "model:ir.ui.menu,name:menu_issued_check_cancel"
 msgid "Cancel Issued Checks"
@@ -622,11 +626,7 @@ msgstr "Cobrar cheques propios"
 
 msgctxt "model:ir.ui.menu,name:menu_third_check"
 msgid "Third Checks"
-msgstr "Cheques de Terceros"
-
-msgctxt "model:ir.ui.menu,name:menu_treasury"
-msgid "Treasury"
-msgstr "Tesorería"
+msgstr "Cheques de terceros"
 
 msgctxt "selection:account.checkbook,state:"
 msgid "Active"

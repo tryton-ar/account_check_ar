@@ -24,7 +24,6 @@
             <field name="type">tree</field>
             <field name="name">third_pay_checks_tree</field>
         </record>
-
         <record model="ir.ui.view" id="third_check_view_tree">
             <field name="model">account.third.check</field>
             <field name="type">tree</field>
