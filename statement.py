@@ -34,7 +34,7 @@ class Statement(metaclass=PoolMeta):
         ThirdCheck = pool.get('account.third.check')
         StatementLine = Pool().get('account.statement.line')
 
-        super(Statement, cls).validate_statement(statements)
+        super().validate_statement(statements)
         # Remove created draft moves when line is related to third checks
         lines = [l for s in statements for l in s.lines
             if isinstance(l.related_to, ThirdCheck)]
@@ -46,7 +46,7 @@ class Statement(metaclass=PoolMeta):
         pool = Pool()
         IssuedCheck = pool.get('account.issued.check')
 
-        super(Statement, cls).post(statements)
+        super().post(statements)
         # Change issued checks state
         lines = [l for s in statements for l in s.lines
             if isinstance(l.related_to, IssuedCheck)]
@@ -60,7 +60,7 @@ class Statement(metaclass=PoolMeta):
 
     @classmethod
     def validate(cls, statements):
-        super(Statement, cls).validate(statements)
+        super().validate(statements)
         for statement in statements:
             statement.repeated_check_related_to()
 
@@ -180,7 +180,7 @@ class StatementLine(metaclass=PoolMeta):
         IssuedCheck = pool.get('account.issued.check')
         ThirdCheck = pool.get('account.third.check')
 
-        lines = super(StatementLine, cls).create(vlist)
+        lines = super().create(vlist)
         update_issued = {}
         update_third = {}
         for l in lines:
@@ -221,7 +221,7 @@ class StatementLine(metaclass=PoolMeta):
                         == ThirdCheck.__name__:
                     check_id = int(values['related_to'].split(',')[1])
                     update_third[check_id] = lines[0].id
-        super(StatementLine, cls).write(*args)
+        super().write(*args)
         if update_issued:
             cls.update_issued_checks(update_issued)
         if update_third:

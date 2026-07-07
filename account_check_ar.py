@@ -45,7 +45,7 @@ class AccountCheckbook(Workflow, ModelSQL, ModelView):
 
     @classmethod
     def __setup__(cls):
-        super(AccountCheckbook, cls).__setup__()
+        super().__setup__()
         cls._order = [
             ('id', 'DESC'),
             ]
@@ -94,7 +94,7 @@ class AccountCheckbook(Workflow, ModelSQL, ModelView):
         else:
             default = default.copy()
         default.setdefault('name', None)
-        return super(AccountCheckbook, cls).copy(checkbooks, default=default)
+        return super().copy(checkbooks, default=default)
 
     @classmethod
     @ModelView.button
@@ -126,7 +126,7 @@ class AccountCheckbook(Workflow, ModelSQL, ModelView):
             if c.state != 'draft':
                 raise UserError(
                     gettext('account_check_ar.msg_delete_checkbook'))
-        return super(AccountCheckbook, cls).delete(checkbooks)
+        return super().delete(checkbooks)
 
 
 class AccountIssuedCheck(ModelSQL, ModelView):
