@@ -57,7 +57,7 @@
         <record model="ir.model.button" id="checkbook_draft_button">
             <field name="name">draft</field>
             <field name="string">Draft</field>
-            <field name="model" search="[('model', '=', 'account.checkbook')]"/>
+            <field name="model">account.checkbook</field>
         </record>
         <record model="ir.model.button-res.group"
             id="checkbook_draft_button_group_account">
@@ -67,7 +67,7 @@
         <record model="ir.model.button" id="checkbook_activate_button">
             <field name="name">activate</field>
             <field name="string">Activate</field>
-            <field name="model" search="[('model', '=', 'account.checkbook')]"/>
+            <field name="model">account.checkbook</field>
         </record>
         <record model="ir.model.button-res.group"
             id="checkbook_activate_button_group_account">
@@ -77,7 +77,7 @@
         <record model="ir.model.button" id="checkbook_close_button">
             <field name="name">close</field>
             <field name="string">Close</field>
-            <field name="model" search="[('model', '=', 'account.checkbook')]"/>
+            <field name="model">account.checkbook</field>
         </record>
         <record model="ir.model.button-res.group"
             id="checkbook_close_button_group_account">
@@ -157,7 +157,7 @@
         <record model="ir.model.button" id="check_issued_button">
             <field name="name">issued</field>
             <field name="string">Issued</field>
-            <field name="model" search="[('model', '=', 'account.issued.check')]"/>
+            <field name="model">account.issued.check</field>
         </record>
         <record model="ir.model.button-res.group"
             id="check_issued_button_group_account">
@@ -167,7 +167,7 @@
         <record model="ir.model.button" id="check_debited_button">
             <field name="name">debited</field>
             <field name="string">Debit</field>
-            <field name="model" search="[('model', '=', 'account.issued.check')]"/>
+            <field name="model">account.issued.check</field>
         </record>
         <record model="ir.model.button-res.group"
             id="check_debited_button_group_account">
@@ -178,7 +178,7 @@
             id="check_calculate_remaining_amount_button">
             <field name="name">calculate_remaining_amount</field>
             <field name="string">Calculate remaining</field>
-            <field name="model" search="[('model', '=', 'account.issued.check')]"/>
+            <field name="model">account.issued.check</field>
             <field name="help">Calculate remaining amount to balance the voucher</field>
         </record>
 
@@ -268,7 +268,7 @@
         <record model="ir.model.button" id="check_held_button">
             <field name="name">held</field>
             <field name="string">Held</field>
-            <field name="model" search="[('model', '=', 'account.third.check')]"/>
+            <field name="model">account.third.check</field>
         </record>
         <record model="ir.model.button-res.group"
             id="check_held_button_group_account">
@@ -278,7 +278,7 @@
         <record model="ir.model.button" id="check_deposited_button">
             <field name="name">deposited</field>
             <field name="string">Deposit</field>
-            <field name="model" search="[('model', '=', 'account.third.check')]"/>
+            <field name="model">account.third.check</field>
         </record>
         <record model="ir.model.button-res.group"
             id="check_deposited_button_group_account">
@@ -288,7 +288,7 @@
         <record model="ir.model.button" id="check_delivered_button">
             <field name="name">delivered</field>
             <field name="string">Deliver</field>
-            <field name="model" search="[('model', '=', 'account.third.check')]"/>
+            <field name="model">account.third.check</field>
         </record>
         <record model="ir.model.button-res.group"
             id="check_delivered_button_group_account">
@@ -298,7 +298,7 @@
         <record model="ir.model.button" id="check_reverted_button">
             <field name="name">reverted</field>
             <field name="string">Revert</field>
-            <field name="model" search="[('model', '=', 'account.third.check')]"/>
+            <field name="model">account.third.check</field>
         </record>
         <record model="ir.model.button-res.group"
             id="check_reverted_button_group_account">
@@ -308,7 +308,7 @@
         <record model="ir.model.button" id="check_rejected_button">
             <field name="name">rejected</field>
             <field name="string">Reject</field>
-            <field name="model" search="[('model', '=', 'account.third.check')]"/>
+            <field name="model">account.third.check</field>
         </record>
         <record model="ir.model.button-res.group"
             id="check_rejected_button_group_account">
