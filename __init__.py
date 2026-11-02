@@ -3,6 +3,8 @@
 # the full copyright notices and license terms.
 
 from trytond.pool import Pool
+from . import account
+from . import bank
 from . import account_check_ar
 from . import account_voucher_ar
 from . import statement
@@ -12,11 +14,13 @@ __all__ = ['register']
 
 def register():
     Pool.register(
+        account.Configuration,
+        account.ConfigurationDefaultAccount,
+        bank.Account,
         account_check_ar.AccountCheckbook,
         account_check_ar.AccountIssuedCheck,
         account_check_ar.AccountThirdCheck,
         account_check_ar.AccountVoucherThirdCheck,
-        account_check_ar.Journal,
         account_check_ar.ThirdCheckHeldStart,
         account_check_ar.ThirdCheckDepositStart,
         account_check_ar.ThirdCheckRevertDepositStart,

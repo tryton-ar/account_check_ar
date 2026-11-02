@@ -24,11 +24,12 @@ class AccountCheckbook(Workflow, ModelSQL, ModelView):
 
     name = fields.Char('Name', states=_STATES)
     bank_account = fields.Many2One('bank.account', 'Bank Account',
-        required=True, domain=[('owners', 'in', [Eval('party_company', 0)])],
-        context={'owners': [Eval('party_company')]},
-        depends={'party_company'}, states=_STATES)
-    party_company = fields.Function(fields.Many2One('party.party', 'Company'),
-        'get_party_company')
+        required=True, domain=[('owners.id', '=', Eval('company_party', -1))],
+        states=_STATES)
+    company = fields.Many2One('company.company', 'Company', required=True)
+    company_party = fields.Function(fields.Many2One('party.party',
+        'Company Party', context={'company': Eval('company', -1)},
+        depends={'company'}), 'on_change_with_company_party')
     sequence = fields.Many2One('ir.sequence', "Sequence", required=True,
         domain=[('sequence_type', '=',
             Id('account_check_ar', 'sequence_type_account_checkbook'))])
@@ -70,11 +71,27 @@ class AccountCheckbook(Workflow, ModelSQL, ModelView):
                 },
             })
 
+    @classmethod
+    def __register__(cls, module_name):
+        cursor = Transaction().connection.cursor()
+        sql_table = cls.__table__()
+        company_table = Pool().get('company.company').__table__()
+        table_h = cls.__table_handler__(module_name)
+
+        company_exist = table_h.column_exist('company')
+
+        super().__register__(module_name)
+
+        if not company_exist:
+            cursor.execute(*company_table.select(company_table.id))
+            company = cursor.fetchone()
+            if company:
+                cursor.execute(*sql_table.update([sql_table.company],
+                    [company[0]]))
+
     @staticmethod
-    def default_party_company():
-        Company = Pool().get('company.company')
-        if Transaction().context.get('company'):
-            return Company(Transaction().context['company']).party.id
+    def default_company():
+        return Transaction().context.get('company')
 
     @staticmethod
     def default_electronic():
@@ -84,8 +101,9 @@ class AccountCheckbook(Workflow, ModelSQL, ModelView):
     def default_state():
         return 'draft'
 
-    def get_party_company(self, name=None):
-        return self.default_party_company()
+    @fields.depends('company')
+    def on_change_with_company_party(self, name=None):
+        return self.company.party if self.company else None
 
     @classmethod
     def copy(cls, checkbooks, default=None):
@@ -156,7 +174,8 @@ class AccountIssuedCheck(ModelSQL, ModelView):
         states={
             'invisible': Eval('state') == 'draft',
             'readonly': Eval('state') != 'draft',
-            })
+            },
+        context={'company': Eval('company', -1)}, depends={'company'})
     on_order = fields.Char('On Order', states=_states)
     signatory = fields.Char('Signatory', states=_states)
     clearing = fields.Selection([
@@ -174,14 +193,15 @@ class AccountIssuedCheck(ModelSQL, ModelView):
         ('draft', 'Draft'),
         ('issued', 'Issued'),
         ('debited', 'Debited'),
-        ('canceled', 'Canceled'),
+        ('cancelled', 'Cancelled'),
         ], 'State', readonly=True)
     bank_account = fields.Many2One('bank.account', 'Bank Account',
-        required=True, domain=[('owners', 'in', [Eval('party_company', 0)])],
-        context={'owners': [Eval('party_company')]},
-        states=_states, depends={'party_company'})
-    party_company = fields.Function(fields.Many2One('party.party', 'Company'),
-        'get_party_company')
+        required=True, domain=[('owners.id', '=', Eval('company_party', -1))],
+        states=_states)
+    company = fields.Many2One('company.company', 'Company', required=True)
+    company_party = fields.Function(fields.Many2One('party.party',
+        'Company Party', context={'company': Eval('company', -1)},
+        depends={'company'}), 'on_change_with_company_party')
     currency = fields.Function(fields.Many2One(
         'currency.currency', "Currency"), 'on_change_with_currency')
 
@@ -203,14 +223,30 @@ class AccountIssuedCheck(ModelSQL, ModelView):
                 },
             })
 
-    @staticmethod
-    def default_party_company():
-        Company = Pool().get('company.company')
-        if Transaction().context.get('company'):
-            return Company(Transaction().context['company']).party.id
+    @classmethod
+    def __register__(cls, module_name):
+        cursor = Transaction().connection.cursor()
+        sql_table = cls.__table__()
+        company_table = Pool().get('company.company').__table__()
+        table_h = cls.__table_handler__(module_name)
 
-    def get_party_company(self, name=None):
-        return self.default_party_company()
+        company_exist = table_h.column_exist('company')
+
+        super().__register__(module_name)
+
+        cursor.execute(*sql_table.update(
+            [sql_table.state], ['cancelled'],
+            where=sql_table.state == 'canceled'))
+        if not company_exist:
+            cursor.execute(*company_table.select(company_table.id))
+            company = cursor.fetchone()
+            if company:
+                cursor.execute(*sql_table.update([sql_table.company],
+                    [company[0]]))
+
+    @staticmethod
+    def default_company():
+        return Transaction().context.get('company')
 
     @staticmethod
     def default_date_out():
@@ -228,6 +264,10 @@ class AccountIssuedCheck(ModelSQL, ModelView):
     @staticmethod
     def default_electronic():
         return False
+
+    @fields.depends('company')
+    def on_change_with_company_party(self, name=None):
+        return self.company.party if self.company else None
 
     @fields.depends('checkbook')
     def on_change_checkbook(self):
@@ -300,9 +340,11 @@ class AccountThirdCheck(ModelSQL, ModelView):
     debit_date = fields.Date('Debit Date', readonly=True,
         states={'invisible': In(Eval('state'), ['draft', 'held'])})
     source_party = fields.Many2One('party.party', 'Source Party',
-        readonly=True, states={'invisible': Eval('state') == 'draft'})
+        readonly=True, states={'invisible': Eval('state') == 'draft'},
+        context={'company': Eval('company', -1)}, depends={'company'})
     destiny_party = fields.Many2One('party.party', 'Destiny Party',
-        readonly=True, states={'invisible': Eval('state') != 'delivered'})
+        readonly=True, states={'invisible': Eval('state') != 'delivered'},
+        context={'company': Eval('company', -1)}, depends={'company'})
     not_to_order = fields.Boolean('Not to order', states=_states)
     electronic = fields.Boolean('e-Check', states=_states)
     on_order = fields.Char('On Order', states=_states)
@@ -333,6 +375,7 @@ class AccountThirdCheck(ModelSQL, ModelView):
     bank = fields.Many2One('bank', 'Bank', required=True, states=_states)
     account_bank_out = fields.Many2One('bank.account', 'Bank Account',
         readonly=True, states={'invisible': Eval('state') != 'deposited'})
+    company = fields.Many2One('company.company', 'Company', required=True)
 
     del _states
 
@@ -359,6 +402,28 @@ class AccountThirdCheck(ModelSQL, ModelView):
                 'invisible': ~Eval('state').in_(['held', 'reverted']),
                 },
             })
+
+    @classmethod
+    def __register__(cls, module_name):
+        cursor = Transaction().connection.cursor()
+        sql_table = cls.__table__()
+        company_table = Pool().get('company.company').__table__()
+        table_h = cls.__table_handler__(module_name)
+
+        company_exist = table_h.column_exist('company')
+
+        super().__register__(module_name)
+
+        if not company_exist:
+            cursor.execute(*company_table.select(company_table.id))
+            company = cursor.fetchone()
+            if company:
+                cursor.execute(*sql_table.update([sql_table.company],
+                    [company[0]]))
+
+    @staticmethod
+    def default_company():
+        return Transaction().context.get('company')
 
     @staticmethod
     def default_date_in():
@@ -453,31 +518,12 @@ class AccountVoucherThirdCheck(ModelSQL):
         required=True, ondelete='CASCADE')
 
 
-class Journal(ModelSQL, ModelView):
-    __name__ = 'account.journal'
-
-    third_check_account = fields.Many2One('account.account',
-        'Third Check Account', domain=[
-            ('type', '!=', None),
-            ('closed', '!=', True),
-            ])
-    issued_check_account = fields.Many2One('account.account',
-        'Issued Check Account', domain=[
-            ('type', '!=', None),
-            ('closed', '!=', True),
-            ])
-    rejected_check_account = fields.Many2One('account.account',
-        'Rejected Check Account', domain=[
-            ('type', '!=', None),
-            ('closed', '!=', True),
-            ])
-
-
 class ThirdCheckHeldStart(ModelView):
     'Third Check Held'
     __name__ = 'account.third.check.held.start'
 
-    journal = fields.Many2One('account.journal', 'Journal', required=True)
+    journal = fields.Many2One('account.journal', 'Journal', required=True,
+        domain=[('type', '=', 'cash')])
     credit_account = fields.Many2One('account.account', 'Credit Account',
         required=True, domain=[
             ('type', '!=', None),
@@ -497,13 +543,31 @@ class ThirdCheckHeld(Wizard):
             ])
     held = StateTransition()
 
+    def default_start(self, fields):
+        pool = Pool()
+        Configuration = pool.get('account.configuration')
+
+        default = {}
+        config = Configuration(1)
+        default_check_journal = config.get_multivalue('default_check_journal')
+        if default_check_journal:
+            default['journal'] = default_check_journal.id
+        return default
+
     def transition_held(self):
         pool = Pool()
+        Configuration = pool.get('account.configuration')
         ThirdCheck = pool.get('account.third.check')
         Move = pool.get('account.move')
         MoveLine = pool.get('account.move.line')
         Date = pool.get('ir.date')
         Period = pool.get('account.period')
+
+        config = Configuration(1)
+        third_check_account = config.get_multivalue('third_check_account')
+        if not third_check_account:
+            raise UserError(gettext(
+                'account_check_ar.msg_missing_third_check_account'))
 
         company = Transaction().context.get('company')
         date = Date.today()
@@ -512,36 +576,26 @@ class ThirdCheckHeld(Wizard):
             if check.state != 'draft':
                 raise UserError(gettext(
                     'account_check_ar.msg_check_not_draft', check=check.name))
-            if not self.start.journal.third_check_account:
-                raise UserError(gettext(
-                    'account_voucher_ar.msg_no_journal_check_account',
-                    journal=self.start.journal.name))
 
             move, = Move.create([{
                 'journal': self.start.journal.id,
                 'period': period.id,
                 'date': date,
-                'description': 'Cheque: ' + check.name,
+                'description': 'Cheque: %s' % check.name,
                 }])
             lines = []
             lines.append({
-                'account': self.start.journal.third_check_account.id,
+                'account': third_check_account.id,
                 'move': move.id,
-                'journal': self.start.journal.id,
-                'period': period.id,
                 'debit': check.amount,
                 'credit': _ZERO,
-                'date': date,
                 'maturity_date': check.date,
                 })
             lines.append({
                 'account': self.start.credit_account.id,
                 'move': move.id,
-                'journal': self.start.journal.id,
-                'period': period.id,
                 'debit': _ZERO,
                 'credit': check.amount,
-                'date': date,
                 })
             MoveLine.create(lines)
             ThirdCheck.write([check], {'state': 'held'})
@@ -553,14 +607,12 @@ class ThirdCheckDepositStart(ModelView):
     'Third Check Deposit'
     __name__ = 'account.third.check.deposit.start'
 
+    journal = fields.Many2One('account.journal', 'Journal', required=True,
+        domain=[('type', '=', 'cash')])
     bank_account = fields.Many2One('bank.account', 'Bank Account',
-        required=True)
+        required=True, domain=[('owners.id', '=', Eval('company_party', -1))])
     date = fields.Date('Date', required=True)
-
-    @staticmethod
-    def default_date():
-        Date = Pool().get('ir.date')
-        return Date.today()
+    company_party = fields.Many2One('party.party', 'Company Party')
 
 
 class ThirdCheckDeposit(Wizard):
@@ -574,12 +626,35 @@ class ThirdCheckDeposit(Wizard):
             ])
     deposit = StateTransition()
 
+    def default_start(self, fields):
+        pool = Pool()
+        Configuration = pool.get('account.configuration')
+        Date = pool.get('ir.date')
+        Company = pool.get('company.company')
+
+        default = {}
+        config = Configuration(1)
+        default_check_journal = config.get_multivalue('default_check_journal')
+        if default_check_journal:
+            default['journal'] = default_check_journal.id
+        default['date'] = Date.today()
+        company_id = Transaction().context.get('company')
+        default['company_party'] = Company(company_id).party.id
+        return default
+
     def transition_deposit(self):
         pool = Pool()
+        Configuration = pool.get('account.configuration')
         ThirdCheck = pool.get('account.third.check')
         Move = pool.get('account.move')
         MoveLine = pool.get('account.move.line')
         Period = pool.get('account.period')
+
+        config = Configuration(1)
+        third_check_account = config.get_multivalue('third_check_account')
+        if not third_check_account:
+            raise UserError(gettext(
+                'account_check_ar.msg_missing_third_check_account'))
 
         company = Transaction().context.get('company')
         period = Period.find(company, date=self.start.date)
@@ -588,37 +663,25 @@ class ThirdCheckDeposit(Wizard):
                 raise UserError(gettext(
                     'account_check_ar.msg_check_not_held',
                     check=check.name))
-            if not self.start.bank_account.journal.third_check_account:
-                raise UserError(gettext(
-                    'account_voucher_ar.msg_no_journal_check_account',
-                    journal=self.start.bank_account.journal.name))
 
             move, = Move.create([{
-                'journal': self.start.bank_account.journal.id,
+                'journal': self.start.journal.id,
                 'period': period.id,
                 'date': self.start.date,
-                'description': 'Cheque: ' + check.name,
+                'description': 'Cheque: %s' % check.name,
                 }])
             lines = []
             lines.append({
-                'account':
-                    self.start.bank_account.debit_account.id,
+                'account': self.start.bank_account.account.id,
                 'move': move.id,
-                'journal': self.start.bank_account.journal.id,
-                'period': period.id,
                 'debit': check.amount,
                 'credit': _ZERO,
-                'date': self.start.date,
                 })
             lines.append({
-                'account':
-                    self.start.bank_account.journal.third_check_account.id,
+                'account': third_check_account.id,
                 'move': move.id,
-                'journal': self.start.bank_account.journal.id,
-                'period': period.id,
                 'debit': _ZERO,
                 'credit': check.amount,
-                'date': self.start.date,
                 })
             MoveLine.create(lines)
             ThirdCheck.write([check], {
@@ -633,12 +696,9 @@ class ThirdCheckRevertDepositStart(ModelView):
     'Revert Third Check Deposit'
     __name__ = 'account.third.check.revert_deposit.start'
 
+    journal = fields.Many2One('account.journal', 'Journal', required=True,
+        domain=[('type', '=', 'cash')])
     date = fields.Date('Date', required=True)
-
-    @staticmethod
-    def default_date():
-        Date = Pool().get('ir.date')
-        return Date.today()
 
 
 class ThirdCheckRevertDeposit(Wizard):
@@ -652,12 +712,32 @@ class ThirdCheckRevertDeposit(Wizard):
             ])
     revert = StateTransition()
 
+    def default_start(self, fields):
+        pool = Pool()
+        Configuration = pool.get('account.configuration')
+        Date = pool.get('ir.date')
+
+        default = {}
+        config = Configuration(1)
+        default_check_journal = config.get_multivalue('default_check_journal')
+        if default_check_journal:
+            default['journal'] = default_check_journal.id
+        default['date'] = Date.today()
+        return default
+
     def transition_revert(self):
         pool = Pool()
+        Configuration = pool.get('account.configuration')
         ThirdCheck = pool.get('account.third.check')
         Move = pool.get('account.move')
         MoveLine = pool.get('account.move.line')
         Period = pool.get('account.period')
+
+        config = Configuration(1)
+        third_check_account = config.get_multivalue('third_check_account')
+        if not third_check_account:
+            raise UserError(gettext(
+                'account_check_ar.msg_missing_third_check_account'))
 
         company = Transaction().context.get('company')
         period = Period.find(company, date=self.start.date)
@@ -666,37 +746,25 @@ class ThirdCheckRevertDeposit(Wizard):
                 raise UserError(gettext(
                     'account_check_ar.msg_check_not_deposited',
                     check=check.name))
-            if not check.account_bank_out.journal.third_check_account:
-                raise UserError(gettext(
-                    'account_voucher_ar.msg_no_journal_check_account',
-                    journal=check.account_bank_out.journal.name))
 
             move, = Move.create([{
-                'journal': check.account_bank_out.journal.id,
+                'journal': self.start.journal.id,
                 'period': period.id,
                 'date': self.start.date,
-                'description': 'Cheque: ' + check.name,
+                'description': 'Cheque: %s' % check.name,
                 }])
             lines = []
             lines.append({
-                'account':
-                    check.account_bank_out.debit_account.id,
+                'account': check.account_bank_out.account.id,
                 'move': move.id,
-                'journal': check.account_bank_out.journal.id,
-                'period': period.id,
                 'debit': _ZERO,
                 'credit': check.amount,
-                'date': self.start.date,
                 })
             lines.append({
-                'account':
-                    check.account_bank_out.journal.third_check_account.id,
+                'account': third_check_account.id,
                 'move': move.id,
-                'journal': check.account_bank_out.journal.id,
-                'period': period.id,
                 'debit': check.amount,
                 'credit': _ZERO,
-                'date': self.start.date,
                 })
             MoveLine.create(lines)
             ThirdCheck.write([check], {
@@ -711,9 +779,11 @@ class IssuedCheckDebitStart(ModelView):
     'Issued Check Debit'
     __name__ = 'account.issued.check.debit.start'
 
-    bank_account = fields.Many2One('bank.account', 'Bank Account',
-        required=True)
+    journal = fields.Many2One('account.journal', 'Journal', required=True,
+        domain=[('type', '=', 'cash')])
     date = fields.Date('Date', required=True)
+    bank_account = fields.Many2One('bank.account', 'Bank Account',
+        readonly=True)
 
 
 class IssuedCheckDebit(Wizard):
@@ -728,11 +798,18 @@ class IssuedCheckDebit(Wizard):
     debit = StateTransition()
 
     def default_start(self, fields):
-        Date = Pool().get('ir.date')
-        return {
-            'bank_account': self.record.bank_account.id,
-            'date': Date.today(),
-            }
+        pool = Pool()
+        Configuration = pool.get('account.configuration')
+        Date = pool.get('ir.date')
+
+        default = {}
+        config = Configuration(1)
+        default_check_journal = config.get_multivalue('default_check_journal')
+        if default_check_journal:
+            default['journal'] = default_check_journal.id
+        default['bank_account'] = self.record.bank_account.id
+        default['date'] = Date.today()
+        return default
 
     def transition_debit(self):
         pool = Pool()
@@ -748,36 +825,29 @@ class IssuedCheckDebit(Wizard):
                 raise UserError(gettext(
                     'account_check_ar.msg_check_not_issued',
                     check=check.name))
-            if not self.start.bank_account.journal.issued_check_account:
+            if not check.bank_account.issued_check_account:
                 raise UserError(gettext(
-                    'account_voucher_ar.msg_no_journal_check_account',
-                    journal=self.start.bank_account.journal.name))
+                    'account_check_ar.msg_missing_issued_check_account',
+                    bank_account=check.bank_account.rec_name))
 
             move, = Move.create([{
-                'journal': self.start.bank_account.journal.id,
+                'journal': self.start.journal.id,
                 'period': period.id,
                 'date': self.start.date,
-                'description': 'Cheque: ' + check.name,
+                'description': 'Cheque: %s' % check.name,
                 }])
             lines = []
             lines.append({
-                'account':
-                    self.start.bank_account.journal.issued_check_account.id,
+                'account': check.bank_account.issued_check_account.id,
                 'move': move.id,
-                'journal': self.start.bank_account.journal.id,
-                'period': period.id,
                 'debit': check.amount,
                 'credit': _ZERO,
-                'date': self.start.date,
                 })
             lines.append({
-                'account': self.start.bank_account.debit_account.id,
+                'account': check.bank_account.account.id,
                 'move': move.id,
-                'journal': self.start.bank_account.journal.id,
-                'period': period.id,
                 'debit': _ZERO,
                 'credit': check.amount,
-                'date': self.start.date,
                 })
             MoveLine.create(lines)
             IssuedCheck.write([check], {'state': 'debited'})
@@ -789,12 +859,9 @@ class IssuedCheckRevertDebitStart(ModelView):
     'Revert Issued Check Debit'
     __name__ = 'account.issued.check.revert_debit.start'
 
+    journal = fields.Many2One('account.journal', 'Journal', required=True,
+        domain=[('type', '=', 'cash')])
     date = fields.Date('Date', required=True)
-
-    @staticmethod
-    def default_date():
-        date_obj = Pool().get('ir.date')
-        return date_obj.today()
 
 
 class IssuedCheckRevertDebit(Wizard):
@@ -807,6 +874,19 @@ class IssuedCheckRevertDebit(Wizard):
             Button('Revert Debit', 'revert', 'tryton-ok', default=True),
             ])
     revert = StateTransition()
+
+    def default_start(self, fields):
+        pool = Pool()
+        Configuration = pool.get('account.configuration')
+        Date = pool.get('ir.date')
+
+        default = {}
+        config = Configuration(1)
+        default_check_journal = config.get_multivalue('default_check_journal')
+        if default_check_journal:
+            default['journal'] = default_check_journal.id
+        default['date'] = Date.today()
+        return default
 
     def transition_revert(self):
         pool = Pool()
@@ -822,36 +902,29 @@ class IssuedCheckRevertDebit(Wizard):
                 raise UserError(gettext(
                     'account_check_ar.msg_check_not_debited',
                     check=check.name))
-            if not check.bank_account.journal.issued_check_account:
+            if not check.bank_account.issued_check_account:
                 raise UserError(gettext(
-                    'account_voucher_ar.msg_no_journal_check_account',
-                    journal=check.bank_account.journal.name))
+                    'account_check_ar.msg_missing_issued_check_account',
+                    bank_account=check.bank_account.rec_name))
 
             move, = Move.create([{
-                'journal': check.bank_account.journal.id,
+                'journal': self.start.journal.id,
                 'period': period.id,
                 'date': self.start.date,
-                'description': 'Cheque: ' + check.name,
+                'description': 'Cheque: %s' % check.name,
                 }])
             lines = []
             lines.append({
-                'account':
-                    check.bank_account.journal.issued_check_account.id,
+                'account': check.bank_account.issued_check_account.id,
                 'move': move.id,
-                'journal': check.bank_account.journal.id,
-                'period': period.id,
                 'debit': _ZERO,
                 'credit': check.amount,
-                'date': self.start.date,
                 })
             lines.append({
-                'account': check.bank_account.debit_account.id,
+                'account': check.bank_account.account.id,
                 'move': move.id,
-                'journal': check.bank_account.journal.id,
-                'period': period.id,
                 'debit': check.amount,
                 'credit': _ZERO,
-                'date': self.start.date,
                 })
             MoveLine.create(lines)
             IssuedCheck.write([check], {'state': 'issued'})
@@ -863,7 +936,8 @@ class ThirdCheckRejectStart(ModelView):
     'Third Check Reject'
     __name__ = 'account.third.check.reject.start'
 
-    journal = fields.Many2One('account.journal', 'Journal', required=True)
+    journal = fields.Many2One('account.journal', 'Journal', required=True,
+        domain=[('type', '=', 'cash')])
 
 
 class ThirdCheckReject(Wizard):
@@ -877,13 +951,37 @@ class ThirdCheckReject(Wizard):
             ])
     reject = StateTransition()
 
+    def default_start(self, fields):
+        pool = Pool()
+        Configuration = pool.get('account.configuration')
+
+        default = {}
+        config = Configuration(1)
+        default_check_journal = config.get_multivalue('default_check_journal')
+        if default_check_journal:
+            default['journal'] = default_check_journal.id
+        return default
+
     def transition_reject(self):
         pool = Pool()
+        Configuration = pool.get('account.configuration')
         ThirdCheck = pool.get('account.third.check')
         Move = pool.get('account.move')
         MoveLine = pool.get('account.move.line')
         Date = pool.get('ir.date')
         Period = pool.get('account.period')
+
+        config = Configuration(1)
+        third_check_account = config.get_multivalue(
+            'third_check_account')
+        if not third_check_account:
+            raise UserError(gettext(
+                'account_check_ar.msg_missing_third_check_account'))
+        rejected_check_account = config.get_multivalue(
+            'rejected_check_account')
+        if not rejected_check_account:
+            raise UserError(gettext(
+                'account_check_ar.msg_missing_rejected_check_account'))
 
         company = Transaction().context.get('company')
         date = Date.today()
@@ -893,36 +991,25 @@ class ThirdCheckReject(Wizard):
                 raise UserError(gettext(
                     'account_check_ar.msg_check_not_held',
                     check=check.name))
-            if (not self.start.journal.third_check_account or
-                    not self.start.journal.rejected_check_account):
-                raise UserError(gettext(
-                    'account_voucher_ar.msg_no_journal_check_account',
-                    journal=self.start.journal.name))
 
             move, = Move.create([{
                 'journal': self.start.journal.id,
                 'period': period.id,
                 'date': date,
-                'description': 'Cheque: ' + check.name,
+                'description': 'Cheque: %s' % check.name,
                 }])
             lines = []
             lines.append({
-                'account': self.start.journal.rejected_check_account.id,
+                'account': rejected_check_account.id,
                 'move': move.id,
-                'journal': self.start.journal.id,
-                'period': period.id,
                 'debit': check.amount,
                 'credit': _ZERO,
-                'date': date,
                 })
             lines.append({
-                'account': self.start.journal.third_check_account.id,
+                'account': third_check_account.id,
                 'move': move.id,
-                'journal': self.start.journal.id,
-                'period': period.id,
                 'debit': _ZERO,
                 'credit': check.amount,
-                'date': date,
                 })
             MoveLine.create(lines)
             ThirdCheck.write([check], {'state': 'rejected'})
@@ -934,7 +1021,8 @@ class ThirdCheckRevertRejectStart(ModelView):
     'Revert Third Check Reject'
     __name__ = 'account.third.check.revert_reject.start'
 
-    journal = fields.Many2One('account.journal', 'Journal', required=True)
+    journal = fields.Many2One('account.journal', 'Journal', required=True,
+        domain=[('type', '=', 'cash')])
 
 
 class ThirdCheckRevertReject(Wizard):
@@ -948,13 +1036,37 @@ class ThirdCheckRevertReject(Wizard):
             ])
     revert = StateTransition()
 
+    def default_start(self, fields):
+        pool = Pool()
+        Configuration = pool.get('account.configuration')
+
+        default = {}
+        config = Configuration(1)
+        default_check_journal = config.get_multivalue('default_check_journal')
+        if default_check_journal:
+            default['journal'] = default_check_journal.id
+        return default
+
     def transition_revert(self):
         pool = Pool()
+        Configuration = pool.get('account.configuration')
         ThirdCheck = pool.get('account.third.check')
         Move = pool.get('account.move')
         MoveLine = pool.get('account.move.line')
         Date = pool.get('ir.date')
         Period = pool.get('account.period')
+
+        config = Configuration(1)
+        third_check_account = config.get_multivalue(
+            'third_check_account')
+        if not third_check_account:
+            raise UserError(gettext(
+                'account_check_ar.msg_missing_third_check_account'))
+        rejected_check_account = config.get_multivalue(
+            'rejected_check_account')
+        if not rejected_check_account:
+            raise UserError(gettext(
+                'account_check_ar.msg_missing_rejected_check_account'))
 
         company = Transaction().context.get('company')
         date = Date.today()
@@ -964,36 +1076,25 @@ class ThirdCheckRevertReject(Wizard):
                 raise UserError(gettext(
                     'account_check_ar.msg_check_not_rejected',
                     check=check.name))
-            if (not self.start.journal.third_check_account or
-                    not self.start.journal.rejected_check_account):
-                raise UserError(gettext(
-                    'account_voucher_ar.msg_no_journal_check_account',
-                    journal=self.start.journal.name))
 
             move, = Move.create([{
                 'journal': self.start.journal.id,
                 'period': period.id,
                 'date': date,
-                'description': 'Cheque: ' + check.name,
+                'description': 'Cheque: %s' % check.name,
                 }])
             lines = []
             lines.append({
-                'account': self.start.journal.rejected_check_account.id,
+                'account': rejected_check_account.id,
                 'move': move.id,
-                'journal': self.start.journal.id,
-                'period': period.id,
                 'debit': _ZERO,
                 'credit': check.amount,
-                'date': date,
                 })
             lines.append({
-                'account': self.start.journal.third_check_account.id,
+                'account': third_check_account.id,
                 'move': move.id,
-                'journal': self.start.journal.id,
-                'period': period.id,
                 'debit': check.amount,
                 'credit': _ZERO,
-                'date': date,
                 })
             MoveLine.create(lines)
             ThirdCheck.write([check], {'state': 'reverted'})
@@ -1016,22 +1117,15 @@ class IssuedCheckCashStart(ModelView):
         required=True, depends={'checkbook', 'bank_account'})
     currency = fields.Function(fields.Many2One(
         'currency.currency', "Currency"), 'on_change_with_currency')
+    journal = fields.Many2One('account.journal', 'Journal', required=True,
+        domain=[('type', '=', 'cash')])
     cash_account = fields.Many2One('account.account',
-        'Cash Account', domain=[
+        'Cash Account', required=True,
+        domain=[
             ('type', '!=', None),
             ('closed', '!=', True),
             ('company', '=', Eval('context', {}).get('company', -1)),
-            ], required=True)
-
-    @staticmethod
-    def default_date_out():
-        Date = Pool().get('ir.date')
-        return Date.today()
-
-    @staticmethod
-    def default_date():
-        Date = Pool().get('ir.date')
-        return Date.today()
+            ])
 
     @fields.depends('checkbook')
     def on_change_with_bank_account(self, name=None):
@@ -1042,10 +1136,6 @@ class IssuedCheckCashStart(ModelView):
     def on_change_with_number(self, name=None):
         if self.checkbook:
             return self.checkbook.sequence.number_next
-
-    @staticmethod
-    def default_amount():
-        return _ZERO
 
     @fields.depends('checkbook', 'bank_account')
     def on_change_with_currency(self, name=None):
@@ -1059,12 +1149,28 @@ class IssuedCheckCash(Wizard):
 
     start = StateView('account.issued.check.cash.start',
         'account_check_ar.view_issued_check_cash_start', [
-            Button('Abort', 'end', 'tryton-cancel'),
-            Button('Proceed', 'cash', 'tryton-ok', default=True),
+            Button('Cancel', 'end', 'tryton-cancel'),
+            Button('Confirm', 'confirm', 'tryton-ok', default=True),
             ])
-    cash = StateTransition()
+    confirm = StateTransition()
 
-    def transition_cash(self):
+    def default_start(self, fields):
+        pool = Pool()
+        Configuration = pool.get('account.configuration')
+        Date = pool.get('ir.date')
+
+        default = {}
+        config = Configuration(1)
+        default_check_journal = config.get_multivalue('default_check_journal')
+        if default_check_journal:
+            default['journal'] = default_check_journal.id
+        today = Date.today()
+        default['date_out'] = today
+        default['date'] = today
+        default['amount'] = _ZERO
+        return default
+
+    def transition_confirm(self):
         pool = Pool()
         IssuedCheck = pool.get('account.issued.check')
         Move = pool.get('account.move')
@@ -1107,15 +1213,14 @@ class IssuedCheckCash(Wizard):
             }])
 
         move, = Move.create([{
-            'journal': self.start.bank_account.journal.id,
+            'journal': self.start.journal.id,
             'period': period.id,
             'date': self.start.date,
-            'description': 'Cobro Cheque propio: ' + check.name,
+            'description': 'Cobro Cheque propio: %s' % check.name,
             }])
         lines = []
         lines.append({
-            'account':
-                self.start.bank_account.credit_account.id,
+            'account': self.start.bank_account.account.id,
             'move': move.id,
             'debit': _ZERO,
             'credit': check.amount,
@@ -1126,14 +1231,12 @@ class IssuedCheckCash(Wizard):
             'debit': check.amount,
             'credit': _ZERO,
             })
-
         MoveLine.create(lines)
         Move.post([move])
         IssuedCheck.write([check], {
             'state': 'debited',
             'cash_move': move
             })
-
         return 'end'
 
 
@@ -1166,12 +1269,12 @@ class IssuedCheckCancel(Wizard):
 
     start = StateView('account.issued.check.cancel.start',
         'account_check_ar.view_issued_check_cancel_start', [
-            Button('Abort', 'end', 'tryton-cancel'),
-            Button('Proceed', 'cancel', 'tryton-ok', default=True),
+            Button('Cancel', 'end', 'tryton-cancel'),
+            Button('Confirm', 'confirm', 'tryton-ok', default=True),
             ])
-    cancel = StateTransition()
+    confirm = StateTransition()
 
-    def transition_cancel(self):
+    def transition_confirm(self):
         pool = Pool()
         IssuedCheck = pool.get('account.issued.check')
 
@@ -1196,7 +1299,7 @@ class IssuedCheckCancel(Wizard):
                 'checkbook': checkbook.id,
                 'bank_account': self.start.bank_account.id,
                 'date': self.start.date,
-                'state': 'canceled',
+                'state': 'cancelled',
                 }])
 
         return 'end'

@@ -1,17 +1,17 @@
 <?xml version="1.0"?>
 <tree>
-    <field name="name"/>
+    <field name="bank" expand="2"/>
+    <field name="name" expand="1"/>
     <field name="amount"/>
     <field name="date_in"/>
     <field name="date"/>
-    <field name="bank"/>
-    <field name="source_party"/>
     <field name="electronic"/>
-    <field name="not_to_order"/>
-    <field name="date_out"/>
-    <field name="endorsed"/>
-    <field name="destiny_party"/>
-    <field name="account_bank_out"/>
-    <field name="clearing"/>
+    <field name="source_party" optional="1"/>
+    <field name="not_to_order" optional="1"/>
+    <field name="date_out" optional="1"/>
+    <field name="endorsed" optional="1"/>
+    <field name="destiny_party" optional="1"/>
+    <field name="account_bank_out" optional="1"/>
+    <field name="clearing" optional="1"/>
     <field name="state"/>
 </tree>

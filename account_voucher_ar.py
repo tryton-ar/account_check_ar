@@ -34,7 +34,7 @@ class AccountVoucher(metaclass=PoolMeta):
             },
         domain=[
             ('state', 'in', ['held', 'reverted']),
-            ('not_to_order', '=', False),
+            ('not_to_order', '!=', True),
             ])
     third_check = fields.One2Many('account.third.check', 'voucher_in',
         'Third Checks',
@@ -69,69 +69,67 @@ class AccountVoucher(metaclass=PoolMeta):
 
     def prepare_move_lines(self):
         pool = Pool()
-        Period = pool.get('account.period')
+        Configuration = pool.get('account.configuration')
 
         move_lines = super().prepare_move_lines()
 
-        journal = self.journal
-        period = Period.find(self.company, date=self.date)
-
         if self.voucher_type == 'receipt':
             if self.third_check:
-                if not journal.third_check_account:
-                    raise UserError(gettext(
-                        'account_voucher_ar.msg_no_journal_check_account',
-                        journal=journal.name))
+                config = Configuration(1)
+                account = config.get_multivalue('third_check_account')
+                if not account:
+                    raise UserError(gettext('account_check_ar.'
+                        'msg_missing_third_check_account'))
                 for check in self.third_check:
                     if check.state != 'draft':
-                        raise UserError(gettext(
-                            'account_voucher_ar.msg_check_not_in_draft',
+                        raise UserError(gettext('account_check_ar.'
+                            'msg_check_not_draft',
                             check=check.name))
                     move_lines.append({
+                        'account': account.id,
+                        'move': self.move.id,
                         'debit': check.amount,
                         'credit': _ZERO,
-                        'account': journal.third_check_account.id,
-                        'move': self.move.id,
-                        'journal': journal.id,
-                        'period': period.id,
-                        'party': (
-                            journal.third_check_account.party_required and
-                            self.party.id or None),
                         'maturity_date': check.date,
+                        'party': (
+                            account.party_required and
+                            self.party.id or None),
                     })
 
         if self.voucher_type == 'payment':
             if self.issued_check:
-                if not journal.issued_check_account:
-                    raise UserError(gettext(
-                        'account_voucher_ar.msg_no_journal_check_account',
-                        journal=journal.name))
                 for check in self.issued_check:
+                    account = check.bank_account.issued_check_account
+                    if not account:
+                        raise UserError(gettext('account_check_ar.'
+                            'msg_missing_issued_check_account',
+                            bank_account=check.bank_account.rec_name))
                     move_lines.append({
+                        'account': account.id,
+                        'move': self.move.id,
                         'debit': _ZERO,
                         'credit': check.amount,
-                        'account': journal.issued_check_account.id,
-                        'move': self.move.id,
-                        'journal': journal.id,
-                        'period': period.id,
-                        'party': (
-                            journal.issued_check_account.party_required and
-                            self.party.id or None),
                         'maturity_date': check.date,
+                        'party': (
+                            account.party_required and
+                            self.party.id or None),
                         })
             if self.third_pay_checks:
+                config = Configuration(1)
+                account = config.get_multivalue('third_check_account')
+                if not account:
+                    raise UserError(gettext('account_check_ar.'
+                        'msg_missing_third_check_account'))
                 for check in self.third_pay_checks:
                     move_lines.append({
+                        'account': account.id,
+                        'move': self.move.id,
                         'debit': _ZERO,
                         'credit': check.amount,
-                        'account': journal.third_check_account.id,
-                        'move': self.move.id,
-                        'journal': journal.id,
-                        'period': period.id,
-                        'party': (
-                            journal.third_check_account.party_required and
-                            self.party.id or None),
                         'maturity_date': check.date,
+                        'party': (
+                            account.party_required and
+                            self.party.id or None),
                         })
 
         return move_lines
@@ -191,7 +189,7 @@ class AccountVoucher(metaclass=PoolMeta):
                 for check in voucher.issued_check:
                     if check.state != 'issued':
                         raise UserError(gettext(
-                            'account_voucher_ar.msg_issued_check_not_issued',
+                            'account_check_ar.msg_issued_check_not_issued',
                             check=check.name))
                 IssuedCheck.write(list(voucher.issued_check), {
                     'receiving_party': None,
@@ -201,7 +199,7 @@ class AccountVoucher(metaclass=PoolMeta):
                 for check in voucher.third_check:
                     if check.state not in ['held', 'reverted']:
                         raise UserError(gettext(
-                            'account_voucher_ar.msg_third_check_not_held',
+                            'account_check_ar.msg_third_check_not_held',
                             check=check.name))
                 ThirdCheck.write(list(voucher.third_check), {
                     'source_party': None,
@@ -210,7 +208,7 @@ class AccountVoucher(metaclass=PoolMeta):
             if voucher.third_pay_checks:
                 for check in voucher.third_pay_checks:
                     if check.state != 'delivered':
-                        raise UserError(gettext('account_voucher_ar.'
+                        raise UserError(gettext('account_check_ar.'
                             'msg_third_pay_check_not_delivered',
                             check=check.name))
                 ThirdCheck.write(list(voucher.third_pay_checks), {

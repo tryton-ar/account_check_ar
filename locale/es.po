@@ -6,6 +6,14 @@ msgctxt "field:account.checkbook,bank_account:"
 msgid "Bank Account"
 msgstr "Cuenta bancaria"
 
+msgctxt "field:account.checkbook,company:"
+msgid "Company"
+msgstr "Empresa"
+
+msgctxt "field:account.checkbook,company_party:"
+msgid "Company Party"
+msgstr "Tercero de la empresa"
+
 msgctxt "field:account.checkbook,electronic:"
 msgid "e-Checkbook"
 msgstr "Electrónica"
@@ -18,10 +26,6 @@ msgctxt "field:account.checkbook,name:"
 msgid "Name"
 msgstr "Nombre"
 
-msgctxt "field:account.checkbook,party_company:"
-msgid "Company"
-msgstr "Empresa"
-
 msgctxt "field:account.checkbook,sequence:"
 msgid "Sequence"
 msgstr "Secuencia"
@@ -29,6 +33,30 @@ msgstr "Secuencia"
 msgctxt "field:account.checkbook,state:"
 msgid "State"
 msgstr "Estado"
+
+msgctxt "field:account.configuration,default_check_journal:"
+msgid "Default Check Journal"
+msgstr "Diario por defecto en Cheques"
+
+msgctxt "field:account.configuration,rejected_check_account:"
+msgid "Rejected Check Account"
+msgstr "Cuenta de cheques rechazados"
+
+msgctxt "field:account.configuration,third_check_account:"
+msgid "Received Check Account"
+msgstr "Cuenta de cheques recibidos"
+
+msgctxt "field:account.configuration.default_account,default_check_journal:"
+msgid "Default Check Journal"
+msgstr "Diario por defecto en Cheques"
+
+msgctxt "field:account.configuration.default_account,rejected_check_account:"
+msgid "Rejected Check Account"
+msgstr "Cuenta de cheques rechazados"
+
+msgctxt "field:account.configuration.default_account,third_check_account:"
+msgid "Received Check Account"
+msgstr "Cuenta de cheques recibidos"
 
 msgctxt "field:account.issued.check,amount:"
 msgid "Amount"
@@ -49,6 +77,14 @@ msgstr "Chequera"
 msgctxt "field:account.issued.check,clearing:"
 msgid "Clearing"
 msgstr "Clearing"
+
+msgctxt "field:account.issued.check,company:"
+msgid "Company"
+msgstr "Empresa"
+
+msgctxt "field:account.issued.check,company_party:"
+msgid "Company Party"
+msgstr "Tercero de la empresa"
 
 msgctxt "field:account.issued.check,currency:"
 msgid "Currency"
@@ -81,10 +117,6 @@ msgstr "A la orden"
 msgctxt "field:account.issued.check,origin:"
 msgid "Origin"
 msgstr "Origen"
-
-msgctxt "field:account.issued.check,party_company:"
-msgid "Company"
-msgstr "Empresa"
 
 msgctxt "field:account.issued.check,receiving_party:"
 msgid "Receiving Party"
@@ -154,6 +186,10 @@ msgctxt "field:account.issued.check.cash.start,date_out:"
 msgid "Date Out"
 msgstr "Fecha Emisión"
 
+msgctxt "field:account.issued.check.cash.start,journal:"
+msgid "Journal"
+msgstr "Diario"
+
 msgctxt "field:account.issued.check.cash.start,number:"
 msgid "Number"
 msgstr "Número"
@@ -166,25 +202,21 @@ msgctxt "field:account.issued.check.debit.start,date:"
 msgid "Date"
 msgstr "Fecha"
 
+msgctxt "field:account.issued.check.debit.start,journal:"
+msgid "Journal"
+msgstr "Diario"
+
 msgctxt "field:account.issued.check.revert_debit.start,date:"
 msgid "Date"
 msgstr "Fecha"
 
-msgctxt "field:account.journal,issued_check_account:"
-msgid "Issued Check Account"
-msgstr "Cuenta Cheque Emitido"
-
-msgctxt "field:account.journal,rejected_check_account:"
-msgid "Rejected Check Account"
-msgstr "Cuenta Cheque Rechazado"
-
-msgctxt "field:account.journal,third_check_account:"
-msgid "Third Check Account"
-msgstr "Cuenta Cheque Tercero"
-
 msgctxt "field:account.statement.line,statement_journal_bank_account:"
 msgid "Bank Account"
 msgstr "Cuenta bancaria"
+
+msgctxt "field:account.issued.check.revert_debit.start,journal:"
+msgid "Journal"
+msgstr "Diario"
 
 msgctxt "field:account.third.check,account_bank_out:"
 msgid "Bank Account"
@@ -201,6 +233,10 @@ msgstr "Banco"
 msgctxt "field:account.third.check,clearing:"
 msgid "Clearing"
 msgstr "Clearing"
+
+msgctxt "field:account.third.check,company:"
+msgid "Company"
+msgstr "Empresa"
 
 msgctxt "field:account.third.check,currency:"
 msgid "Currency"
@@ -286,9 +322,17 @@ msgctxt "field:account.third.check.deposit.start,bank_account:"
 msgid "Bank Account"
 msgstr "Cuenta bancaria"
 
+msgctxt "field:account.third.check.deposit.start,company_party:"
+msgid "Company Party"
+msgstr "Tercero de la empresa"
+
 msgctxt "field:account.third.check.deposit.start,date:"
 msgid "Date"
 msgstr "Fecha Cheque"
+
+msgctxt "field:account.third.check.deposit.start,journal:"
+msgid "Journal"
+msgstr "Diario"
 
 msgctxt "field:account.third.check.held.start,credit_account:"
 msgid "Credit Account"
@@ -306,13 +350,17 @@ msgctxt "field:account.third.check.revert_deposit.start,date:"
 msgid "Date"
 msgstr "Fecha"
 
+msgctxt "field:account.third.check.revert_deposit.start,journal:"
+msgid "Journal"
+msgstr "Diario"
+
 msgctxt "field:account.third.check.revert_reject.start,journal:"
 msgid "Journal"
 msgstr "Diario"
 
 msgctxt "field:account.voucher,issued_check:"
 msgid "Issued Checks"
-msgstr "Cheques emitidos"
+msgstr "Cheques propios"
 
 msgctxt "field:account.voucher,third_check:"
 msgid "Third Checks"
@@ -330,13 +378,17 @@ msgctxt "field:account.voucher-account.third.check,voucher:"
 msgid "Voucher"
 msgstr "Comprobante"
 
+msgctxt "field:bank.account,issued_check_account:"
+msgid "Issued Check Account"
+msgstr "Cuenta de cheques emitidos"
+
 msgctxt "model:account.checkbook,name:"
 msgid "Account Checkbook"
 msgstr "Chequera"
 
 msgctxt "model:account.issued.check,name:"
 msgid "Account Issued Check"
-msgstr "Cheque Emitido"
+msgstr "Cheque propio"
 
 msgctxt "model:account.issued.check.cancel.start,name:"
 msgid "Issued Check Cancel Start"
@@ -344,15 +396,15 @@ msgstr "Cancelar cheques propios - Inicio"
 
 msgctxt "model:account.issued.check.cash.start,name:"
 msgid "Issued Check Cash Start"
-msgstr "Cobrar cheques propios - Inicio"
+msgstr "Cobrar cheque propio - Inicio"
 
 msgctxt "model:account.issued.check.debit.start,name:"
 msgid "Issued Check Debit"
-msgstr "Debitar Cheque"
+msgstr "Debitar cheque propio"
 
 msgctxt "model:account.issued.check.revert_debit.start,name:"
 msgid "Revert Issued Check Debit"
-msgstr "Revertir Débito de Cheque"
+msgstr "Revertir débito de cheque"
 
 msgctxt "model:account.third.check,name:"
 msgid "Account Third Check"
@@ -360,23 +412,23 @@ msgstr "Cheque de tercero"
 
 msgctxt "model:account.third.check.deposit.start,name:"
 msgid "Third Check Deposit"
-msgstr "Depositar Cheque de tercero"
+msgstr "Depositar cheque de tercero"
 
 msgctxt "model:account.third.check.held.start,name:"
 msgid "Third Check Held"
-msgstr "Cheque de tercero a Cartera"
+msgstr "Ingresar cheque de tercero a cartera"
 
 msgctxt "model:account.third.check.reject.start,name:"
 msgid "Third Check Reject"
-msgstr "Rechazar Cheque de tercero"
+msgstr "Rechazar cheque de tercero"
 
 msgctxt "model:account.third.check.revert_deposit.start,name:"
 msgid "Revert Third Check Deposit"
-msgstr "Revertir Depósito de Cheque"
+msgstr "Revertir depósito de cheque"
 
 msgctxt "model:account.third.check.revert_reject.start,name:"
 msgid "Revert Third Check Reject"
-msgstr "Revertir Rechazo de Cheque"
+msgstr "Revertir rechazo de cheque"
 
 msgctxt "model:account.voucher-account.third.check,name:"
 msgid "Account Voucher - Account Third Check"
@@ -392,11 +444,11 @@ msgstr "Cancelar cheques propios"
 
 msgctxt "model:ir.action,name:act_issued_check_cash"
 msgid "Cash Issued Checks"
-msgstr "Cobrar cheques propios"
+msgstr "Cobrar cheque propio"
 
 msgctxt "model:ir.action,name:act_issued_check_tree"
 msgid "Issued Checks"
-msgstr "Cheques Emitidos"
+msgstr "Cheques propios"
 
 msgctxt "model:ir.action,name:act_third_check_tree"
 msgid "Third Checks"
@@ -404,39 +456,39 @@ msgstr "Cheques de terceros"
 
 msgctxt "model:ir.action,name:wizard_issued_check_debit"
 msgid "Check Debit"
-msgstr "Debitar Cheque"
+msgstr "Debitar cheque propio"
 
 msgctxt "model:ir.action,name:wizard_issued_check_revert_debit"
 msgid "Revert Check Debit"
-msgstr "Revertir Débito de Cheque"
+msgstr "Revertir débito de cheque"
 
 msgctxt "model:ir.action,name:wizard_third_check_deposit"
 msgid "Check Deposit"
-msgstr "Depositar Cheque de tercero"
+msgstr "Depositar cheque de tercero"
 
 msgctxt "model:ir.action,name:wizard_third_check_held"
 msgid "Check Held"
-msgstr "Cheque de tercero a Cartera"
+msgstr "Ingresar cheque de tercero a cartera"
 
 msgctxt "model:ir.action,name:wizard_third_check_reject"
 msgid "Check Reject"
-msgstr "Rechazar Cheque de tercero"
+msgstr "Rechazar cheque de tercero"
 
 msgctxt "model:ir.action,name:wizard_third_check_revert_deposit"
 msgid "Revert Check Deposit"
-msgstr "Revertir Depósito de Cheque"
+msgstr "Revertir depósito de cheque"
 
 msgctxt "model:ir.action,name:wizard_third_check_revert_reject"
 msgid "Revert Check Reject"
-msgstr "Revertir Rechazo de Cheque"
+msgstr "Revertir rechazo de cheque"
 
 msgctxt "model:ir.action.act_window.domain,name:act_issued_check_domain_all"
 msgid "All"
 msgstr "Todo"
 
 msgctxt ""
-"model:ir.action.act_window.domain,name:act_issued_check_domain_canceled"
-msgid "Canceled"
+"model:ir.action.act_window.domain,name:act_issued_check_domain_cancelled"
+msgid "Cancelled"
 msgstr "Cancelado"
 
 msgctxt ""
@@ -489,6 +541,10 @@ msgctxt "model:ir.message,text:msg_check_already_exists"
 msgid "The check \"%(number)s\" already exists."
 msgstr "El cheque \"%(number)s\" ya existe."
 
+msgctxt "model:ir.message,text:msg_check_already_in_statement"
+msgid "The check %(check)s is related to multiple lines: %(lines)s."
+msgstr "El cheque %(check)s está relacionado en múltiples líneas: %(lines)s."
+
 msgctxt "model:ir.message,text:msg_check_not_debited"
 msgid "Check \"%(check)s\" is not debited"
 msgstr "Cheque \"%(check)s\" no está debitado"
@@ -532,10 +588,6 @@ msgctxt "model:ir.message,text:msg_checkbook_to_number_lower"
 msgid "The second number can not be lower than the first."
 msgstr "El segundo número no puede ser menor al primero."
 
-msgctxt "model:ir.message,text:msg_check_already_in_statement"
-msgid "The check %(check)s is related to multiple lines: %(lines)s."
-msgstr "El cheque %(check)s está relacionado en múltiples líneas: %(lines)s."
-
 msgctxt "model:ir.message,text:msg_delete_check"
 msgid "You can not delete a check that is used!"
 msgstr "No puede eliminar un cheque usado"
@@ -544,6 +596,26 @@ msgctxt "model:ir.message,text:msg_delete_checkbook"
 msgid "You can not delete a used checkbook."
 msgstr "No es posible eliminar una chequera en uso."
 
+msgctxt "model:ir.message,text:msg_issued_check_not_issued"
+msgid "Issued check \"%(check)s\" is not in Issued state"
+msgstr "El cheque propio número \"%(check)s\" no figura como \"Emitido\""
+
+msgctxt "model:ir.message,text:msg_missing_issued_check_account"
+msgid ""
+"Bank account \"%(bank_account)s\" does not have an account defined for "
+"issued checks"
+msgstr ""
+"La cuenta bancaria \"%(bank_account)s\" no tiene definida una cuenta para "
+"los cheques emitidos"
+
+msgctxt "model:ir.message,text:msg_missing_rejected_check_account"
+msgid "You must define an account for rejected checks"
+msgstr "Debe definir una cuenta para los cheques rechazados"
+
+msgctxt "model:ir.message,text:msg_missing_third_check_account"
+msgid "You must define an account for received checks"
+msgstr "Debe definir una cuenta para los cheques recibidos"
+
 msgctxt "model:ir.message,text:msg_number_not_valid"
 msgid "The number \"%(number)s\" is not valid for the sequence."
 msgstr "El número \"%(number)s\" no es válido según la secuencia."
@@ -551,6 +623,14 @@ msgstr "El número \"%(number)s\" no es válido según la secuencia."
 msgctxt "model:ir.message,text:msg_third_check_already_exists"
 msgid "Check \"%(check)s\" already exists"
 msgstr "Cheque \"%(check)s\" ya existe"
+
+msgctxt "model:ir.message,text:msg_third_check_not_held"
+msgid "Third check \"%(check)s\" is not in Held state"
+msgstr "El cheque de tercero número \"%(check)s\" no figura como \"En cartera\""
+
+msgctxt "model:ir.message,text:msg_third_pay_check_not_delivered"
+msgid "Third check \"%(check)s\" is not in Delivered state"
+msgstr "El cheque de tercero número \"%(check)s\" no figura como \"Entregado\""
 
 msgctxt "model:ir.model.button,help:check_calculate_remaining_amount_button"
 msgid "Calculate remaining amount to balance the voucher"
@@ -574,7 +654,7 @@ msgstr "Depositar"
 
 msgctxt "model:ir.model.button,string:check_held_button"
 msgid "Held"
-msgstr "A Cartera"
+msgstr "Ingresar a cartera"
 
 msgctxt "model:ir.model.button,string:check_issued_button"
 msgid "Issued"
@@ -600,6 +680,18 @@ msgctxt "model:ir.model.button,string:checkbook_draft_button"
 msgid "Draft"
 msgstr "Borrador"
 
+msgctxt "model:ir.rule.group,name:rule_group_checkbook_companies"
+msgid "User in companies"
+msgstr "Usuario en las empresas"
+
+msgctxt "model:ir.rule.group,name:rule_group_issued_check_companies"
+msgid "User in companies"
+msgstr "Usuario en las empresas"
+
+msgctxt "model:ir.rule.group,name:rule_group_third_check_companies"
+msgid "User in companies"
+msgstr "Usuario en las empresas"
+
 msgctxt "model:ir.sequence.type,name:sequence_type_account_checkbook"
 msgid "Checkbook"
 msgstr "Chequera"
@@ -614,7 +706,7 @@ msgstr "Cheques"
 
 msgctxt "model:ir.ui.menu,name:menu_issued_check"
 msgid "Issued Checks"
-msgstr "Cheques emitidos"
+msgstr "Cheques propios"
 
 msgctxt "model:ir.ui.menu,name:menu_issued_check_cancel"
 msgid "Cancel Issued Checks"
@@ -622,7 +714,7 @@ msgstr "Cancelar cheques propios"
 
 msgctxt "model:ir.ui.menu,name:menu_issued_check_cash"
 msgid "Cash Issued Checks"
-msgstr "Cobrar cheques propios"
+msgstr "Cobrar cheque propio"
 
 msgctxt "model:ir.ui.menu,name:menu_third_check"
 msgid "Third Checks"
@@ -653,7 +745,7 @@ msgid "72 hs"
 msgstr "72 hs"
 
 msgctxt "selection:account.issued.check,state:"
-msgid "Canceled"
+msgid "Cancelled"
 msgstr "Cancelado"
 
 msgctxt "selection:account.issued.check,state:"
@@ -716,6 +808,10 @@ msgctxt "view:account.checkbook:"
 msgid "Draft"
 msgstr "Borrador"
 
+msgctxt "view:account.configuration:"
+msgid "Checks"
+msgstr "Cheques"
+
 msgctxt "view:account.issued.check:"
 msgid "Extra Info"
 msgstr "Información adicional"
@@ -729,24 +825,12 @@ msgid "Checks"
 msgstr "Cheques"
 
 msgctxt "view:account.third.check:"
-msgid "Deposit"
-msgstr "Depositar"
-
-msgctxt "view:account.third.check:"
 msgid "Extra Info"
 msgstr "Información Extra"
 
 msgctxt "view:account.third.check:"
-msgid "Held"
-msgstr "A Cartera"
-
-msgctxt "view:account.third.check:"
 msgid "Origin"
 msgstr "Origen"
-
-msgctxt "view:account.third.check:"
-msgid "Reject"
-msgstr "Rechazar"
 
 msgctxt "view:account.third.check:"
 msgid "Target"
@@ -756,21 +840,21 @@ msgctxt "view:account.voucher:"
 msgid "Checks"
 msgstr "Cheques"
 
-msgctxt "wizard_button:account.issued.check.cancel,start,cancel:"
-msgid "Proceed"
-msgstr "Proceder"
+msgctxt "wizard_button:account.issued.check.cancel,start,confirm:"
+msgid "Confirm"
+msgstr "Confirmar"
 
 msgctxt "wizard_button:account.issued.check.cancel,start,end:"
-msgid "Abort"
-msgstr "Abortar"
+msgid "Cancel"
+msgstr "Cancelar"
 
-msgctxt "wizard_button:account.issued.check.cash,start,cash:"
-msgid "Proceed"
-msgstr "Proceder"
+msgctxt "wizard_button:account.issued.check.cash,start,confirm:"
+msgid "Confirm"
+msgstr "Confirmar"
 
 msgctxt "wizard_button:account.issued.check.cash,start,end:"
-msgid "Abort"
-msgstr "Abortar"
+msgid "Cancel"
+msgstr "Cancelar"
 
 msgctxt "wizard_button:account.issued.check.debit,start,debit:"
 msgid "Debit"

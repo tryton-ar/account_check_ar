@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <form>
     <label name="checkbook"/>
-    <field name="checkbook"/>
+    <field name="checkbook" widget="selection"/>
     <label name="bank_account"/>
     <field name="bank_account"/>
     <label name="number"/>
@@ -12,6 +12,8 @@
     <field name="date_out"/>
     <label name="date"/>
     <field name="date"/>
+    <label name="journal"/>
+    <field name="journal" widget="selection"/>
     <label name="cash_account"/>
     <field name="cash_account"/>
 </form>

@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
 <form>
-    <label name="bank_account"/>
-    <field name="bank_account" widget="selection"/>
+    <label name="journal"/>
+    <field name="journal" widget="selection"/>
     <label name="date"/>
     <field name="date"/>
+    <label name="bank_account"/>
+    <field name="bank_account" colspan="3"/>
 </form>

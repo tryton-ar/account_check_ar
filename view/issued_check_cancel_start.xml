@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <form>
     <label name="checkbook"/>
-    <field name="checkbook"/>
+    <field name="checkbook" widget="selection"/>
     <label name="bank_account"/>
     <field name="bank_account"/>
     <label name="from_number"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <tree>
-    <field name="bank_account"/>
-    <field name="name"/>
+    <field name="bank_account" expand="2"/>
+    <field name="name" expand="1"/>
     <field name="sequence"/>
     <field name="last_number"/>
     <field name="electronic"/>

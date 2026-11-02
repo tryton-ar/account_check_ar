@@ -1,9 +1,8 @@
 <?xml version="1.0"?>
 <tree>
-    <field name="name"/>
-    <field name="date_in"/>
-    <field name="date"/>
+    <field name="bank" expand="2"/>
+    <field name="name" expand="1"/>
     <field name="amount"/>
-    <field name="bank"/>
+    <field name="date"/>
     <field name="electronic"/>
 </tree>

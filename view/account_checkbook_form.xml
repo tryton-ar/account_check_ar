@@ -14,8 +14,8 @@
     <label name="state"/>
     <field name="state"/>
     <group col="-1" colspan="2" id="buttons">
-        <button name="draft" string="Draft" icon="tryton-back"/>
-        <button name="activate" string="Activate" icon="tryton-forward"/>
-        <button name="close" string="Close" icon="tryton-ok"/>
+        <button name="draft" icon="tryton-back"/>
+        <button name="activate" icon="tryton-forward"/>
+        <button name="close" icon="tryton-ok"/>
     </group>
 </form>

@@ -85,6 +85,19 @@
             <field name="group" ref="account.group_account"/>
         </record>
 
+        <record model="ir.rule.group" id="rule_group_checkbook_companies">
+            <field name="name">User in companies</field>
+            <field name="model"
+                search="[('model', '=', 'account.checkbook')]"/>
+            <field name="global_p" eval="True"/>
+        </record>
+        <record model="ir.rule" id="rule_checkbook_companies">
+            <field name="domain"
+                eval="[('company', 'in', Eval('companies', []))]"
+                pyson="1"/>
+            <field name="rule_group" ref="rule_group_checkbook_companies"/>
+        </record>
+
 <!-- Issued Checks -->
 
         <record model="ir.ui.view" id="account_issued_check_form">
@@ -137,10 +150,10 @@
             <field name="act_window" ref="act_issued_check_tree"/>
         </record>
         <record model="ir.action.act_window.domain"
-            id="act_issued_check_domain_canceled">
-            <field name="name">Canceled</field>
+            id="act_issued_check_domain_cancelled">
+            <field name="name">Cancelled</field>
             <field name="sequence" eval="40"/>
-            <field name="domain" eval="[('state', '=', 'canceled')]" pyson="1"/>
+            <field name="domain" eval="[('state', '=', 'cancelled')]" pyson="1"/>
             <field name="act_window" ref="act_issued_check_tree"/>
         </record>
         <record model="ir.action.act_window.domain"
@@ -180,6 +193,19 @@
             <field name="string">Calculate remaining</field>
             <field name="model" search="[('model', '=', 'account.issued.check')]"/>
             <field name="help">Calculate remaining amount to balance the voucher</field>
+        </record>
+
+        <record model="ir.rule.group" id="rule_group_issued_check_companies">
+            <field name="name">User in companies</field>
+            <field name="model"
+                search="[('model', '=', 'account.issued.check')]"/>
+            <field name="global_p" eval="True"/>
+        </record>
+        <record model="ir.rule" id="rule_issued_check_companies">
+            <field name="domain"
+                eval="[('company', 'in', Eval('companies', []))]"
+                pyson="1"/>
+            <field name="rule_group" ref="rule_group_issued_check_companies"/>
         </record>
 
 <!-- Third Checks -->
@@ -314,6 +340,19 @@
             id="check_rejected_button_group_account">
             <field name="button" ref="check_rejected_button"/>
             <field name="group" ref="account.group_account"/>
+        </record>
+
+        <record model="ir.rule.group" id="rule_group_third_check_companies">
+            <field name="name">User in companies</field>
+            <field name="model"
+                search="[('model', '=', 'account.third.check')]"/>
+            <field name="global_p" eval="True"/>
+        </record>
+        <record model="ir.rule" id="rule_third_check_companies">
+            <field name="domain"
+                eval="[('company', 'in', Eval('companies', []))]"
+                pyson="1"/>
+            <field name="rule_group" ref="rule_group_third_check_companies"/>
         </record>
 
 <!-- Wizard: Issued Check Debit -->
@@ -461,7 +500,7 @@
         </record>
 
         <menuitem action="act_issued_check_cash" id="menu_issued_check_cash"
-            parent="menu_checks" sequence="40"/>
+            parent="menu_issued_check" sequence="10"/>
 
 <!-- Wizard: Cancel Issued Check -->
 
@@ -482,7 +521,7 @@
         </record>
 
         <menuitem action="act_issued_check_cancel" id="menu_issued_check_cancel"
-            parent="menu_checks" sequence="50"/>
+            parent="menu_issued_check" sequence="20"/>
 
     </data>
 </tryton>

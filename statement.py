@@ -165,14 +165,14 @@ class StatementLine(metaclass=PoolMeta):
         if self.issued_check:
             if not self.party:
                 self.party = self.issued_check.voucher.party
-            if self.issued_check.voucher.journal.issued_check_account:
-                self.account = \
-                    self.issued_check.voucher.journal.issued_check_account
+            if self.issued_check.bank_account:
+                self.account = (
+                    self.issued_check.bank_account.issued_check_account)
         if self.third_check:
             if not self.party and self.third_check.source_party:
                 self.party = self.third_check.source_party
             if self.third_check.account_bank_out:
-                self.account = self.third_check.account_bank_out.credit_account
+                self.account = self.third_check.account_bank_out.account
 
     @classmethod
     def create(cls, vlist):
